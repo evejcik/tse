@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
 	webpage_t* page = webpage_new("https://thayer.github.io/engs50/", 0, NULL);
 
 	if(!webpage_fetch(page)){
-		webpage_delete(page);
+		//webpage_delete(page);
 		exit(EXIT_FAILURE);
 	};
 
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 				//	qput(myQueue, result);
 			}else{
 				printf("Is External.\n");
-				webpage_delete(page);
+				//webpage_delete(page);
 			}
 			free(result);
 		}

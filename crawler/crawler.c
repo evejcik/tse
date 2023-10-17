@@ -37,8 +37,11 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	free(pos);
-	free(page);
+	webpage_delete(page);
+
+	exit(EXIT_SUCCESS);
+	//free(pos);
+	//free(page);
 	
-	return 0;
+	//return 0;
 }

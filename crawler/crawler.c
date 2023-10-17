@@ -16,19 +16,37 @@
 #include <hash.h>       
 #include <queue.h>
 
-#define MAX_VISITED_URLS 1000
+//#define MAX_VISITED_URLS 1000
 
 void printURL(void *data) {
         webpage_t *page = (webpage_t *)data;
         char *url = webpage_getURL(page);
-				webpage_delete(url);
+				//				strcpy(url, url2);
+				//	webpage_delete(url);
         printf("%s\n", url);
+				free(url);
+				//webpage_delete(url);
 }
 
 bool searchURL(void *elementp, const void *key) {
     char *url = webpage_getURL((webpage_t *)elementp);
-		webpage_delete(url);
-    return (strcmp(url, (char *)key) == 0);
+		bool test;
+		return (strcmp(url, (char *) key) == 0);
+		/*		if(strcmp(url, (char *) key) == 0){
+			test = true;
+		}else{
+			test = false;
+		}
+		free(url);
+		return test;;*/
+		/*		cmp = (strcmp(url, (char *)key) == 0);
+		free(url);
+
+		if(cmp == 0){
+			return true;
+		}else{
+			return false;
+			}*/
 }
       
 
@@ -58,34 +76,22 @@ int main(){
 			free(result);
 			//qclose(myQueue);
 		}
-		//qapply(myQueue,printURL);
-		//qclose(myQueue);
-		//		happly(visitedURLs, printURL);
-		//		printf("Unique URLs in myQueue:\n");
-		//		qapply(myQueue, printURL);
 		
 		// Print the visited URLs stored in the hashtable
 		printf("Visited URLs:\n");
 		happly(visitedURLs, printURL);
-		qclose(myQueue);
-		hclose(visitedURLs);
+		//qclose(myQueue);
+		//hclose(visitedURLs);
+
+		//		qclose(myQueue);
 		webpage_delete(page);
+		hclose(visitedURLs);
+		//qclose(myQueue);
 		exit(EXIT_SUCCESS);
 	}else{
-		qclose(myQueue);
+		//qclose(myQueue);
 		hclose(visitedURLs);
 		webpage_delete(page);
 		exit(EXIT_FAILURE);
 	}
-
-	//qapply(myQueue, printData);
-	//qclose(myQueue);
-
-	//	webpage_delete(page);
-
-	//	exit(EXIT_SUCCESS);
-	//free(pos);
-	//free(page);
-	
-	//return 0;
 }

@@ -58,8 +58,6 @@ bool DoesDirectoryExist(char * d){
                                                                                                             
                                                                                                             
 int main(int argc, char * argv[]){                                                                          
-                                                                                                            
-                                                                                                            
   if(argc != 4){                                                                                            
     printf("usage: crawler <seedurl> <pagedir> <maxdepth> \n");                                             
     exit(EXIT_FAILURE);                                                                                     
@@ -89,9 +87,9 @@ int main(int argc, char * argv[]){
     //printf("xlc: %d \n", xlc);                                                                            
     //xlc++;                                                                                                
     if(webpage_fetch(page)){                                                                                
-    currentDepth = webpage_getDepth(page);                                                                  
+			currentDepth = webpage_getDepth(page);                                                                  
       pagesave(page, id, directory);                                                                        
-      printf("%s %d %d \n", webpage_getURL(page), currentDepth, id);                                        
+			printf("%s %d %d \n", webpage_getURL(page), currentDepth, id);                                        
       id++;                                                                            
       pos =0;                                                                                               
       while((pos = webpage_getNextURL(page, pos, &result)) > 0 && currentDepth < maxDepth) {                
@@ -99,32 +97,27 @@ int main(int argc, char * argv[]){
 				//ilc++;                                                                                              
 				if(IsInternalURL(result) && hsearch(visitedURLs, searchURL, result, strlen(result)) == NULL){         
 					internalPage = (webpage_new(result, currentDepth+1, NULL));                                      
-           qput(myQueue, internalPage);                                                                     
-           hput(visitedURLs, result, result, strlen(result));                                               
+					qput(myQueue, internalPage);                                                                     
+					hput(visitedURLs, result, result, strlen(result));                                               
 				}                                                                                                     
 				else{                                                                                                 
-        free(result);                                                                                       
+					free(result);                                                                                       
         }                                                                                                   
-    }                                                                                                       
+			}                                                                                                       
       webpage_delete(page);                                                                                 
 		}                                                                                                         
   }while((page = qget(myQueue)) != NULL);                                                                   
 	printf("Visited URLs:\n");                                                                               
-	happly(visitedURLs, printURL);                                                                           
-   /*                                                                                                       
-																																																						while((internalPage = (qget(myQueue))) != NULL){                                                         
-																																																						webpage_delete(internalPage);                                                                       
-																																																						}                                                                                                     
-   */                                                                                                       
-	 
-   free(result);                                                                                            
-   hremove(visitedURLs, searchURL, seedURL, strlen(seedURL));                                               
-	 qclose(myQueue);                                                                                      
-	 hclose(visitedURLs);                                                                                  
-	 webpage_delete(page);                                                                                 
-	 exit(EXIT_SUCCESS);                                                                                   
-	 
-	 //	 exit(EXIT_FAILURE);                                                                                     
+	happly(visitedURLs, printURL);
+	/*	while((internalPage = (qget(myQueue))) != NULL){                                                             
+		 webpage_delete(internalPage);                                                                           
+		 } */ 
+
+	hremove(visitedURLs, searchURL, seedURL, strlen(seedURL));                                               
+	qclose(myQueue);                                                                                      
+	hclose(visitedURLs);                                                                                  
+	webpage_delete(page);                                                                                 
+	exit(EXIT_SUCCESS);                                                                                   
 }                                                                                                           
                                                                                                             
 

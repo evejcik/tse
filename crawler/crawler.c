@@ -17,9 +17,9 @@
 #include <queue.h>                                                                                
                                                                                                   
 //#define MAX_VISITED_URLS 1000                                                                   
-                                                                                                  
-bool searchURL(void *elementp, const void *key) {                                                \
-char *url = (char *)elementp;                                                                     
+
+bool searchURL(void *elementp, const void *key) {
+	char *url = (char *)elementp;                                                                     
   return(strcmp(url, (char *) key) == 0);                                                         
 }                                                                                                 
 void printURL(void *data) {                                                                       
@@ -36,8 +36,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
   resultFile = fopen(filename, "w");                                                              
                                                                                                   
   if(resultFile != NULL){                                                                         
-    fprintf(resultFile, "%s \n %d \n %d \n %s", webpage_getURL(pagep), webpage_getDepth(pagep), w\
-ebpage_getHTMLlen(pagep), webpage_getHTML(pagep));                                                
+    fprintf(resultFile, "%s \n %d \n %d \n %s", webpage_getURL(pagep), webpage_getDepth(pagep), webpage_getHTMLlen(pagep), webpage_getHTML(pagep));                                                
     fclose(resultFile);                                                                           
     return 0;                                                                                     
   }                                                                                               
@@ -59,11 +58,10 @@ int main(){
                                                                                                   
   if(webpage_fetch(page)){                                                                        
                                                                                                   
-    pagesave(page, 1, "pages");                                                                   
+		pagesave(page, 1, "pages");                                                                   
                                                                                                   
     while((pos = webpage_getNextURL(page, pos, &result)) > 0) {                                   
-      if(IsInternalURL(result) && hsearch(visitedURLs, searchURL, result, strlen(result)) == NULL\
-){                                                                                                
+      if(IsInternalURL(result) && hsearch(visitedURLs, searchURL, result, strlen(result)) == NULL){                                                                                                
            internalPage = (webpage_new(result, 0, NULL));                                         
            qput(myQueue, internalPage);                                                           
            hput(visitedURLs, result, result, strlen(result));                                     

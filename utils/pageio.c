@@ -54,43 +54,51 @@ webpage_t *pageload(int id, char *dirnm){
 	char * pageURL;
 	FILE* file =	fscanf(loadedFile, "%s", pageURL);
 
-	 char url[200];
-	 char depth[200];
-	 char htmlDepth[200];
-	 int c;
-	 int index = 0;
+	char url[200];
+	char depth[200];
+	char htmlDepth[200];
+	char htmlBuffer[1000000];
+	int c;
+	int index = 0;
 
-	 while(i < 3){
-		 if(i == 0){
-			 index = 0;
-			 while ((c = fgetc(file)) != '\n') {
-				 url[index] = c;
-				 index++;
-			 }
-		 }else if(i == 1){
-			 index = 0;
-			 while((c = fgetc(file)) != '\n'){
-				 depth[index] = c;
-				 index++;
-			 }
-		 }else if(i == 2){
-			 index = 0;
-			 while ((c = fgetc(file) != '\n'){
-					 htmlDepth[index] = c;
-					 index++;
-					 
-
-				 }
-			
-		 }
+	while(i < 3){
+		if(i == 0){
+			index = 0;
+			while ((c = fgetc(file)) != '\n') {
+				url[index] = c;
+				index++;
+			}
+		}else if(i == 1){
+			index = 0;
+			while((c = fgetc(file)) != '\n'){
+				depth[index] = c;
+				index++;
+			}
+		}else if(i == 2){
+			index = 0;
+			while ((c = fgetc(file) != '\n'){
+					htmlDepth[index] = c;
+					index++;
+				}
+		}
 		 
-		 depthInt = atoi(depth);
-		 htmlDepthInt = atoi(htmlDepth);
+			depthInt = atoi(depth);
+			//			htmlDepthInt = atoi(htmlDepth);
 
-		 webpage_t* page = webpage_new(url, depthInt, htmlDepthInt);
+			if(i ==3){
+				index = 0;
+				while((c = fgetc(file) != EOF){
+						htmlBuffer[i] = c;
+						index++;
+					}
+					}
 
-		 
-		 return page;
+				webpage_t* page = webpage_new(url, depthInt, htmlBuffer);
+				return page;
+
+				//				free(file);
+				fclose(file);
+				return(page);
 		 
 }
 		 /*

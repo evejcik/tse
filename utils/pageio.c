@@ -36,7 +36,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 
 
 webpage_t *pageload(int id, char *dirnm){
-	FILE * resultFile;
+	FILE *file;
   char filename[50];                                                                               
   sprintf(filename, "../%s/%d", dirname, id);                                                      
   file  = fopen(filename, "r");   
@@ -47,43 +47,46 @@ webpage_t *pageload(int id, char *dirnm){
 
 	char url[200];
 	char depth[200];
-	char htmlDepth[200];
+	//	char htmlDepth[200];
 	char htmlBuffer[1000000];
 	int c;
+	int depthInt;
 	int index = 0;
 
 	while(i < 3){
 		if(i == 0){
 			index = 0;
-			while (c = fgetc(file) != '\n') {
+			while ((c = fgetc(file)) != '\n') {
 				url[index] = c;
 				index++;
 			}
+			url[index] = '\0';
 		}else if(i == 1){
 			index = 0;
-			while(c = fgetc(file) != '\n'){
+			while((c = fgetc(file)) != '\n'){
 				depth[index] = c;
 				index++;
 			}
+			depth[index] = '\0';
 		}else if(i == 2){
 			index = 0;
-			while (c = fgetc(file) != '\n'){
+			while ((c = fgetc(file)) != '\n'){
 				htmlDepth[index] = c;
 				index++;
 			}
+			htmlBuffer[index] = '\0';
 		}
+		i++;
 	}
 		 
 	depthInt = atoi(depth);
 			//			htmlDepthInt = atoi(htmlDepth);
-
-	if(i ==3){
-		index = 0;
-		while(c = fgetc(file) != EOF){
-				htmlBuffer[i] = c;
-				index++;
-		}
+	index = 0;
+	while((c = fgetc(file)) != EOF){
+		htmlBuffer[index] = c;
+		index++;
 	}
+
 		
 	webpage_t* page = webpage_new(url, depthInt, htmlBuffer);
 	//				free(file);

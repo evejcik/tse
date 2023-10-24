@@ -10,12 +10,12 @@
  *                                                                                                          
  */                                                                                                         
                                                                                                             
-#include <stdio.h>                                                                                          
-#include <string.h>                                                                                         
-#include <webpage.h>                                                                                        
-#include <stdlib.h>                                                                                         
-#include <hash.h>                                                                                           
-#include <queue.h>                                                                                          
+#include <stdio.h>
+#include <string.h>
+#include <webpage.h>
+#include <stdlib.h>
+#include <hash.h>
+#include <queue.h>
 #include <unistd.h>                                                                                         
 //#define MAX_VISITED_URLS 1000                                                                             
                                                                                                             
@@ -100,11 +100,11 @@ int main(int argc, char * argv[]){
 					qput(myQueue, internalPage);                                                                     
 					hput(visitedURLs, result, result, strlen(result));                                               
 				}                                                                                                     
-				else{                                                                                                 
-					free(result);                                                                                       
-        }                                                                                                   
+				//else{
+				free(result);
+					//}
 			}                                                                                                       
-      webpage_delete(page);                                                                                 
+			webpage_delete(page);                                                                                 
 		}                                                                                                         
   }while((page = qget(myQueue)) != NULL);                                                                   
 	printf("Visited URLs:\n");                                                                               

@@ -2,7 +2,7 @@
  * crawler2.c --- 
  * 
  * Author: Emma Vejcik
- * Created: 10-18-2023
+ * Created: 10-22-2023
  * Version: 1.0
  * 
  * Description: 
@@ -28,6 +28,7 @@
 #include <queue.h>
 #include <hash.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #define _POSIX_SOURCE
 #define MAX_VISITED_URLS 1000
@@ -39,7 +40,8 @@ void printURL(void *data){
 }
 
 bool searchURL(void *elementp, const void *key){
-	char *url = (char *)elementp;
+	webpage_t *webpage = (webpage_t *)elementp;
+	char *url = webpage_getURL(webpage);
 	return (strcmp(url, (char *)key) == 0);
 }
 
@@ -49,9 +51,10 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname) {
 
 	sprintf(idname, "%d" ,id);
 
-	strcpy(path, "../");
-	strcat(path, dirname);
+	strcpy(path, dirname);
 	strcat(path, "/");
+
+	//adds the filename to the path
 	strcat(path, idname);
 
 	FILE * file = fopen(path, "w");
@@ -65,7 +68,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname) {
 
 	//check to see if file exists
 	if (access(path, F_OK) != 0) {
-		printf("Error: cannot access file.");
+		printf("error: cannot access file.");
 		return -1;
 	}
 	else {
@@ -80,6 +83,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname) {
 
 int main(int argc, char *argv[]){
 	int pos = 0;
+	int idincrement;
 	bool fetchResult;
 	char *seedURL, *result, *pagedir;
 	webpage_t *page;
@@ -87,19 +91,38 @@ int main(int argc, char *argv[]){
 	hashtable_t *visited;
 	queue_t* pageQueue;
 	webpage_t *internalPage; //internal page
-	int maxdepth;
+	int maxdepth, currdepth;
+	struct stat stats; //checks if directory is valid
+	bool first = false; //temporary boolean for looping
 
-	maxdepth = strtod(argv[3], NULL);
-    if (maxdepth < 0) {
+	//checks if there are four arguments 
+	if (argc != 4) {
         printf("usage: crawler <seedurl> <pagedir> <maxdepth>\n");
-        exit(EXIT_FAILURE);   
+        exit(EXIT_FAILURE);
     }
-	//seedURL = argv[1];
-	seedURL = "https://thayer.github.io/engs50/";
+
+	seedURL = argv[1];
 
 	pagedir = argv[2];
 
-	page = webpage_new(seedURL, 0, NULL);
+	//check if the folder exists
+	if (!(stat(pagedir, &stats) == 0 && S_ISDIR(stats.st_mode))) {
+		printf("error: the directory does not exist.\n");
+		printf("usage: crawler <seedurl> <pagedir> <maxdepth>\n");
+        exit(EXIT_FAILURE);
+    }
+
+	maxdepth = strtod(argv[3], NULL);
+	//checks if maxdepth is valid
+    if (maxdepth < 0) { //webpage_getDepth(page) < maxdepth
+		printf("error: the maxdepth is invalid.\n");
+        printf("usage: crawler <seedurl> <pagedir> <maxdepth>\n");
+        exit(EXIT_FAILURE);   
+    }
+
+	currdepth = 0;
+	//create a new page with a depth 0
+	page = webpage_new(seedURL, currdepth, NULL);
 
 	// Fetch the webpage HTML
 	fetchResult = webpage_fetch(page);
@@ -115,41 +138,71 @@ int main(int argc, char *argv[]){
 		// Fetch succeeded, print the HTML
 		//		html = webpage_getHTML(page);
 		//		printf("Webpage HTML:\n%s\n", html);
+		//putting initial element in the queue
 		qput(pageQueue, page);
-		temp = qget(pageQueue);
-		while ((pos = webpage_getNextURL(temp, pos, &result)) > 0) {
-			//if internal url exists
-			//printf("%s\n", result);
-			if (IsInternalURL(result)){
-				// Create a new webpage for the internal URL if the webpage has not been visited
-				if (hsearch(visited, searchURL, result, strlen(result)) == NULL){
-					internalPage = webpage_new(result, 0, NULL);
-					//put the new page in the queue
-					qput(pageQueue, internalPage);
-					//mark page as visited
-					hput(visited, internalPage, result, strlen(result)); //YO DJ, not sure if it should be internalPage or result again. 
-					//Check to see which one it should be!
+		hput(visited, page, seedURL, strlen(seedURL));
+		//hput(visited, page, seedURL, strlen(seedURL));
+		idincrement = 1;
+		pagesave(page, idincrement, pagedir);
+		currdepth += 1;
+		while ((temp = qget(pageQueue)) != NULL && currdepth <= maxdepth) {
+			printf("popped this boi: %s\n", webpage_getURL(temp));
+			//if the currdepth is not the right depth as to where the temporary page is, then increase it. 
+			pos = 0;
+			while ((pos = webpage_getNextURL(temp, pos, &result)) > 0) {
+				//if internal url exists 
+				//printf("%s\n", result);
+				if (IsInternalURL(result)){
+					// Create a new webpage for the internal URL if the webpage has not been visited
+					if (hsearch(visited, searchURL, result, strlen(result)) == NULL){
+						printf("currdepth now: %d\n", currdepth);
+						internalPage = webpage_new(result, currdepth, NULL);
+						webpage_fetch(internalPage);
+						//put the new page in the queue
+						qput(pageQueue, internalPage);
+
+						//mark page as visited
+						hput(visited, internalPage, result, strlen(result)); //YO DJ, not sure if it should be internalPage or result again. 
+						//Check to see which one it should be!
+
+						//saves the page
+						idincrement++;
+						pagesave(internalPage, idincrement, pagedir);
+					}
+				}
+				else {
+					free(result);
 				}
 			}
-			else{
-				free(result);
+			//particular case for the first depth 
+			if (!first) {
+				currdepth++;
+				first = true;
 			}
+			//increments the currdepth to the next required webpage depth
+			else if ((webpage_getDepth(temp) >= currdepth) && first) currdepth = webpage_getDepth(temp) + 1;
 		}
+		
 		fflush(stdout);
 		printf("Visited Hash URLs:\n");
 		fflush(stdout);
 		happly(visited, printURL);
 		
-		while((internalPage = (qget(pageQueue))) != NULL){     //Bill added this in!                         
+		//deletes the remaining elements in the queue
+		while((internalPage = (qget(pageQueue))) != NULL){     //Bill added this in!         
+			fflush(stdout);
+			printf("%s\n", webpage_getURL(internalPage));
+			fflush(stdout);                
       		webpage_delete(internalPage);                                                
-   		}       
+   		}
 
-		hclose(visited);
 		qclose(pageQueue); //BILL added this in.
-		pagesave(page, 1, "pages");
+		hclose(visited);
+
 		webpage_delete(page);
 		exit(EXIT_SUCCESS);
 	} else {
+		printf("error: no data from the URL could be fetched.\n");
 		qclose(pageQueue);
 		hclose(visited);
 		webpage_delete(page);

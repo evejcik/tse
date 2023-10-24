@@ -94,8 +94,6 @@ webpage_t *pageload(int id, char *dirnm){
 					}
 
 				webpage_t* page = webpage_new(url, depthInt, htmlBuffer);
-				return page;
-
 				//				free(file);
 				fclose(file);
 				return(page);

@@ -19,40 +19,31 @@
 #include <unistd.h>
 
 
-int32_t pagesave(webpage_t *pagep, int id, char *dirname){                            
-                                                                                       
-  FILE * resultFile;                                                                  
-                                                                                       
-  char filename[50];                                                                  
-  
-  
-                                                                                       
-  sprintf(filename, "../%s/%d", dirname, id);                                         
-  
-  resultFile = fopen(filename, "w");                                                  
-  
-	
-                                                                                       
-  if(resultFile != NULL){                                                              
-    fprintf(resultFile, "%s \n %d \n %d \n %s", webpage_getURL(pagep), webpage_getDepth(pagep), webpage_getHTMLlen(pagep), webpage_getHTML(pagep));                          
-    fclose(resultFile);                                                               
+int32_t pagesave(webpage_t *pagep, int id, char *dirname){
+	FILE * resultFile;
+	char filename[50];
+	sprintf(filename, "../%s/%d", dirname, id);
+	resultFile = fopen(filename, "w");
+	if(resultFile != NULL){                                                              
+    fprintf(resultFile, "%s \n %d \n %d \n %s", webpage_getURL(pagep), webpage_getDepth(pagep), webpage_getHTMLlen(pagep), webpage_getHTML(pagep));
+		fclose(resultFile);                                                               
     
-    return 0;                                                                         
-                                                                                       
-  }                                                                                   
-                                                                                       
-  else{                                                                               
-		
-    return 1;                                                                         
-                                                                                       
-  }                                                                                   
-                                                                                       
+    return 0;
+	}else{
+		return 1;
+	}
 }  
 
-webpage_t *pageload(int id, char *dirnm){
 
-	char * pageURL;
-	FILE* file =	fscanf(loadedFile, "%s", pageURL);
+webpage_t *pageload(int id, char *dirnm){
+	FILE * resultFile;
+  char filename[50];                                                                               
+  sprintf(filename, "../%s/%d", dirname, id);                                                      
+  resultFile = fopen(filename, "r");   
+
+
+	//	char * pageURL;
+	//FILE* file =	fscanf(loadedFile, "%s", pageURL);
 
 	char url[200];
 	char depth[200];

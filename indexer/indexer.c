@@ -26,18 +26,19 @@ int main(int argc, char *argv[]){
 	webpage_t* page = pageload(1, pages);
 
 	int pos = 0;
-    char *result = NULL;
+	char *result = NULL;
 
-    while (webpage_getNextURL(page, pos, &result) != NULL) {
-        // Print the content of result (URL or words) to the screen
-        if (result != NULL) {
-            printf("%s\n", result);
-            free(result); // Free the memory allocated by webpage_getNextURL
-        }
-    }
-
-    // Free the webpage when you're done
-    webpage_delete(page);
+	char *word = NULL;
+	int pos = 0;
+		
+	// Loop to extract and print words
+	while (webpage_getNextWord(page, pos, &word) > 0) {
+		printf("%s\n", word);  // Print the extracted word
+		free(word);  // Free the memory allocated by webpage_getNextWord
+	}
+	
+	// Free the webpage when you're done
+	webpage_delete(page);
 	
 
 }

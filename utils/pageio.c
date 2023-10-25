@@ -17,7 +17,7 @@
 #include <hash.h>                                                                     
 #include <queue.h>                                                                    
 #include <unistd.h>
-
+#include <pageio.h>
 
 int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 	FILE * resultFile;

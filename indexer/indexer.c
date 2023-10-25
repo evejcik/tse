@@ -22,10 +22,10 @@
 #include <pageio.h>
 
 int main(int argc, char *argv[]){
-	char* pages[200];
+	//char* pages[200];
 
 	printf("hello");
-	webpage_t* page = pageload(1, pages);
+	webpage_t* page = pageload(1, "pages");
 
 	int pos = 0;
 	char *result = NULL;

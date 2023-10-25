@@ -35,7 +35,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 }  
 
 
-webpage_t *pageload(int id, char *dirnm){
+webpage_t *pageload(int id, char *dirname){
 	FILE *file;
   char filename[50];                                                                               
   sprintf(filename, "../%s/%d", dirname, id);                                                      
@@ -72,7 +72,7 @@ webpage_t *pageload(int id, char *dirnm){
 		}else if(i == 2){
 			index = 0;
 			while ((c = fgetc(file)) != '\n'){
-				htmlDepth[index] = c;
+				depth[index] = c;
 				index++;
 			}
 			htmlBuffer[index] = '\0';

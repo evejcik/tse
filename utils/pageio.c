@@ -62,6 +62,7 @@ webpage_t *pageload(int id, char *dirnm){
 				index++;
 			}
 			url[index] = '\0';
+			i++;
 		}else if(i == 1){
 			index = 0;
 			while((c = fgetc(file)) != '\n'){
@@ -69,6 +70,7 @@ webpage_t *pageload(int id, char *dirnm){
 				index++;
 			}
 			depth[index] = '\0';
+			i++;
 		}else if(i == 2){
 			index = 0;
 			while ((c = fgetc(file)) != '\n'){
@@ -76,6 +78,7 @@ webpage_t *pageload(int id, char *dirnm){
 				index++;
 			}
 			htmlBuffer[index] = '\0';
+			i++;
 		}
 		i++;
 	}

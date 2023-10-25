@@ -23,7 +23,21 @@
 
 int main(int argc, char *argv[]){
 	printf("hello");
-	webpage_t* page = pageload(1);
+	webpage_t* page = pageload(1, pages);
+
+	int pos = 0;
+    char *result = NULL;
+
+    while (webpage_getNextURL(page, pos, &result) != NULL) {
+        // Print the content of result (URL or words) to the screen
+        if (result != NULL) {
+            printf("%s\n", result);
+            free(result); // Free the memory allocated by webpage_getNextURL
+        }
+    }
+
+    // Free the webpage when you're done
+    webpage_delete(page);
 	
 
 }

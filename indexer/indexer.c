@@ -22,6 +22,8 @@
 #include <pageio.h>
 
 int main(int argc, char *argv[]){
+	char* pages[200];
+
 	printf("hello");
 	webpage_t* page = pageload(1, pages);
 
@@ -29,7 +31,7 @@ int main(int argc, char *argv[]){
 	char *result = NULL;
 
 	char *word = NULL;
-	int pos = 0;
+	//	int pos = 0;
 		
 	// Loop to extract and print words
 	while (webpage_getNextWord(page, pos, &word) > 0) {
@@ -40,5 +42,4 @@ int main(int argc, char *argv[]){
 	// Free the webpage when you're done
 	webpage_delete(page);
 	
-
 }

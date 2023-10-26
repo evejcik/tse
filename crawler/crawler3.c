@@ -1,5 +1,4 @@
 /* 
- * crawler3.c --- /*                                                                                                          
  * crawler.c ---                                                                                            
  *                                                                                                          
  * Author: Emma Vejcik                                                                                      

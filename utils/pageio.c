@@ -66,7 +66,8 @@ webpage_t *pageload(int id, char *dirnm){
 		c = fgetc(file);
 		htmlBuffer[i] = c;
 	}	
-	webpage_t* page = webpage_new(url, depthInt, htmlBuffer);                                               
+	webpage_t* page = webpage_new(url, depthInt, htmlBuffer);
+ 
   //        free(file);                                                                                   
   fclose(file);                                                                                           
   return(page);

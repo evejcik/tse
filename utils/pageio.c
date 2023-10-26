@@ -99,3 +99,16 @@ webpage_t *pageload(int id, char *dirnm){
 		
 }
 
+void NormalizeWord(char* word){
+	if (strlen(word) < 3){
+		return false;
+	}
+
+	
+	for (size_t i = 0; word[i] != '\0\; i++){
+		if(!isalpha(word[i])){
+			return false;
+		}
+		word[i] = tolower(word[i]);
+	}
+}

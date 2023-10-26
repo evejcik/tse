@@ -34,6 +34,11 @@ void NormalizeWord(char* word){
 }
 
 
+typedef struct word_count {
+    char word[200];  // Adjust the size as needed
+    int count;
+} word_count_t;
+
 //Step 3: Hash Table of Words
 void updateWordCount(hashtable_t *htp, const char *word) {
 	word_count_t *entry = (word_count_t *)hsearch(htp, NULL, word, strlen(word));

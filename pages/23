@@ -1,6 +1,6 @@
-https://thayer.github.io/engs50/Resources/ 
+https://thayer.github.io/engs50/Notes/modules/ 
  2 
- 16835 
+ 16049 
  <!DOCTYPE html>
 <html>
 
@@ -9,13 +9,13 @@ https://thayer.github.io/engs50/Resources/
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Resources</title>
+  <title>Modular data structures in C</title>
   <meta name="description" content="In Engs 50 you will learn how to design & build large, reliable, maintainable, and understandable software systems.  In the process you will learn to program in C with Unix development tools.
 ">
 
   <link rel="shortcut icon" href="/engs50/50.png" />
   <link rel="stylesheet" href="/engs50/css/main.css">
-  <link rel="canonical" href="/engs50/Resources/">
+  <link rel="canonical" href="/engs50/Notes/modules/">
 </head>
 
 
@@ -44,164 +44,156 @@ https://thayer.github.io/engs50/Resources/
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Resources</h1>
+    <h1 class="post-title">Modular data structures in C</h1>
   </header>
 
   <div class="post-content">
-    <h2 id="textbooks-and-resources">Textbooks and Resources</h2>
+    <p>In this class we focus on the design of reusable modules for common data structures.</p>
 
-<p><strong>There is no required textbook for this course</strong>.
-However, we do highly recommend <em>C: A Reference Manual</em> by Harbison and Steele.
-I have found it to be invaluable and always near my desk.
-There is a copy <a href="http://libcat.dartmouth.edu/search/r?SEARCH=cosc+050">on reserve</a> at Baker Library.
-There may be copies available in local bookstores, or you can order it from <a href="http://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X/">Amazon</a> or <a href="http://www.barnesandnoble.com/w/c-samuel-p-harbison/1002260874?ean=9780130895929">Barnes &amp; Noble</a>.
-Look for the most recent (fifth) edition.</p>
-
-<p>When we need a more traditional C text, we refer to <em><a href="http://publications.gbdirect.co.uk/c_book">The C Book</a></em>, second edition, by Mike Banahan, Declan Brady and Mark Doran, originally published by Addison Wesley in 1991.
-This book is available online <a href="http://publications.gbdirect.co.uk/c_book">here</a>.</p>
-
-<p>The UNIX operating system and the C programming language have both been around for quite some time.
-UNIX was originally developed in the late 1960’s in assembly language and was mostly reimplemented in the new C programming language by the early 1970’s.
-The first book on C, Kernighan and Ritchie’s <em><a href="http://www.amazon.com/Programming-Language-2nd-Brian-Kernighan/dp/0131103628/ref=sr_1_1?ie=UTF8&amp;qid=1321068335&amp;sr=8-1">C Programming Language</a>,</em> is still in print, and is owned by most UNIX geeks – not because it’s such a great reference, but, well, just because.
-There are a large number of number of books on UNIX and all of its variants, including Linux (see below).</p>
-
-<p>UNIX systems contain lots of documentation in the form of what are called   <code class="language-plaintext highlighter-rouge">man pages</code>, which is short for “manual pages”.
-Thus, a hardcopy book on UNIX may not be really necessary – I didn’t own a UNIX book until many years after I began using UNIX.</p>
-
-<p>Documentation for many of the tools we will be using will either be found in   <code class="language-plaintext highlighter-rouge">man pages</code> or will be supplied as URL’s on this page.
-Of course, you’re welcome to employ your favorite search engine, but beware that there are subtle variations in UNIX tools across its many flavors and distributions.
-For CS50, the <code class="language-plaintext highlighter-rouge">man pages</code> on CS department servers are the definitive reference.</p>
-
-<p>Other resources, papers, and references will appear on in this page as they are identified.
-If you find others that you like, please let me know and we’ll share them with everyone.</p>
-
-<h3 id="general">General</h3>
-
-<p><a href="https://wiki.cs.dartmouth.edu/faq/doku.php/users_faq:first">CS Department User’s FAQ</a>; you’ll need to log in using your CS UNIX username and password.</p>
-
-<h3 id="bash">Bash</h3>
-
-<p>Here are some good links to bash scripting information.</p>
+<h3 id="goals">Goals</h3>
 
 <ul>
-  <li><a href="http://www.panix.com/~elflord/unix/bash-tute.html">Short bash tutorial</a></li>
-  <li><a href="http://www.gnu.org/software/bash/">GNU bash manual</a></li>
-  <li><a href="http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html">BASH Programming - Introduction HOW-TO</a></li>
-  <li><a href="http://tldp.org/LDP/abs/html/">Advanced bash scripting guide</a></li>
-  <li><em><a href="http://www.amazon.com/Bash-Pocket-Reference-Power-Admins/dp/1491941596">Bash Pocket Reference: Help for Power Users and Sys Admins</a>,</em> 2nd Edition, by Arnold Robbins; a short and useful book for less than ten bucks.</li>
-  <li><a href="http://explainshell.com">explainshell</a>, a <em>very cool</em> website that lets you type a bash command and get feedback on what it’s supposed to do.  (It’s drawing on the man pages.)</li>
+  <li>Understanding the importance of reusable modules.</li>
+  <li>Reiterating the use of header files to enable modules.</li>
+  <li>Reiterating <code class="language-plaintext highlighter-rouge">struct</code> and introducing <code class="language-plaintext highlighter-rouge">typedef</code>.</li>
+  <li>General-purpose data structures with <code class="language-plaintext highlighter-rouge">void*</code>.</li>
+  <li>Function pointers.</li>
 </ul>
 
-<h3 id="editors">Editors</h3>
+<h2 id="modularity-and-reuse">Modularity and reuse</h2>
 
-<p>Editor software (a very personal choice - I have used <code class="language-plaintext highlighter-rouge">emacs</code> for many years, as it is extensible (via Lisp) and customizable.
-Others prefer the increasingly popular <code class="language-plaintext highlighter-rouge">sublime text</code> editor ($70) - I’m told it is fast, highly extensible using python &amp; JSON.
-They are both excellent for longer sessions.
-Others prefer <code class="language-plaintext highlighter-rouge">vim</code>.
-For quick fixes and slow ssh connections the <code class="language-plaintext highlighter-rouge">vi</code> editor is a workable alternative.</p>
+<p>Some data structures are so common that it is valuable to code them once - lists, queues, stacks, trees, and hash tables - and then re-use that code for multiple programs (or multiple purposes within a program).
+Code re-use saves time because you don’t need to write everything from scratch.
+By using robust, well-tested modules rather than fresh (buggy) code, your program is more reliable.
+Finally, by separating ‘business logic’ from ‘data structures’, you the code is clearer and more flexible (e.g., if you later want to switch to a more-efficient data structure you can do so without rewriting all the business logic).</p>
+
+<p>Object-oriented languages make this easier, because they make it simple to define a ‘class’ of objects and then to create new ‘instances’ as needed.
+Many such languages go further by providing ‘templates’ and ‘subclasses’ as a way to derive new variants of the base class.</p>
+
+<p>C has none of these capabilities.
+But we can approximate some of these concepts through good style and careful design.</p>
+
+<h3 id="pointers-to-anything">Pointers to anything</h3>
+
+<p>In developing a general-purpose data-structure module, we would really like the module to be able to store arbitary “things” – not just predetermined types – but anything.
+For example, instead of a linked-list of strings (as we built in the <code class="language-plaintext highlighter-rouge">names</code> program) we’d like a linked-list that could store pointers to anything.
+Today we want a list of string things; tomorrow we might want a list of <code class="language-plaintext highlighter-rouge">struct student</code> things.</p>
+
+<p>The solution is for the module to store <em>pointers to things</em>, rather than the things themselves.
+The user’s contract with the module is thus “I allocate and initialize a thing, and give you a pointer to remember; later, when I need that thing, I’ll ask and you give me back that pointer.
+When I ask you to print things, or delete things, I’ll give you customized functions that know how to print and delete things of this type.”</p>
+
+<p>Java and other object-oriented languages do this with <em>templates</em>.
+C has no suport for templates, but it does have a type for “pointer to anything”:  <code class="language-plaintext highlighter-rouge">void*</code>.
+Thus,</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="s">"hello"</span><span class="p">;</span>	   <span class="c1">// pointer to a char, in this case, a string</span>
+<span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="o">*</span><span class="n">xp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>  <span class="c1">// pointer to an int</span>
+<span class="k">struct</span> <span class="n">student</span> <span class="o">*</span> <span class="n">sp</span><span class="p">;</span>   <span class="c1">// pointer to a struct</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">student</span><span class="p">));</span> <span class="c1">// initialize the pointer</span>
+<span class="n">sp</span><span class="o">-&gt;</span><span class="n">name</span> <span class="o">=</span> <span class="s">"David"</span><span class="p">;</span>  <span class="c1">// initialize the struct at that pointer</span>
+<span class="n">sp</span><span class="o">-&gt;</span><span class="n">house</span> <span class="o">=</span> <span class="s">"West"</span><span class="p">;</span>  <span class="c1">// ...initialize</span>
+<span class="n">sp</span><span class="o">-&gt;</span><span class="n">class</span> <span class="o">=</span> <span class="mi">1986</span><span class="p">;</span>    <span class="c1">// ...initialize</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="n">anything</span><span class="p">;</span>       <span class="c1">// a pointer to any type</span>
+<span class="n">anything</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>         <span class="c1">// here, a pointer to a char on the stack</span>
+<span class="n">anything</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>        <span class="c1">// here, a pointer to an int on the stack</span>
+<span class="n">anything</span> <span class="o">=</span> <span class="n">sp</span><span class="p">;</span>        <span class="c1">// here, a pointer to a struct in the heap</span>
+</code></pre></div></div>
+
+<p>Thus, our modules will accept and store <code class="language-plaintext highlighter-rouge">void*</code> pointers, and return them to the caller when asked.</p>
+
+<h3 id="pointers-to-functions">Pointers to functions</h3>
+
+<p>As noted above, the module may need help when it needs to print, compare, or delete “things”.
+The module’s user must provide the module with special helper functions.
+(In an object-oriented language, like Java, “things” are objects and objects know how to print themselves, compare themselves, or delete themselves.
+C has no such support.)</p>
+
+<p>Thus, the caller may pass a function to the module, when needed.
+We can’t actually pass the function - we have to pass the module a pointer to the function.</p>
+
+<p>The concept of a <em>pointer to a function</em> can be confusing.
+Like any other pointer, it is an address in memory.
+Recall that the compiled code of the program lives in the code segment, in memory, so every function resides at some address.
+A function pointer is simply that address.</p>
+
+<p>We can refer to the function’s address simply by naming the function, without the syntax of calling a function.
+That is, <code class="language-plaintext highlighter-rouge">foo</code> is a function pointer, whereas <code class="language-plaintext highlighter-rouge">foo(a, b, c)</code> calls that function and passes arguments <code class="language-plaintext highlighter-rouge">a</code>, <code class="language-plaintext highlighter-rouge">b</code>, and <code class="language-plaintext highlighter-rouge">c</code>.
+In our <a href="/engs50/Examplespointer2.c}}">pointer2.c</a> example, we passed the address of functions <code class="language-plaintext highlighter-rouge">main</code> and <code class="language-plaintext highlighter-rouge">change</code> to <code class="language-plaintext highlighter-rouge">printf</code> so it could print those addresses for us to examine.</p>
+
+<p>If I have a function called <code class="language-plaintext highlighter-rouge">myprint</code>, like this:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">myprint</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="o">*</span><span class="n">valuep</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span> <span class="c1">// in this case, the "things" are integers</span>
+	<span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">"(%s, %d)"</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="n">valuep</span><span class="p">);</span> <span class="c1">// note *valuep derefs pointer</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If I have a function pointer <code class="language-plaintext highlighter-rouge">printfunc</code>, I can initialize the function pointer and call through that pointer as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">printfunc</span> <span class="o">=</span> <span class="n">myprint</span><span class="p">;</span>
+<span class="p">(</span><span class="o">*</span><span class="n">printfunc</span><span class="p">)(</span><span class="n">fp</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">thing</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>In other words, I dereference the pointer to get a function, and then call that function.
+Notice the <code class="language-plaintext highlighter-rouge">*</code> and parens, <code class="language-plaintext highlighter-rouge">(*printfunc)</code>.</p>
+
+<p>How would I declare that variable <code class="language-plaintext highlighter-rouge">printfunc</code>?
+pretty gnarly syntax:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">printfunc</span><span class="p">)(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>declares variable <code class="language-plaintext highlighter-rouge">printfunc</code> to be a pointer to a function whose prototype looks like that of <code class="language-plaintext highlighter-rouge">myprint</code> above, that is, it takes the given three arguments and returns <code class="language-plaintext highlighter-rouge">void</code>.
+Indeed, it looks almost like a common function prototype, except for that <code class="language-plaintext highlighter-rouge">(*variablename)</code> notation.
+For this pointer to be useful, it must be initialized to the address of a function.</p>
+
+<h2 id="example---bags">Example - bags</h2>
+
+<p>Today we live-code a <em>bag</em> data structure and use it to make a bag version of our <code class="language-plaintext highlighter-rouge">names</code> series.
+A <em>bag</em> is an unordered collection of (items).
+The bag starts empty, grows as the caller adds one item at a time, and shrinks as the caller extracts one item at a time.
+It could be empty, or could contain hundreds of items.
+Items are indistinguishable, so the <em>extract</em> function is free to return any item from the bag.</p>
+
+<p>We start from <a href="/engs50/Examples/names5.c">names5.c</a> and modify it with the goal of coding functions that manipulate a generic “bag of things”.</p>
+
+<p>The first example demonstrates</p>
 
 <ul>
-  <li><a href="/engs50/Resources/StartingSublime.pdf">Getting started with Sublime Text</a> and <a href="http://code.tutsplus.com/articles/perfect-workflow-in-sublime-text-free-course--net-27293">a great tutorial</a></li>
-  <li><a href="http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html">Emacs tutorial</a></li>
-  <li><a href="http://marc-abramowitz.com/download/emacs_22_reference_card.ps2pdf14.pdf">Emacs quick reference guide</a></li>
-  <li><a href="http://heather.cs.ucdavis.edu/~matloff/UnixAndC/Editors/ViIntro.html">An Extremely Quick and Simple Introduction to the Vi Text Editor</a></li>
-  <li><a href="http://blog.interlinked.org/tutorials/vim_tutorial.html">vim tutorial</a></li>
+  <li>structure types (like <code class="language-plaintext highlighter-rouge">struct bag_t</code> and <code class="language-plaintext highlighter-rouge">struct bagnode_t</code>).</li>
+  <li>typedefs to create new type names.</li>
+  <li>Heap memory (created via <code class="language-plaintext highlighter-rouge">malloc</code> in <code class="language-plaintext highlighter-rouge">bag_new</code>).</li>
+  <li>The use of pointers to build and manipulate a bag data structure.</li>
+  <li>The use of <code class="language-plaintext highlighter-rouge">void*</code> to represent “a pointer to anything” and its use to build a bag of generic things.</li>
+  <li>A reminder that strings - even constant strings, in double quotes - are stored in memory as arrays of characters and referenced by a <code class="language-plaintext highlighter-rouge">char*</code> pointer to their first character; thus even a constant string has an address and is passed as a pointer.</li>
 </ul>
 
-<h3 id="markdown">Markdown</h3>
-
-<p>A file with extension <code class="language-plaintext highlighter-rouge">.md</code> is assumed to be a text file in ‘Markdown’ syntax, which provides very simple (and readable) markup for headings, lists, italics, bold, hyperlinks, code snippets, and embedded images.
-(This course website is written in Markdown and rendered with Jekyll.) Many source-code web portals (like our Gitlab and the popular Github) allow you to browse the files in your repository - automatically rendering any that are in Markdown format, making such files much nicer to look at than plain-text files.
-You can edit Markdown files in any text editor, but there are some specialized editors available.
-Markdown is easy to learn and there are many useful resources online:</p>
+<p>We extend the example to split the bag functions out as to a separate set of files, demonstrating</p>
 
 <ul>
-  <li>a quick <a href="http://www.markdown-tutorial.com/#/overview">tutorial</a>.</li>
-  <li>Gitlab’s <a href="https://gitlab.cs.dartmouth.edu/help/user/markdown.md">Markdown guide</a> (after all, CS50 uses Gitlab!)</li>
-  <li>Github’s <em><a href="https://guides.github.com/features/mastering-markdown/">Mastering Markdown</a></em> tutorial.</li>
-  <li>Github’s <em><a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown cheatsheet</a>.</em></li>
-  <li>Brett Terpstra’s <em><a href="http://brettterpstra.com/2015/08/24/write-better-markdown/">Write better Markdown</a></em>, which recognizes that many flavors of Markdown exist.</li>
-  <li><a href="https://robots.thoughtbot.com/markoff-free-markdown-previewer">Markoff</a>, a MacOS application for previewing Markdown files.</li>
-  <li><a href="http://macdown.uranusjr.com">Macdown</a>, a MacOS application for editing Markdown files.</li>
+  <li>a <em>module</em>, which is as close as we get to a <em>class</em> in C.</li>
+  <li>A set of functions exported via <code class="language-plaintext highlighter-rouge">bag.h</code> to other C files.</li>
+  <li>Public types (like <code class="language-plaintext highlighter-rouge">struct bag_t</code>) - and opaque types.</li>
+  <li>Private types (like <code class="language-plaintext highlighter-rouge">struct bagnode_t</code>).</li>
+  <li>Private functions (like <code class="language-plaintext highlighter-rouge">bagnode_new</code>).</li>
+  <li>No need for global variables.  (We always try to avoid them!)</li>
 </ul>
 
-<h3 id="git">Git</h3>
+<p>The result, after some cleanup, is <a href="/engs50/Examples/names9.c">names9.c</a>.</p>
 
-<p>Great references for the <code class="language-plaintext highlighter-rouge">git</code> distributed version control system that we use</p>
+<p>A complete <em>bag</em> module is included in the <a href="/engs50/Labs/Lab3/starter">Lab 3 starter kit</a>.</p>
 
-<ul>
-  <li>Instructions for setting up <a href="gitlab-ssh.html">Gitlab with SSH</a>.</li>
-  <li>Free <a href="http://git-scm.com/book">“Pro Git” book</a> by Scott Chacon, plus the website has LOTS of additional git references, including videos!</li>
-  <li>Some interactive tutorials
-    -   <a href="http://try.github.io/levels/1/challenges/1">try.github</a>
-    -   <a href="https://onlywei.github.io/explain-git-with-d3/">explain git</a></li>
-  <li>Some other non-interactive video tutorials</li>
-  <li><a href="http://www.git-tower.com/learn/videos">learn version control with git</a></li>
-  <li><a href="http://gitimmersion.com/index.html">git tutorial (requires Ruby)</a></li>
-  <li><a href="https://help.github.com/articles/resolving-a-merge-conflict-using-the-command-line/">resolving conflicts</a></li>
-  <li>A very slick (and free) GUI for <code class="language-plaintext highlighter-rouge">git</code> called <a href="https://www.atlassian.com/software/sourcetree">SourceTree</a> is very popular, as is the excellent licensed (not free) application <a href="http://www.git-tower.com/">Tower<sup>2</sup>.</a></li>
-  <li>Reference for <a href="https://github.com/github/gitignore">common <code class="language-plaintext highlighter-rouge">.gitignore</code> files</a></li>
-</ul>
+<h2 id="another-example---binary-trees">Another example - binary trees</h2>
 
-<h3 id="tools">Tools</h3>
+<p>For a more complex example, demonstrating the use of binary trees as a “dictionary” data structure – that is, one that stores (key,item) pairs – study the <a href="/engs50/Examples/trees">binary-tree module</a>.</p>
 
-<p>Software tools we may be using</p>
+<h2 id="activity">Activity</h2>
 
-<ul>
-  <li><a href="http://valgrind.org/">valgrind</a>: a family of tools for dynamic analysis of programs.</li>
-  <li>
-    <p><a href="https://web.stanford.edu/class/cs107/guide_valgrind.html">quick guide to valgrind</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.gnu.org/software/make/manual/make.html">GNU make</a> is a utility for determining what needs to be done (e.g., compile, link, copy, etc.) to build a program or other target, and then issues the commands to do it.</p>
-  </li>
-  <li>
-    <p><a href="http://johnmacfarlane.net/pandoc/">pandoc</a>: A universal document converter.</p>
-  </li>
-  <li>
-    <p><a href="http://www.gtk.org/documentation.php">gtk</a>: A popular toolkit for creating graphical user interfaces.
-Follow the X11 instructions below to learn how to compile and use <code class="language-plaintext highlighter-rouge">gtk</code>.</p>
-  </li>
-  <li><a href="XQuartz/">X11 and XQuartz</a>: to run window-based (or graphical) applications on the CS50 Unix servers, but allow them to pop open windows on your Mac, you’ll need to install XQuartz.
-Installation is simple; this link has instructions for installing and using XQuartz, and for compiling <code class="language-plaintext highlighter-rouge">gtk</code> applications.</li>
-</ul>
+<p>In today’s class <a href="activity.html">activity</a>, we add a counter to track the number of items in the bag.</p>
 
-<h3 id="unix-books">Unix books</h3>
-
-<p>Unix &amp; Linux books / links</p>
-
-<ul>
-  <li><em><a href="http://www.amazon.com/Practical-Commands-Editors-Programming-Edition/dp/013308504X/ref=sr_1_1?ie=UTF8&amp;qid=1394757793&amp;sr=8-1&amp;keywords=Linux+Commands,+Editors,+and+Shell+Programming+Mark+G.+Sobell">A Practical Guide to Linux Commands, Editors, and Shell Programming</a>,</em> by Mark G. Sobell; an excellent, comprehensive, hands-on book on Linux and shell programming as well as Python, Perl, and MySQL.</li>
-  <li><em><a href="http://www.amazon.com/Beginning-Linux-Programming-Neil-Matthew-ebook/dp/B004YK0KO8/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1393966477&amp;sr=1-1&amp;keywords=beginning+linux+programming">Beginning Linux Programming, 4th Edition</a>,</em> by Neil Matthew, Richard Stones; A really good book covering, debugging, processes, threads, and socket programming in clear and easy manner</li>
-  <li><em><a href="http://www.amazon.com/Practice-Programming-Addison-Wesley-Professional-Computing/dp/020161586X/ref=pd_bbs_sr_2?ie=UTF8&amp;s=books&amp;qid=1199226460&amp;sr=1-2">The Practice of Programming</a>,</em> by Brian W. Kernighan, Rob Pike; a great classic book on design and programming for Unix and C.</li>
-  <li><em><a href="http://www.amazon.com/Professional-Linux-Programming-Jon-Masters/dp/0471776130/ref=sr_1_cc_2?s=aps&amp;ie=UTF8&amp;qid=1399424116&amp;sr=1-2-catcorr&amp;keywords=masters+and+blum+linux">Professional Linux Programming</a>,</em> by Jon Masters and Richard Blum; an oldie (2007) but a goodie.</li>
-  <li><em><a href="http://www.amazon.com/Unix-Network-Programming-Sockets-Networking/dp/0131411551/ref=sr_1_2?ie=UTF8&amp;qid=1329757685&amp;sr=8-2">UNIX Network Programming</a>,</em> by W. Richard Stevens, 2003; Prentice-Hall.</li>
-  <li><em><a href="http://www.amazon.com/Linux-Nutshell-Ellen-Siever/dp/0596154488">Linux in a Nutshell</a></em></li>
-  <li><em><a href="http://www.amazon.com/Linux-System-Programming-Talking-Directly/dp/1449339530">Linux System Programming</a></em></li>
-  <li><em><a href="http://www.linuxdevcenter.com/lpt/a/6109">What Is the X Window System</a>,</em> from O’Reilly’s linux devcenter.com</li>
-  <li><em><a href="http://www.computerhope.com/unix.htm#04">Unix, Linux, and variants</a></em>, free website listing common Unix commands</li>
-  <li><em><a href="http://www.math.utah.edu/docs/info/features_7.html">Bash command line editing</a></em></li>
-  <li><em><a href="https://www.lynda.com/Mac-OS-X-10-6-tutorials/Unix-for-Mac-OS-X-Users/78546-2.html">Unix for MacOS X users</a>,</em> a video tutorial from 2011 version of MacOS X. From Lynda.com, which is free to Dartmouth users.</li>
-  <li><a href="Homebrew.html">Homebrew</a>, a tool for installing Unix tools on MacOS. Highly recommended for CS50!</li>
-</ul>
-
-<h3 id="programming">Programming</h3>
-
-<ul>
-  <li>
-    <p><a href="https://www.lynda.com/Programming-Languages-training-tutorials/1467-0.html?category=c_1249">C programming tutorials</a> – video tutorials from Lynda.com, which are free to Dartmouth users.</p>
-  </li>
-  <li><em><a href="http://pragprog.com/book/tpp/the-pragmatic-programmer">The Pragmatic Programmer</a></em><a href="http://pragprog.com/book/tpp/the-pragmatic-programmer">, by Andrew Hunt and David Thomas. 2000, Addison Wesley.</a></li>
-  <li><a href="http://www.amazon.com/Things-Every-Programmer-Should-Know/dp/0596809484/ref=sr_1_2?ie=UTF8&amp;qid=1363813033&amp;sr=8-2&amp;keywords=97+things+every+programmer+should+know">97 things every programmer should know, by Kevlin Henney. O’Reilly 2010.</a></li>
-  <li><em><a href="http://www.amazon.com/First-Book-Fourth-Introduction-Programming/dp/1418835560/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1363813105&amp;sr=1-1&amp;keywords=bronson+ansi+c">A First Book of ANSI C, Fourth Edition,</a></em> <a href="http://www.amazon.com/First-Book-Fourth-Introduction-Programming/dp/1418835560/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1363813105&amp;sr=1-1&amp;keywords=bronson+ansi+c">by Gary J. Bronson</a>; a very good book for learning C</li>
-  <li><a href="http://en.wikipedia.org/wiki/C_programming_language">The Wikipedia entry for the C programming language</a></li>
-  <li><a href="http://groups.google.com/group/comp.lang.c/browse_frm/thread/1ce1b07f3725e0c7?q=%22Why+is+C+good%3F%3F%3F%22&amp;hl=en&amp;pli=1">The USENET discussion Why is C good?</a></li>
-  <li><em><a href="/engs50/Resources/RC13972-C-Programming.pdf">An Introduction to the C programming language</a>,</em> by Charles Palmer (1988). Easy read with lots of simple examples. Skip to page 20 to start, and remember some of the comments are dated (e.g., “<em>variables in all lower case</em>”).</li>
-  <li>Quick reference cards for <a href="http://users.ece.utexas.edu/~adnan/c-refcard.pdf">C</a> and <a href="http://users.ece.utexas.edu/~adnan/gdb-refcard.pdf">gdb</a>.</li>
-</ul>
-
-<p>Remember that we’re not suggesting you buy all these books.
-The text by Harbison and Steele is highly recommended for this course and may be in local bookstores.</p>
 
   </div>
 

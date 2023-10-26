@@ -1,6 +1,6 @@
-https://thayer.github.io/engs50/Notes/malloc/ 
+https://thayer.github.io/engs50/Notes/iterators/ 
  2 
- 20543 
+ 32569 
  <!DOCTYPE html>
 <html>
 
@@ -9,13 +9,13 @@ https://thayer.github.io/engs50/Notes/malloc/
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Dynamic memory allocation; linked lists</title>
+  <title>Iterators</title>
   <meta name="description" content="In Engs 50 you will learn how to design & build large, reliable, maintainable, and understandable software systems.  In the process you will learn to program in C with Unix development tools.
 ">
 
   <link rel="shortcut icon" href="/engs50/50.png" />
   <link rel="stylesheet" href="/engs50/css/main.css">
-  <link rel="canonical" href="/engs50/Notes/malloc/">
+  <link rel="canonical" href="/engs50/Notes/iterators/">
 </head>
 
 
@@ -44,208 +44,303 @@ https://thayer.github.io/engs50/Notes/malloc/
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Dynamic memory allocation; linked lists</h1>
+    <h1 class="post-title">Iterators</h1>
   </header>
 
   <div class="post-content">
-    <h3 id="goals">Goals</h3>
+    <p>In this lecture, we will learn about <em>Iterators</em> and their uses:</p>
 
 <ul>
-  <li>To understand that <code class="language-plaintext highlighter-rouge">malloc</code> and <code class="language-plaintext highlighter-rouge">free</code> allocate and de-allocate memory from the heap.</li>
-  <li>To use dynamic memory to build a linked list.</li>
+  <li>what is an Iterator</li>
+  <li>how is it coded in the context of our data structures</li>
+  <li>how it leverages function pointers in C</li>
+  <li>passing arguments to interators</li>
+  <li>several uses of iterators</li>
 </ul>
 
-<p>Terminal <a href="/engs50/Notes/malloc/script.txt">script</a> from today’s class.</p>
+<h2 id="why-iterators">Why iterators?</h2>
 
-<h3 id="background">Background</h3>
+<p><em>Iterators</em> are a powerful concept, especially when writing an abstract data structure that represents a collection.
+We have several such data structures - tree, bag, set, hashtable, and counters.
+If the collection implements an <em>iterator</em>, we can apply some function to every item in that collection…
+e.g., for printing, counting, modifying, and even combining multiple collections.</p>
 
-<p>We’ll be working with C code that builds and manipulates <em>linked lists</em>.
-You learned about linked lists in CS10, and may want to review the CS10 linked-list notes and implementation:</p>
+<p>In Lab 5 you will find iterators helpful in writing the contents of the Index to the index file.</p>
 
-<ul>
-  <li>slides in <a href="/engs50/Notes/malloc/cs10-lists.pdf">pdf</a> or <a href="/engs50/Notes/malloc/cs10-lists.pptx">Powerpoint</a></li>
-  <li><a href="/engs50/Notes/malloc/SinglyLinked.java">SinglyLinked.java</a></li>
-  <li><a href="/engs50/Notes/malloc/SimpleList.java">SimpleList.java</a></li>
-</ul>
+<p>In Lab 6 you will find iterators helpful in combining the set of matches for one word with the set of matches for another word.</p>
 
-<h1 id="dynamic-memory-allocation">Dynamic memory allocation</h1>
+<h2 id="coding-an-iterator">Coding an iterator</h2>
 
-<p>Before we dive in, check out this <a href="https://www.youtube.com/watch?v=5VnDaHBi8dM">animated explanation of pointers</a>.
-Fun!</p>
+<p>Lab 3 asked you to include an <code class="language-plaintext highlighter-rouge">_iterate()</code> method in each of <code class="language-plaintext highlighter-rouge">set</code>, <code class="language-plaintext highlighter-rouge">hashtable</code>, and <code class="language-plaintext highlighter-rouge">counters</code>.
+You saw the <code class="language-plaintext highlighter-rouge">bag_iterate()</code> method as an example:</p>
 
-<p>C does not have language support for dynamically allocating new ‘things’.
-Instead, the programmer has to call a library function called <code class="language-plaintext highlighter-rouge">malloc()</code> to allocate a new chunk of memory from the <em>heap segment</em>, and later call <code class="language-plaintext highlighter-rouge">free()</code> to return that chunk of memory to the heap.
-The programmer has to remember to initialize the chunk of bytes received from <code class="language-plaintext highlighter-rouge">malloc()</code> – which otherwise should be assumed to contain random data.
-The programmer has to be careful allocate a large enough chunk to hold the data she intends to store there, and not to use pointers to write “outside” that chunk of memory.
-Lots of flexibility and power - but as with any great power, you must take great care in using it.</p>
-
-<blockquote>
-  <p>In Java, you can use <code class="language-plaintext highlighter-rouge">new</code> to dynamically create a new object, and <code class="language-plaintext highlighter-rouge">delete</code> to discard an object created with <code class="language-plaintext highlighter-rouge">new</code>, but for the most part the Java compiler and runtime handles object deletion and memory recovery automatically - it’s called ‘garbage collection.’</p>
-</blockquote>
-
-<p>There are four related functions you should understand:</p>
-
-<ul>
-  <li><strong>malloc</strong> <code class="language-plaintext highlighter-rouge">p = malloc(n)</code> - allocates <code class="language-plaintext highlighter-rouge">n</code> bytes of heap memory; the memory contents remain uninitialized.</li>
-  <li><strong>calloc</strong> <code class="language-plaintext highlighter-rouge">p = calloc(count, size)</code> allocates <code class="language-plaintext highlighter-rouge">count*size</code> bytes of heap memory and initializes it all to zero; this call is appropriate when you want to allocate an array of <code class="language-plaintext highlighter-rouge">count</code> items, each of <code class="language-plaintext highlighter-rouge">size</code> bytes.</li>
-  <li><strong>realloc</strong> <code class="language-plaintext highlighter-rouge">p = realloc(p, n)</code> - where <code class="language-plaintext highlighter-rouge">p</code> is a pointer to heap memory - expands (or shrinks) its allocation to <code class="language-plaintext highlighter-rouge">n</code> bytes.</li>
-  <li><strong>free</strong> <code class="language-plaintext highlighter-rouge">free(p)</code> - where <code class="language-plaintext highlighter-rouge">p</code> is a pointer to heap memory - releases that portion of heap memory for future use.</li>
-</ul>
-
-<p>Our examples today show how to use <code class="language-plaintext highlighter-rouge">malloc</code> to allocate space to store a string, and later, a <code class="language-plaintext highlighter-rouge">struct</code> holding aggregate types.
-For an example using <code class="language-plaintext highlighter-rouge">calloc</code> and <code class="language-plaintext highlighter-rouge">realloc</code>, read about <a href="/malloc/readlinep.html">how readlinep() works</a>.</p>
-
-<h2 id="memory-leaks-and-stray-pointers">Memory leaks and stray pointers</h2>
-
-<p><strong><em>For every <code class="language-plaintext highlighter-rouge">malloc</code> there must be a matching <code class="language-plaintext highlighter-rouge">free</code>.</em></strong></p>
-
-<ul>
-  <li>If you allocate space but never free it, you’ve created a <em>memory leak</em>; as the program runs, the process memory size will grow and grow, and eventually run out of memory.</li>
-  <li>If you free a pointer you’ve never allocated - or free the same pointer twice - you may cause the heap manager to corrupt its data structures and trigger a segmentation fault at some future time - often a seemingly random time.</li>
-</ul>
-
-<p>Whenever you write <code class="language-plaintext highlighter-rouge">malloc</code>, write the corresponding <code class="language-plaintext highlighter-rouge">free</code> call; or, document whose responsibility is to <code class="language-plaintext highlighter-rouge">free</code> that pointer.</p>
-
-<p>Whenever you call <code class="language-plaintext highlighter-rouge">free(p)</code>, it’s good practice to immediately set <code class="language-plaintext highlighter-rouge">p=NULL</code>.
-Not because you have to - it makes no difference to the heap - but because that step will prevent you from accidentally re-using that now-defunct pointer <code class="language-plaintext highlighter-rouge">p</code> - you’ll get a clean segmentation fault instead of unpredictable behavior.</p>
-
-<blockquote>
-  <p>When the process exits, all its memory is free - the four segments (code, global, stack, and heap) disappear.</p>
-</blockquote>
-
-<h2 id="coding-style---memory-allocation">Coding style - memory allocation</h2>
-
-<p>Avoid sprinking calls to <code class="language-plaintext highlighter-rouge">malloc()</code> and <code class="language-plaintext highlighter-rouge">free()</code> throughout your code.
-Instead, think about the kinds of things you need to create and destroy, and write type-specific wrapper for each such type.
-For example, if your program manipulates things of type <code class="language-plaintext highlighter-rouge">struct listnode</code>, you would write two functions:</p>
-
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">struct</span> <span class="n">listnode</span> <span class="o">*</span><span class="nf">listnode_new</span><span class="p">(...);</span>
-    <span class="kt">void</span> <span class="nf">listnode_free</span><span class="p">(</span><span class="k">struct</span> <span class="n">listnode</span> <span class="o">*</span><span class="n">node</span><span class="p">);</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* Iterate over the whole bag; call the given function on each item,
+ * passing both the item and an argument. Ignore if NULL bag or NULL itemfunc.
+ */</span>
+<span class="kt">void</span>
+<span class="nf">bag_iterate</span><span class="p">(</span><span class="n">bag_t</span> <span class="o">*</span><span class="n">bag</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">itemfunc</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span> <span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">bag</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">itemfunc</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// call itemfunc with arg, on each item</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">bagnode_t</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="n">bag</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span> <span class="n">node</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span><span class="o">*</span><span class="n">itemfunc</span><span class="p">)(</span><span class="n">arg</span><span class="p">,</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">item</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
-<p>The first function calls <code class="language-plaintext highlighter-rouge">malloc(sizeof(struct listnode))</code> and initializes all of its contents, perhaps using parameters passed by the caller.
-The second calls <code class="language-plaintext highlighter-rouge">free(node)</code>.
-Both involve careful error-checking code.
-See example <a href="/engs50/Examples/names7.c">names7.c</a>.</p>
+<p>Notice that the code begins with defensive programming - in case the caller accidentally calls us with NULL parameters.</p>
 
-<p>There are many advantages to this approach:</p>
+<p>Otherwise, the function is a simple <code class="language-plaintext highlighter-rouge">for</code> loop, stepping through each item in the bag.
+This iterator makes no promise about the <em>order</em> in which it processes items; after all, a ‘bag’ is an unordered, unlabeled collection of ‘things’.</p>
+
+<h2 id="function-pointers">Function pointers</h2>
+
+<p>Recall our discussion of <em>function pointers</em> from earlier in the term.
+The second parameter to <code class="language-plaintext highlighter-rouge">bag_iterate</code> declares <code class="language-plaintext highlighter-rouge">itemfunc</code> as a <em>pointer to a function</em> that itself takes two parameters: an <code class="language-plaintext highlighter-rouge">arg</code> and a <code class="language-plaintext highlighter-rouge">data</code>.
+Both are void pointers, that is, pointers to <em>some unspecified type</em>.
+Because the iterator receives a function pointer from its caller, and the arg/data parameters are arbitrary pointers, this iterator can work on items of any type, and compute any sort of function on those items, making it truly general-purpose.</p>
+
+<p>Look inside the <code class="language-plaintext highlighter-rouge">for</code> loop, where we call <code class="language-plaintext highlighter-rouge">itemfunc</code>.
+Here, we dereference the <em>function pointer</em> to get a <em>function</em>, then call it with two parameters: the <code class="language-plaintext highlighter-rouge">arg</code> provided to us, and the data for this item.
+(Syntactically, we have to wrap the dereference in parentheses, but otherwise, it’s just like any other function call.)</p>
+
+<h2 id="arguments">Arguments</h2>
+
+<p>Sometimes, though not always, the caller will need a way of communicating other information to the <code class="language-plaintext highlighter-rouge">itemfunc</code> - not just the information about the item our iterator can provide.
+Thus, the iterator takes <code class="language-plaintext highlighter-rouge">arg</code>, a pointer to arbitrary something, and passes it right on through to the <code class="language-plaintext highlighter-rouge">itemfunc</code>.
+This mechanism is general-purpose:</p>
 
 <ul>
-  <li>The mainline code is more readable, because it’s clear what <code class="language-plaintext highlighter-rouge">listnode_new()</code> is doing.</li>
-  <li>The <code class="language-plaintext highlighter-rouge">new</code> function acts like a ‘constructor’ in object-oriented languages and can ensure the newly returned memory is initialized, or at least, not random bytes.</li>
-  <li>Code involving <code class="language-plaintext highlighter-rouge">malloc</code> can sometimes be tricky, and you isolate that trickiness in one spot and focus on getting it right once.</li>
-  <li>Some new types might need multiple <code class="language-plaintext highlighter-rouge">malloc</code> calls, as in our linked-list examples <a href="/engs50/Examples/names5.c">names5.c</a> <a href="/engs50/Examples/names6.c">names6.c</a> <a href="/engs50/Examples/names7.c">names7.c</a>.
-All those <code class="language-plaintext highlighter-rouge">malloc</code> calls (and corresponding <code class="language-plaintext highlighter-rouge">free</code> calls) can be in the <code class="language-plaintext highlighter-rouge">new</code>/<code class="language-plaintext highlighter-rouge">free</code> functions.</li>
-  <li>You can insert debugging output or reference-counting logic, or set debugger breakpoints, in these <code class="language-plaintext highlighter-rouge">new</code>/<code class="language-plaintext highlighter-rouge">free</code> functions and immediately have that feature apply to <em>all</em> occurrences of your program’s work with this type.</li>
+  <li>pass <code class="language-plaintext highlighter-rouge">arg=NULL</code> if the caller has no need to send additional arguments to its <code class="language-plaintext highlighter-rouge">itemfunc</code>;</li>
+  <li>pass a pointer to a simple variable if the caller just needs to get information into the <code class="language-plaintext highlighter-rouge">itemfunc</code>;</li>
+  <li>indeed, in that case, the variable is passed <em>by reference</em> and thus the <code class="language-plaintext highlighter-rouge">itemfunc</code> can update the variable if needed;</li>
+  <li>furthermore, if the caller needs to send multiple things to the <code class="language-plaintext highlighter-rouge">itemfunc</code>, it can pass a pointer to a <code class="language-plaintext highlighter-rouge">struct</code> holding those things.</li>
 </ul>
 
-<h1 id="data-structures-in-c">Data structures in C</h1>
+<p>We’ll see examples by writing some code that uses our <code class="language-plaintext highlighter-rouge">bag_iterate()</code> and my <code class="language-plaintext highlighter-rouge">set_iterate()</code> functions.</p>
 
-<p>C is not an object-oriented language like Java, Python, or C++.
-It does not provide any language features to declare a ‘class’ or create and manipulate object ‘instances’ of that class.</p>
+<h2 id="examples-with-bag_iterate">Examples with bag_iterate()</h2>
 
-<p>But C does provide two kinds of aggregate data: arrays and structures.</p>
+<p>Three examples from <a href="/engs50/Labs/Lab3/starter/bag/bagtest.c">bagtest.c</a>.</p>
 
-<h2 id="arrays">Arrays</h2>
+<p><strong><em>Printing.</em></strong>
+First, let’s suppose we don’t have (or don’t like) the existing <code class="language-plaintext highlighter-rouge">bag_print()</code> method, which tends to print some text/formatting around each item.
+We can use our new iterator:</p>
 
-<p>We’ve seen examples with arrays of characters (aka strings) and arrays of character pointers, and even two-dimensional arrays of characters.
-But one can also define arrays of other types:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Simpleprint:</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">bag_iterate</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">simpleprint</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">...</span>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kt">char</span> <span class="n">names</span><span class="p">[</span><span class="n">NumStudents</span><span class="p">][</span><span class="n">NameLength</span><span class="p">];</span>
-	<span class="kt">int</span> <span class="n">ages</span><span class="p">[</span><span class="n">NumStudents</span><span class="p">];</span>
-	<span class="kt">float</span> <span class="n">grades</span><span class="p">[</span><span class="n">NumStudents</span><span class="p">];</span>
+<span class="cm">/* print the given item to the given file;
+ * just print the stock symbol
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">simpleprint</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">stock</span> <span class="o">*</span><span class="n">stp</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">fp</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">stp</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">"%s "</span><span class="p">,</span> <span class="n">stp</span><span class="o">-&gt;</span><span class="n">symbol</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
-<p>and so forth.</p>
+<p>Here, we pass the file pointer through the <code class="language-plaintext highlighter-rouge">arg</code> parameter.
+Notice how <code class="language-plaintext highlighter-rouge">simpleprint</code> immediately copies its <code class="language-plaintext highlighter-rouge">arg</code>, <code class="language-plaintext highlighter-rouge">data</code> parameters into local variables of the right type.
+That gives them more readable names, allows the compiler to check the code that follows, and allows us to use structure pointers (like <code class="language-plaintext highlighter-rouge">stp</code>) to reach members of those structures.</p>
 
-<blockquote>
-  <p>Sometimes you need to understand that an array name is, in effect, a pointer to the first spot in memory where that array’s data lives; thus, <code class="language-plaintext highlighter-rouge">ages</code> is of type <code class="language-plaintext highlighter-rouge">int*</code> and is a pointer to the first entry in the array, but <code class="language-plaintext highlighter-rouge">ages[0]</code> is of type <code class="language-plaintext highlighter-rouge">int</code> and is the value of that first entry in the array.
-This concept comes up mostly in arrays of characters; <code class="language-plaintext highlighter-rouge">names</code> is of type <code class="language-plaintext highlighter-rouge">char**</code>, and even <code class="language-plaintext highlighter-rouge">names[0]</code> is of type <code class="language-plaintext highlighter-rouge">char*</code>, and <code class="language-plaintext highlighter-rouge">names[0][1]</code> is of type <code class="language-plaintext highlighter-rouge">char</code>.
-In effect, <code class="language-plaintext highlighter-rouge">names</code> is an array of strings, and <code class="language-plaintext highlighter-rouge">names[0]</code> is the first string in the array; like other strings, <code class="language-plaintext highlighter-rouge">names[0]</code> is of type <code class="language-plaintext highlighter-rouge">char*</code>.</p>
-</blockquote>
+<p><strong><em>Counting.</em></strong>
+Even simpler, we could just count the items.
+But where do we put the counter?
+Define a local variable and pass its address as the <code class="language-plaintext highlighter-rouge">arg</code>:</p>
 
-<h2 id="structs">Structs</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Count: "</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">nitems</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">bag_iterate</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nitems</span><span class="p">,</span> <span class="n">itemcount</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">nitems</span><span class="p">);</span>
+<span class="p">...</span>
 
-<p>C allows you to define an aggregate called a ‘struct’; like an object, it has data members.
-Unlike an object, it has no methods (function members).</p>
+<span class="cm">/* count the non-null items in the bag.
+ * note here we don't care what kind of item is in bag.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">itemcount</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">nitems</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
 
-<p>Continuing our above example, we could have defined a <code class="language-plaintext highlighter-rouge">struct</code> for each student, and then an array of <code class="language-plaintext highlighter-rouge">structs</code>, as follows:</p>
-
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="k">struct</span> <span class="n">student</span> <span class="p">{</span>
-       <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">NameLength</span><span class="p">];</span>
-       <span class="kt">int</span> <span class="n">age</span><span class="p">;</span>
-       <span class="kt">float</span> <span class="n">grade</span><span class="p">;</span>
-   <span class="p">};</span>
-   <span class="k">struct</span> <span class="n">student</span> <span class="n">students</span><span class="p">[</span><span class="n">NumStudents</span><span class="p">];</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nitems</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">item</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">nitems</span><span class="p">)</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
-<p>Now we can refer to the first student as <code class="language-plaintext highlighter-rouge">student[0]</code>, the second student as <code class="language-plaintext highlighter-rouge">student[1]</code>, and so forth.
-We can refer to the name of the first student as <code class="language-plaintext highlighter-rouge">student[0].name</code> and the age of the second student as <code class="language-plaintext highlighter-rouge">student[1].age</code>.</p>
+<p><strong><em>Multiple arguments.</em></strong>
+What if we want two counters?
+In this version of <code class="language-plaintext highlighter-rouge">bagtest</code> I read in stock quotes: symbol, previous closing price, current price, and trading volume.
+Let’s just count the number of gainers and number of losers.</p>
 
-<p>In our classtime examples, <a href="/engs50/Examples/names5.c">names5.c</a>, <a href="/engs50/Examples/names5.c">names6.c</a>, and <a href="/engs50/Examples/names7.c">names7.c</a>, we declare a <code class="language-plaintext highlighter-rouge">struct listnode</code> and use it to build a linked list.
-There we see a different notation: instead of <code class="language-plaintext highlighter-rouge">.</code> to refer to a member of a struct, we have to use <code class="language-plaintext highlighter-rouge">-&gt;</code> to dereference the pointer and refer to member of the pointee.</p>
-
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="k">struct</span> <span class="n">student</span> <span class="n">alice</span><span class="p">;</span>        <span class="c1">// a single struct representing alice</span>
-   <span class="k">struct</span> <span class="n">student</span> <span class="o">*</span><span class="n">sp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">alice</span><span class="p">;</span> <span class="c1">// a pointer, initialized to point at alice</span>
-
-   <span class="c1">// the following three all do the same thing.</span>
-   <span class="kt">int</span> <span class="n">age</span> <span class="o">=</span> <span class="n">alice</span><span class="p">.</span><span class="n">age</span><span class="p">;</span>
-   <span class="kt">int</span> <span class="n">age</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">age</span><span class="p">;</span>
-   <span class="kt">int</span> <span class="n">age</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">sp</span><span class="p">).</span><span class="n">age</span><span class="p">;</span>
-</code></pre></div></div>
-
-<h2 id="linked-lists">Linked lists</h2>
-
-<p>In the examples below we construct a simple linked list comprising nodes that each have a pointer to a string and a pointer to the next node.
-The list includes a dummy <em>head node</em> to simplify list management.
-The variable <code class="language-plaintext highlighter-rouge">head</code> is a pointer to that dummy node.</p>
-
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// A structure for each node in linked list</span>
-<span class="k">struct</span> <span class="n">listnode</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">listnode</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// a little structure to carry two counters.</span>
+<span class="k">struct</span> <span class="n">gainloss</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">ngainers</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">nlosers</span><span class="p">;</span>
 <span class="p">};</span>
-<span class="k">struct</span> <span class="n">listnode</span> <span class="n">head</span> <span class="o">=</span> <span class="p">{</span><span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span> <span class="c1">// dummy node at head of empty list</span>
+<span class="p">...</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Changes: "</span><span class="p">);</span>
+  <span class="k">struct</span> <span class="n">gainloss</span> <span class="n">changes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">};</span>
+  <span class="n">bag_iterate</span><span class="p">(</span><span class="n">bag</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">changes</span><span class="p">,</span> <span class="n">stockgainloss</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"gainers: %d; losers: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">changes</span><span class="p">.</span><span class="n">ngainers</span><span class="p">,</span> <span class="n">changes</span><span class="p">.</span><span class="n">nlosers</span><span class="p">);</span>
+<span class="p">...</span>
+
+<span class="cm">/* count the number of gainers and losers.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">stockgainloss</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">gainloss</span> <span class="o">*</span><span class="n">gl</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">stock</span> <span class="o">*</span><span class="n">stp</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">gl</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">stp</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">stp</span><span class="o">-&gt;</span><span class="n">price</span> <span class="o">&gt;</span> <span class="n">stp</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">)</span>
+      <span class="n">gl</span><span class="o">-&gt;</span><span class="n">ngainers</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">stp</span><span class="o">-&gt;</span><span class="n">price</span> <span class="o">&lt;</span> <span class="n">stp</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">)</span>
+      <span class="n">gl</span><span class="o">-&gt;</span><span class="n">nlosers</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Once the stucture is defined, our use of iterator is very much like the previous example.
+We define and initialize a local variable, pass a pointer to that variable as our <code class="language-plaintext highlighter-rouge">arg</code>, and then the <code class="language-plaintext highlighter-rouge">itemfunc</code> copies that pointer into a pointer of the relevant type so it can access (and update) the contents.
+<em>Notice that it is not necessary to <code class="language-plaintext highlighter-rouge">malloc</code> space in order to pass a pointer to the iterator</em> - in this example, <code class="language-plaintext highlighter-rouge">&amp;changes</code> is a pointer to a local variable.</p>
+
+<h2 id="examples-with-set_iterate">Examples with set_iterate()</h2>
+
+<p>The ‘bag’ module is nice because it is very simple, but we can do more interesting things when the items have a <code class="language-plaintext highlighter-rouge">key</code> as well.
+Let’s use <code class="language-plaintext highlighter-rouge">set_iterate</code> for two examples.</p>
+
+<p>See my terminal <a href="/engs50/Notes/iterators/script.txt">script</a> for the code and a test run.</p>
+
+<p><strong><em>Merging two sets.</em></strong>
+We’ll start with a simple case.
+Here the sets represent schools, where the <code class="language-plaintext highlighter-rouge">key</code> is the name of the school.
+See <a href="/engs50/Examples/set_iterate1.c">set_iterate1</a>.
+(Note also <a href="/engs50/Examples/set_iterate.makefile">set_iterate.makefile</a>.)</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">set_t</span> <span class="o">*</span><span class="n">setA</span><span class="p">,</span> <span class="o">*</span><span class="n">setB</span><span class="p">,</span> <span class="o">*</span><span class="n">result</span><span class="p">;</span>     <span class="c1">// three sets</span>
+<span class="p">...</span> <span class="n">initialize</span> <span class="n">each</span> <span class="n">set</span> <span class="n">with</span> <span class="n">set_new</span>
+<span class="p">...</span> <span class="n">fill</span> <span class="n">setA</span> <span class="n">and</span> <span class="n">setB</span> <span class="n">with</span> <span class="n">set_insert</span>
+
+  <span class="nf">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Merge of setA into result: </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">set_merge</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">setA</span><span class="p">);</span>
+  <span class="n">set_print</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">itemprint</span><span class="p">);</span>
+  <span class="n">putchar</span><span class="p">(</span><span class="sc">'\n'</span><span class="p">);</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Merge of setB into result: </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">set_merge</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">setB</span><span class="p">);</span>
+  <span class="n">set_print</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">itemprint</span><span class="p">);</span>
+  <span class="n">putchar</span><span class="p">(</span><span class="sc">'\n'</span><span class="p">);</span>
+<span class="p">...</span>
+
+<span class="cm">/* Merge the second set into the first set;
+ * the second set is unchanged.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">set_merge</span><span class="p">(</span><span class="n">set_t</span> <span class="o">*</span><span class="n">setA</span><span class="p">,</span> <span class="n">set_t</span> <span class="o">*</span><span class="n">setB</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">set_iterate</span><span class="p">(</span><span class="n">setB</span><span class="p">,</span> <span class="n">setA</span><span class="p">,</span> <span class="n">set_merge_helper</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* Consider one item for insertion into the other set.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">set_merge_helper</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">set_t</span> <span class="o">*</span><span class="n">setA</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">set_insert</span><span class="p">(</span><span class="n">setA</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s">%s added</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s">%s exists</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+
+<span class="p">}</span>
 </code></pre></div></div>
 
-<p>After adding three nodes, the list might look like this:</p>
+<p>Notice how the above approach iterates over one set (setB) and, for each item in that set, tries to insert or update its value in the first set (setA).
+At the end, setB is unchanged but setA should have all items from both sets.</p>
 
-<p><img src="/engs50/Notes/malloc/linked-list.png" alt="" /></p>
+<p><strong><em>Merging two sets and their data.</em></strong>
+Now a more interesting case, in which the set items each hold data we want to combine.
+In this simple test, that datum is just an integer - actually, a pointer to an integer.
+See <a href="/engs50/Examples/set_iterate2.c">set_iterate2</a>.
+(Note also <a href="/engs50/Examples/set_iterate.makefile">set_iterate.makefile</a>.)</p>
 
-<h2 id="examples">Examples</h2>
+<p>In this example, setA and setB each contain a set of school names, and a number for each school (say, perhaps, the number of people you know at each school).
+When merging two sets you want the data in the resulting set to represent the sum of the values in each set.</p>
 
-<p>We first live-coded a simple revision of the <code class="language-plaintext highlighter-rouge">names</code> program, using an array of pointers instead of a two-dimensional array of characters:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">set_insert</span><span class="p">(</span><span class="n">setA</span><span class="p">,</span> <span class="s">"Dartmouth"</span><span class="p">,</span> <span class="n">intsave</span><span class="p">(</span><span class="mi">20</span><span class="p">));</span>
+<span class="p">...</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Merge of setA into result: </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">set_merge</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">setA</span><span class="p">);</span>
+  <span class="n">set_print</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">itemprint</span><span class="p">);</span>
+  <span class="n">putchar</span><span class="p">(</span><span class="sc">'\n'</span><span class="p">);</span>
 
-<ul>
-  <li><a href="/engs50/Examples/names3.c">names3.c</a>: array of pointers; use of <code class="language-plaintext highlighter-rouge">readlinep</code></li>
-</ul>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Merge of setB into result: </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">set_merge</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">setB</span><span class="p">);</span>
+  <span class="n">set_print</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">itemprint</span><span class="p">);</span>
+  <span class="n">putchar</span><span class="p">(</span><span class="sc">'\n'</span><span class="p">);</span>
+<span class="p">...</span>
 
-<p>Here, the two-dimensional <code class="language-plaintext highlighter-rouge">names</code> array is replaced by a one-dimensional array of string pointers, which is more common in C, and which allows the names to be of any length - each array entry points to a dynamically allocated memory from the heap, big enough to hold that name.</p>
+<span class="cm">/* Merge the second set into the first set;
+ * the second set is unchanged.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">set_merge</span><span class="p">(</span><span class="n">set_t</span> <span class="o">*</span><span class="n">setA</span><span class="p">,</span> <span class="n">set_t</span> <span class="o">*</span><span class="n">setB</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">set_iterate</span><span class="p">(</span><span class="n">setB</span><span class="p">,</span> <span class="n">setA</span><span class="p">,</span> <span class="n">set_merge_helper</span><span class="p">);</span>
+<span class="p">}</span>
 
-<p>We use a new <code class="language-plaintext highlighter-rouge">freadlinep</code> function; after the next lecture, I recommend you read about its <a href="../readlinep.html">implementation</a>.</p>
+<span class="cm">/* Consider one item for insertion into the other set.
+ * If the other set does not contain the item, insert it;
+ * otherwise, update the other set's item with sum of item values.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span> 
+<span class="nf">set_merge_helper</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">set_t</span> <span class="o">*</span><span class="n">setA</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">itemB</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+  
+  <span class="c1">// find the same key in setA</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">itemA</span> <span class="o">=</span> <span class="n">set_find</span><span class="p">(</span><span class="n">setA</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">itemA</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// not found: insert it</span>
+    <span class="n">set_insert</span><span class="p">(</span><span class="n">setA</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">intsave</span><span class="p">(</span><span class="o">*</span><span class="n">itemB</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s">%s added</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// add to the existing value</span>
+    <span class="o">*</span><span class="n">itemA</span> <span class="o">+=</span> <span class="o">*</span><span class="n">itemB</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s">%s exists</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-<p>We don’t have time in class, but we can extend this code to sort the array using <code class="language-plaintext highlighter-rouge">qsort()</code> quicksort:</p>
+<span class="k">static</span> <span class="kt">int</span> <span class="o">*</span>
+<span class="nf">intsave</span><span class="p">(</span><span class="kt">int</span> <span class="n">item</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">saved</span> <span class="o">=</span> <span class="n">assertp</span><span class="p">(</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)),</span> <span class="s">"intsave"</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">saved</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">saved</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>The overall structure of the code is identical to the prior example; the difference here is that we need to look up the key in the destination set first and then perhaps update its data - because we get a <em>pointer</em> to the data, we can easily reach in and update its value!</p>
 
-<ul>
-  <li><a href="/engs50/Examples/names4.c">names4.c</a>: sort names; <code class="language-plaintext highlighter-rouge">void*</code>; casting</li>
-</ul>
+<h2 id="summary">Summary</h2>
 
-<p>Then we live-coded a linked-list version of the <code class="language-plaintext highlighter-rouge">names</code> program:</p>
-
-<ul>
-  <li><a href="/engs50/Examples/names5.c">names5.c</a> -  revises names3.c to use linked list instead of array</li>
-</ul>
-
-<p>You should look at two more versions of the <code class="language-plaintext highlighter-rouge">names</code> program:</p>
-
-<ul>
-  <li><a href="/engs50/Examples/names6.c">names6.c</a> - extends names5.c to keep the list sorted</li>
-  <li><a href="/engs50/Examples/names7.c">names7.c</a> - extends names6.c to remove duplicates</li>
-</ul>
+<p>Iterators are super powerful.  Function pointers are great!</p>
 
 <h2 id="activity">Activity</h2>
 
-<p>Today’s <a href="activity.html">activity</a> deletes the list.</p>
+<p>You’ve now seen how to construct the <em>union</em> of two sets.
+In today’s <a href="activity.html">activity</a> your group discusses how you would construct the <em>intersection</em> of two sets - it’s very analogous, but a bit trickier.
+(I found that the <code class="language-plaintext highlighter-rouge">itemfunc</code> needed a pointer to each set, not just the one set, as in the example above.)</p>
 
   </div>
 

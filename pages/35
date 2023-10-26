@@ -1,6 +1,6 @@
-https://thayer.github.io/engs50/Notes/makefiles/ 
+https://thayer.github.io/engs50/Notes/querier/ 
  2 
- 42416 
+ 32542 
  <!DOCTYPE html>
 <html>
 
@@ -9,13 +9,13 @@ https://thayer.github.io/engs50/Notes/makefiles/
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Modules and Makefiles</title>
+  <title>TSE Querier</title>
   <meta name="description" content="In Engs 50 you will learn how to design & build large, reliable, maintainable, and understandable software systems.  In the process you will learn to program in C with Unix development tools.
 ">
 
   <link rel="shortcut icon" href="/engs50/50.png" />
   <link rel="stylesheet" href="/engs50/css/main.css">
-  <link rel="canonical" href="/engs50/Notes/makefiles/">
+  <link rel="canonical" href="/engs50/Notes/querier/">
 </head>
 
 
@@ -44,537 +44,388 @@ https://thayer.github.io/engs50/Notes/makefiles/
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Modules and Makefiles</h1>
+    <h1 class="post-title">TSE Querier</h1>
   </header>
 
   <div class="post-content">
     <h3 id="goals">Goals</h3>
 
-<ul>
-  <li>how to create a re-usable “module” by separating its code into a pair of <code class="language-plaintext highlighter-rouge">.c</code> and <code class="language-plaintext highlighter-rouge">.h</code> files.</li>
-  <li>the Make command and its Makefiles - never run <code class="language-plaintext highlighter-rouge">mygcc</code> again!</li>
+<p>There are three mini lectures today.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#goals" id="markdown-toc-goals">Goals</a></li>
+  <li><a href="#the-querier" id="markdown-toc-the-querier">the Querier</a></li>
+  <li><a href="#fuzz-testing" id="markdown-toc-fuzz-testing">Fuzz Testing</a></li>
+  <li><a href="#expressions" id="markdown-toc-expressions">Expressions and accumulators</a>    <ul>
+      <li><a href="#arithmetic-expressions" id="markdown-toc-arithmetic-expressions">Arithmetic expressions</a></li>
+      <li><a href="#precedence" id="markdown-toc-precedence">Precedence</a></li>
+    </ul>
+  </li>
+  <li><a href="#activity" id="markdown-toc-activity">Activity</a></li>
 </ul>
 
-<p>For a deeper dive into <code class="language-plaintext highlighter-rouge">make</code>, see the <a href="extra/">lecture extra</a>.</p>
+<h2 id="the-querier">the Querier</h2>
 
-<p>For a look at the C preprocessor, see another <a href="preprocessor.html">lecture extra</a>.</p>
+<p>The third component of the Tiny Search Engine is the <em>Querier</em>, which reads the index produced by the Indexer and the page files produced by the Crawler, to interactively answer written queries entered by the user.</p>
 
-<p>For more about C header files, see another <a href="headerfiles.html">lecture extra</a>.</p>
+<p>Our Querier loads the index into memory (a data structure we developed for the Indexer) and then prompts the user for queries.
+Queries are comprised of words, with optional <code class="language-plaintext highlighter-rouge">and</code>/<code class="language-plaintext highlighter-rouge">or</code> operators.
+For example,</p>
 
-<!--You can view today's Terminal [script](/engs50/Notes/makefiles/script.txt), although a lot of the action was in emacs and thus not shown. -->
-
-<h2 id="extracting-bag-from-names">Extracting bag from names</h2>
-
-<p>Recall our <a href="/engs50/Examples/names9.c">names9</a> program from the prior lecture, in which we converted the <em>linked list</em> data structure, specific to that particular application’s needs, into a generic <em>bag</em> data structure.
-Our next step is to extract that <em>bag</em> into a separate set of files, with a clearly defined interface, so it can be used by this program and easily re-used by other programs.
-Given its design, it’s also easy to create multiple bags, unlike the original design (<a href="/engs50/Examples/names5.c">names5.c</a>) that was constrained to a single application-specific linked list.</p>
-
-<p>Today we divide the code <a href="/engs50/Examples/names9.c">names9</a> into three files:</p>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">namesA.c</code> - a new version of the application;</li>
-  <li><code class="language-plaintext highlighter-rouge">bag.h</code> - declarations that form the interface to he <em>bag</em> module</li>
-  <li><code class="language-plaintext highlighter-rouge">bag.c</code> - functions that define the implementation of the <em>bag</em> module.</li>
-</ul>
-
-<p>Since we also use the <code class="language-plaintext highlighter-rouge">readlinep</code> module, we must now compile the program with a command like</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mygcc names.c bag.c readlinep.c -o names
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>computer science
+computer and science
+computer or science
+baseball or basketball or ultimate frisbee
 </code></pre></div></div>
 
-<h2 id="make-and-makefiles">Make and Makefiles</h2>
+<p>The first two examples are treated identically, matching only documents that have <em>both</em> words - not necessarily together (as in the phrase “computer science”).
+The third picks up documents that have <em>either</em> word.
+The fourth matches documents that mention baseball, or basketball, or both “ultimate” and the word “frisbee” (not necessarily together).</p>
 
-<p>As our programs become more complex, it’s increasingly tedious (and error-prone) to type the commands to compile the code into an executable.
-Indeed, for a large codebase, it can take minutes or hours to compile all the code.
-Fortunately, there is a good tool to make an executable from a collection of source files, incrementally recompiling only those files that have been updated.</p>
+<p>Here’s an example run, with the output truncated a bit:</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">make</code> command reads a configuration file called <code class="language-plaintext highlighter-rouge">Makefile</code> – written in its own little language – and executes shell commands as needed to compile all the source files and link them into an executable.
-Before we look at a specific example, let’s first take a closer look at the compilation process.</p>
-
-<p>From now on we will compile all our programs with Make.</p>
-
-<h3 id="compiling-and-linking">Compiling and linking</h3>
-
-<p>The <em>compiler</em> reads “source code” (from a file like <code class="language-plaintext highlighter-rouge">bag.c</code> containing C code) and outputs “assembly code” (in a file <code class="language-plaintext highlighter-rouge">bag.s</code> containing assembly language).
-Assembly language is still a human-readable text file, but now lists machine-level instructions instead of C statements.
-In other words, the compiler translates source code into assembly code.
-The Unix command for the C compiler is <code class="language-plaintext highlighter-rouge">cc</code>, though we use one from Gnu called <code class="language-plaintext highlighter-rouge">gcc</code>.</p>
-
-<p>The <em>assembler</em> reads assembly code and outputs “object code”, translating the textual machine instructions into binary machine instructions.
-It’s still not a complete program, not yet “executable” by the operating system.
-The Unix command for the assembler is <code class="language-plaintext highlighter-rouge">as</code>.</p>
-
-<p>The <em>linker</em> reads object code (from files like <code class="language-plaintext highlighter-rouge">names.o</code>, <code class="language-plaintext highlighter-rouge">bag.o</code>, and <code class="language-plaintext highlighter-rouge">readlinep.o</code>, and from libraries) and links them all together into an “executable” file, ready for the OS to run (execute) when we ask bash to run it.
-It does not translate the code further – both input and output in machine instructions in a binary format – it “links” the pieces together, resolving references in one file to functions and variables in other files.
-For example, <code class="language-plaintext highlighter-rouge">names.o</code> may reference a function <code class="language-plaintext highlighter-rouge">bag_new()</code>, which the linker finds in <code class="language-plaintext highlighter-rouge">bag.o</code>.
-The linker assigns memory addresses for all the code and global variables, ready for loading into memory when the program is executed.
-The Unix command for the linker is <code class="language-plaintext highlighter-rouge">ld</code> (short for “load”, not to be confused with <code class="language-plaintext highlighter-rouge">ln</code>, which links files together).</p>
-
-<blockquote>
-  <p>However, <em><a href="http://programmer.97things.oreilly.com/wiki/index.php/The_Linker_Is_not_a_Magical_Program">The linker is not a magical program</a></em>.</p>
-</blockquote>
-
-<p>The <code class="language-plaintext highlighter-rouge">gcc</code> command is actually pretty sophisticated, and in a form like</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mygcc names.c bag.c readlinep.c -o names
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$  querier/querier data/cs50-3 data/cs50-index3
+KEY WORDs:&gt; computer and science
+Query: computer and science 
+Matches 139 documents (ranked):
+score 141 doc  19: http://old-www.cs.dartmouth.edu/~dfk/papers/index.html
+score 135 doc 349: http://old-www.cs.dartmouth.edu/~dfk/papers/index-t.html
+score 135 doc 348: http://old-www.cs.dartmouth.edu/~dfk/papers/index-a.html
+score 135 doc 347: http://old-www.cs.dartmouth.edu/~dfk/papers/index-c.html
+score  10 doc  11: http://old-www.cs.dartmouth.edu/~dfk/armada/
+score   4 doc   9: http://old-www.cs.dartmouth.edu/~dfk/people.html
+score   4 doc   7: http://old-www.cs.dartmouth.edu/~dfk/teaching.html
+score   3 doc 206: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/deshpande-thesis.html
+score   3 doc 167: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/nanda-thesis.html
+score   3 doc  18: http://old-www.cs.dartmouth.edu/~dfk/index.html
+...
+KEY WORDs:&gt; tiny search engine
+Query: tiny search engine 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt; TSE
+Query: tse 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt; NOTE we LOWERcase the query first
+Query: note we lowercase the query first 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt;  spaces      do    not    mattter
+Query: spaces do not mattter 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt; non-letter characters are disallowed
+Error: bad character '-' in query.
+KEY WORDs:&gt; even digits as in cs50
+Error: bad character '5' in query.
+KEY WORDs:&gt; and
+Query: and 
+Error: 'and' cannot be first
+KEY WORDs:&gt; or
+Query: or 
+Error: 'or' cannot be first
+KEY WORDs:&gt; what about and
+Query: what about and 
+Error: 'and' cannot be last
+KEY WORDs:&gt; friend and foe
+Query: friend and foe 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt; quit
+Query: quit 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt; exit
+Query: exit 
+Matches 1 documents (ranked):
+score   3 doc   3: http://old-www.cs.dartmouth.edu/~dfk/visit-dartmouth.html
+-----------------------------------------------
+KEY WORDs:&gt; ^D
 </code></pre></div></div>
 
-<p>will actually run four commands, something like this:</p>
+<p>Let’s study the <a href="/engs50/Labs/Lab6/REQUIREMENTS.html">Requirements Spec</a> for the Querier, and run some demos.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc -c names.c
-gcc -c bag.c
-gcc -c readlinep.c
-ld names.o bag.o readlinep.o libraries... -o names
-rm names.o bag.o readlinep.o
+<p>Today’s demo scripts are here: <a href="/engs50/Notes/querier/script1.txt">script1</a> and <a href="/engs50/Notes/querier/script2.txt">script2</a>.</p>
+
+<h2 id="fuzz-testing">Fuzz Testing</h2>
+
+<p>In a recent lecture we talked about <em>unit testing</em>, and the difference between <em>glass-box testing</em> and <em>black-box testing</em>.
+Usually, these tests are based on a carefully constructed series of test cases, devised to test all code sequences and push on the “edge cases”.</p>
+
+<p>However, such tests are only as good as the test writer - who must logically study the code (for glass-box testing) or the specs (for black-box testing) to think of the suitable test cases.
+It’s possible they will miss some important cases.</p>
+
+<p>Another solution, therefore, is <strong><em>fuzz testing</em></strong>, a form of black-box testing in which you fire thousands of random inputs at the program to see how it reacts.
+The chances of triggering an unconsidered test case is far greater if you try a lot of cases!</p>
+
+<p>Here is a fuzz-testing program for our <em>querier</em>.
+It generates a series of random queries on stdout, which it then pipes to the querier on stdin.
+Here’s the core of the fuzz tester:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**************** generate_query ****************/</span>
+<span class="cm">/* generate one random query and print to stdout.
+ * pull random words from the wordlist and from the dictionary.
+ */</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">generate_query</span><span class="p">(</span><span class="k">const</span> <span class="n">wordlist_t</span> <span class="o">*</span><span class="n">wordlist</span><span class="p">,</span> <span class="k">const</span> <span class="n">wordlist_t</span> <span class="o">*</span><span class="n">dictionary</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// some parameters that affect query generation</span>
+  <span class="k">const</span> <span class="kt">int</span> <span class="n">max_words</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>        <span class="c1">// generate 1..max_words</span>
+  <span class="k">const</span> <span class="kt">float</span> <span class="n">or_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">;</span>   <span class="c1">// P(OR between two words)</span>
+  <span class="k">const</span> <span class="kt">float</span> <span class="n">and_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">;</span>  <span class="c1">// P(AND between two words)</span>
+  <span class="k">const</span> <span class="kt">float</span> <span class="n">dict_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">;</span> <span class="c1">// P(draw from dict instead of wordlist)</span>
+
+  <span class="kt">int</span> <span class="n">qwords</span> <span class="o">=</span> <span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">max_words</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// number of words in query</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">qw</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">qw</span> <span class="o">&lt;</span> <span class="n">qwords</span><span class="p">;</span> <span class="n">qw</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// draw a word either dictionary or wordlist</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">dict_probability</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">"%s "</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">-&gt;</span><span class="n">words</span><span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">dictionary</span><span class="o">-&gt;</span><span class="n">nwords</span><span class="p">]);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">"%s "</span><span class="p">,</span> <span class="n">wordlist</span><span class="o">-&gt;</span><span class="n">words</span><span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">wordlist</span><span class="o">-&gt;</span><span class="n">nwords</span><span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// last word?</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">qw</span> <span class="o">&lt;</span> <span class="n">qwords</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// which operator to print?</span>
+      <span class="kt">int</span> <span class="n">op</span> <span class="o">=</span> <span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">op</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">and_probability</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"AND "</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">op</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">and_probability</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="n">or_probability</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"OR "</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
-<p>Each of the first three ask to “compile” (<code class="language-plaintext highlighter-rouge">-c</code>) the listed C source file; by default, the compiler creates an object-code file in a file of the same name with the extension <code class="language-plaintext highlighter-rouge">.o</code>.
-(Under the hood, it’s actually running both the compiler and then the assembler, briefly creating the intermediate <code class="language-plaintext highlighter-rouge">.s</code> file.)  The fourth line links those three object files together with a collection of common libraries, to produce the executable program; the original <code class="language-plaintext highlighter-rouge">-o names</code> commandline argument is placed here.
-Finally, it cleans up by removing the intermediate object files.</p>
+<p>With the following setup,</p>
 
-<p>Again, for a large code base, it is a waste of effort to recompile every C source file every time, even if only one of them has changed since the last compilation.</p>
-
-<h3 id="dependencies">Dependencies</h3>
-
-<p>To optimize this process it helps to know which files depend on each other.
-Clearly, each object file depends on its source file:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>names.o: names.c
-bag.o: bag.c
-readlinep.o: readlinep.c
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tse
+<span class="nv">$ </span><span class="nb">mkdir </span>data/cs50-3
+<span class="nv">$ </span>crawler/crawler http://old-www.cs.dartmouth.edu/~cs50/ data/cs50-3 3
+<span class="nv">$ </span>indexer/indexer data/cs50-3 data/cs50-index3
 </code></pre></div></div>
 
-<p>and the program depends on all the object files that will linked together:</p>
+<p>And here’s the output of 10 random queries:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>names: names.o bag.o readlinep.o
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>querier/fuzzquery 
+usage: querier/fuzzquery indexFile numQueries randomSeed
+<span class="nv">$ </span>querier/fuzzquery data/cs50-index3 10 0
+querier/fuzzquery: generating 10 queries from 5586 words
+captured AND despite
+pcs OR frontiers activityaware OR relay tour 
+unix downloading OR pre 
+triactine pieces colgate OR aspects OR wine-wise OR direx 
+uncompressed OR early taxonomy austrian AND jewelry OR manages 
+once forced odame localization OR marsch 
+comparison 
+suffer desires OR workflow 
+facilitated 
+garth OR yang OR cardiac AND ruslan AND synthetic 
 </code></pre></div></div>
 
-<p>(It also depends on the standard libraries, but we assume they never change and we won’t worry about them.)</p>
+<p>And here’s what happens when we pipe it to our querier (output abbreviated a little):</p>
 
-<p>Actually, if we look deeper, the object files also depend on the include files, because those files are virtually included in the C source files – the compiler reads the include file <code class="language-plaintext highlighter-rouge">bag.h</code> when it sees <code class="language-plaintext highlighter-rouge">#include "bag.h"</code> at some point while reading the C source code.
-Thus we also have dependencies</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>names.o: bag.h readlinep.h
-bag.o: bag.h
-readlinep.o: readlinep.h
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ querier/fuzzquery data/cs50-index3 10 0 | querier/querier data/cs50-3 data/cs50-index3
+querier/fuzzquery: generating 10 queries from 5586 words
+KEY WORDs:&gt; Query: captured and despite 
+No documents match.
+-----------------------------------------------
+KEY WORDs:&gt; Query: pcs or frontiers activityaware or relay tour 
+Matches 39 documents (ranked):
+score  37 doc 349: http://old-www.cs.dartmouth.edu/~dfk/papers/index-t.html
+score  37 doc 348: http://old-www.cs.dartmouth.edu/~dfk/papers/index-a.html
+score  37 doc 347: http://old-www.cs.dartmouth.edu/~dfk/papers/index-c.html
+score  37 doc  19: http://old-www.cs.dartmouth.edu/~dfk/papers/index.html
+score   2 doc  53: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/oldfield-app-pario.html
+...
+-----------------------------------------------
+KEY WORDs:&gt; Query: unix downloading or pre 
+Matches 1 documents (ranked):
+score   1 doc 104: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/khanna-group.html
+-----------------------------------------------
+KEY WORDs:&gt; Error: bad character '-' in query.
+KEY WORDs:&gt; Query: uncompressed or early taxonomy austrian and jewelry or manages 
+Matches 3 documents (ranked):
+score   2 doc  19: http://old-www.cs.dartmouth.edu/~dfk/papers/index.html
+score   1 doc  81: http://old-www.cs.dartmouth.edu/~dfk/STARFISH/
+score   1 doc  67: http://old-www.cs.dartmouth.edu/~dfk/RAPID-Transit.html
+-----------------------------------------------
+KEY WORDs:&gt; Query: once forced odame localization or marsch 
+Matches 5 documents (ranked):
+score   2 doc  19: http://old-www.cs.dartmouth.edu/~dfk/papers/index.html
+score   1 doc 316: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/anthony-sith3.html
+score   1 doc 349: http://old-www.cs.dartmouth.edu/~dfk/papers/index-t.html
+score   1 doc 348: http://old-www.cs.dartmouth.edu/~dfk/papers/index-a.html
+score   1 doc 347: http://old-www.cs.dartmouth.edu/~dfk/papers/index-c.html
+-----------------------------------------------
+KEY WORDs:&gt; Query: comparison 
+Matches 11 documents (ranked):
+score   3 doc 349: http://old-www.cs.dartmouth.edu/~dfk/papers/index-t.html
+score   3 doc 348: http://old-www.cs.dartmouth.edu/~dfk/papers/index-a.html
+score   3 doc 347: http://old-www.cs.dartmouth.edu/~dfk/papers/index-c.html
+...
+-----------------------------------------------
+KEY WORDs:&gt; Query: suffer desires or workflow 
+Matches 1 documents (ranked):
+score   1 doc 336: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/mare-thesis.html
+-----------------------------------------------
+KEY WORDs:&gt; Query: facilitated 
+Matches 2 documents (ranked):
+score   1 doc 260: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/chen-fusenet.html
+score   1 doc 180: http://old-www.cs.dartmouth.edu/~dfk/papers/abstracts/tan-crf-s3.html
+-----------------------------------------------
+KEY WORDs:&gt; Query: garth or yang or cardiac and ruslan and synthetic 
+Matches 3 documents (ranked):
+score   1 doc  19: http://old-www.cs.dartmouth.edu/~dfk/papers/index.html
+score   1 doc  90: http://old-www.cs.dartmouth.edu/~dfk/charisma/
+score   1 doc   9: http://old-www.cs.dartmouth.edu/~dfk/people.html
+-----------------------------------------------
 </code></pre></div></div>
 
-<p>(They also include <code class="language-plaintext highlighter-rouge">.h</code> files for standard libraries, but again, we assume those never change and thus we don’t worry about them as dependencies.)</p>
+<p>We could generate a different series of random queries by changing the random seed, and we can run a lot more queries, too!</p>
 
-<p>The above dependencies are actually written in <code class="language-plaintext highlighter-rouge">make</code> language.
-The name to the left of each colon is the <em>target</em>, and the name(s) to the right of the colon are the <em>dependencies</em>.
-The target depends on the dependencies, and should be rebuilt if any of the dependencies change.
-Notice that dependencies are transitive: <code class="language-plaintext highlighter-rouge">names</code> depends on <code class="language-plaintext highlighter-rouge">bag.o</code> which depends on <code class="language-plaintext highlighter-rouge">bag.c</code> and <code class="language-plaintext highlighter-rouge">bag.h</code>, and so forth.
-Make builds the <em>dependency tree</em> and rebuilds files as needed.</p>
-
-<p>But how does it know how to rebuild one file from another?
-We add a command (or list of commands), indented with a tab, on the line(s) that immediately follow the target.
-We put all this together in a file called <code class="language-plaintext highlighter-rouge">Makefile</code>:</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># executable depends on object files
-</span><span class="nl">names</span><span class="o">:</span> <span class="nf">names.o bag.o readlinep.o</span>
-        <span class="err">gcc</span> <span class="err">names.o</span> <span class="err">bag.o</span> <span class="err">readlinep.o</span> <span class="err">-o</span> <span class="err">names</span>
-
-<span class="c"># object files depend on source files
-</span><span class="nl">names.o</span><span class="o">:</span> <span class="nf">names.c</span>
-<span class="nl">bag.o</span><span class="o">:</span> <span class="nf">bag.c</span>
-<span class="nl">readlinep.o</span><span class="o">:</span> <span class="nf">readlinep.c</span>
-
-<span class="c"># object files also depend on include files
-</span><span class="nl">names.o</span><span class="o">:</span> <span class="nf">bag.h readlinep.h</span>
-<span class="nl">bag.o</span><span class="o">:</span> <span class="nf">bag.h</span>
-<span class="nl">readlinep.o</span><span class="o">:</span> <span class="nf">readlinep.h</span>
-
-<span class="c"># how to compile source into object files
-</span><span class="nl">names.o</span><span class="o">:</span>
-        <span class="err">gcc</span> <span class="err">-c</span> <span class="err">names.c</span>
-<span class="nl">bag.o</span><span class="o">:</span>
-        <span class="err">gcc</span> <span class="err">-c</span> <span class="err">bag.c</span>
-<span class="nl">readlinep.o</span><span class="o">:</span>
-        <span class="err">gcc</span> <span class="err">-c</span> <span class="err">readlinep.c</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ querier/fuzzquery data/cs50-index3 10 999 | querier/querier data/cs50-3 data/cs50-index3 &gt; /dev/null
+querier/fuzzquery: generating 10 queries from 5586 words
+$ querier/fuzzquery data/cs50-index3 10000 999 | querier/querier data/cs50-3 data/cs50-index3
+querier/fuzzquery: generating 10000 queries from 5586 words
 </code></pre></div></div>
 
-<blockquote>
-  <p>Important: commands must be indented with a <em>tab</em> character, not spaces, or Make will not recognize them as commands.
-Some editors are savvy and insert a tab when you type a tab, and some try to be clever and change the tab to spaces.
-Make requires a tab.</p>
-</blockquote>
+<p>The fuzz tester does not test <em>all</em> aspects of the querier; in particular, it will not generate syntactically incorrect inputs.
+Those should be tested by another program, perhaps another fuzz tester.
+Furthermore, it does not verify whether the querier actually produces the right answers!</p>
 
-<p>Now, all we have to do is type <code class="language-plaintext highlighter-rouge">make</code>, and let it do all the work!</p>
+<p>For regression testing, we might save the querier output in a file, and then compare the output of a fresh test run against the saved results from earlier runs.
+If we had earlier believed those results to be correct, then seeing unchanged output would presumably indicate the results (and thus the new code) are still correct.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls
-</span>Makefile	bag.h		names.txt	readlinep.h
-bag.c		names.c		readlinep.c
-<span class="nv">$ </span>make
-gcc <span class="nt">-c</span> names.c
-gcc <span class="nt">-c</span> bag.c
-gcc <span class="nt">-c</span> readlinep.c
-gcc names.o bag.o readlinep.o <span class="nt">-o</span> names
-<span class="nv">$ </span>make
-make: <span class="sb">`</span>names<span class="s1">' is up to date.
-$ touch bag.h
-$ make
-gcc -c names.c
-gcc -c bag.c
-gcc names.o bag.o readlinep.o -o names
-$ ls
-Makefile	bag.o		names.o		readlinep.h
-bag.c		names*		names.txt	readlinep.o
-bag.h		names.c		readlinep.c
-$
-</span></code></pre></div></div>
-<p>Notice that, the first time I ran <code class="language-plaintext highlighter-rouge">make</code> it compiled each source file into an object file, and then compiled them all together.
-(We use <code class="language-plaintext highlighter-rouge">gcc</code> to link object files, because it’s very complicated to set up a proper <code class="language-plaintext highlighter-rouge">ld</code> commandline, and <code class="language-plaintext highlighter-rouge">gcc</code> is smart enough to realize it need only run the linker when it’s only given object files.)</p>
+<h2 id="expressions">Expressions and accumulators</h2>
 
-<p>On my second run of <code class="language-plaintext highlighter-rouge">make</code>, it checked the dependency tree and decided there was nothing to be rebuilt.
-Time saved!</p>
+<p>Thinking ahead to the querier, let’s think about how one evaluates an expression involving operators.
+We’ll work with an arithmetic analogy.</p>
 
-<p>I pretended to edit <code class="language-plaintext highlighter-rouge">bag.h</code> by “touching” it - the <code class="language-plaintext highlighter-rouge">touch</code> command just updates the modification date of the file(s) named on its command line, creating files if needed but making no changes to the content of existing files.</p>
+<h3 id="arithmetic-expressions">Arithmetic expressions</h3>
 
-<p>On my third run of <code class="language-plaintext highlighter-rouge">make</code>, it checked the dependency tree and saw that both <code class="language-plaintext highlighter-rouge">bag.o</code> and <code class="language-plaintext highlighter-rouge">names.o</code> depend on <code class="language-plaintext highlighter-rouge">bag.h</code>, so it recompiled both.
-Because those two object files changed, it had to rebuild <code class="language-plaintext highlighter-rouge">names</code>.
-In the end, notice that the <code class="language-plaintext highlighter-rouge">.o</code> files stick around - which is why <code class="language-plaintext highlighter-rouge">make</code> does not need to rebuild them every time.</p>
+<p>Consider the following arithmetic expression:</p>
 
-<p>Make actually knows about C and the relationship between <code class="language-plaintext highlighter-rouge">.c</code> and <code class="language-plaintext highlighter-rouge">.o</code> files, so several of the dependencies we listed were not necessary to list.
-Indeed, some of the commands we listed are also unnecessary: they are <em>implicit rules</em> already known to make.
-We thus streamline our <code class="language-plaintext highlighter-rouge">Makefile</code>:</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># executable depends on object files
-</span><span class="nl">names</span><span class="o">:</span> <span class="nf">names.o bag.o readlinep.o</span>
-	gcc names.o bag.o readlinep.o <span class="nt">-o</span> names
-
-<span class="c"># object files also depend on include files
-</span><span class="nl">names.o</span><span class="o">:</span> <span class="nf">bag.h readlinep.h</span>
-<span class="nl">bag.o</span><span class="o">:</span> <span class="nf">bag.h</span>
-<span class="nl">readlinep.o</span><span class="o">:</span> <span class="nf">readlinep.h</span>
-</code></pre></div></div>
-<p>Compare with the prior <code class="language-plaintext highlighter-rouge">Makefile</code> and you’ll see two whole sections gone.
-This new makefile works just the same:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls
-</span>Makefile	bag.c		names.c		readlinep.c
-Makefile~	bag.h		names.txt	readlinep.h
-<span class="nv">$ </span>make
-cc    <span class="nt">-c</span> <span class="nt">-o</span> names.o names.c
-cc    <span class="nt">-c</span> <span class="nt">-o</span> bag.o bag.c
-cc    <span class="nt">-c</span> <span class="nt">-o</span> readlinep.o readlinep.c
-gcc names.o bag.o readlinep.o <span class="nt">-o</span> names
-<span class="nv">$ </span><span class="nb">ls
-</span>Makefile	bag.h		names.c		readlinep.c
-Makefile~	bag.o		names.o		readlinep.h
-bag.c		names<span class="k">*</span>		names.txt	readlinep.o
-<span class="err">$</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span> <span class="o">+</span> <span class="n">d</span>
 </code></pre></div></div>
 
-<p>There are two important details, however.
-First, you’ll note that its implicit rules run <code class="language-plaintext highlighter-rouge">cc</code> instead of <code class="language-plaintext highlighter-rouge">gcc</code>.
-Second, note that neither our explicit rules nor Make’s implicit rules pass the CS50-standard command-line arguments to the C compiler.
-We need to tell Make about those.
-We can assign to some Make variables to inform Make about our preferred compiler and command-line options.
-(Actually, Make calls them “macros” because their value cannot actually vary.)</p>
+<p>Since addition is a <em>left-associative</em> operator, this means the same thing as</p>
 
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CC</span><span class="o">=</span>gcc
-<span class="nv">CFLAGS</span><span class="o">=</span><span class="nt">-Wall</span> <span class="nt">-pedantic</span> <span class="nt">-std</span><span class="o">=</span>c11 <span class="nt">-ggdb</span>
-
-<span class="c"># executable depends on object files
-</span><span class="nl">names</span><span class="o">:</span> <span class="nf">names.o bag.o readlinep.o</span>
-	<span class="nv">$(CC)</span> <span class="nv">$(CFLAGS)</span> names.o bag.o readlinep.o <span class="nt">-o</span> names
-
-<span class="c"># object files also depend on include files
-</span><span class="nl">names.o</span><span class="o">:</span> <span class="nf">bag.h readlinep.h</span>
-<span class="nl">bag.o</span><span class="o">:</span> <span class="nf">bag.h</span>
-<span class="nl">readlinep.o</span><span class="o">:</span> <span class="nf">readlinep.h</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="p">(((</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>The first two lines assign values to the macros <code class="language-plaintext highlighter-rouge">CC</code> and <code class="language-plaintext highlighter-rouge">CFLAGS</code>.
-These two particular macros are known to Make; it will use them in its implicit rules.
-To use them in our explicit rules, too, we have to refer to them explicitly - see the commands to rebuild <code class="language-plaintext highlighter-rouge">names</code>.
-Notice that the macro-substitution syntax in Make uses a dollar sign - like bash - but requires parentheses around the macro name - unlike bash.</p>
+<p>This means we can scan the expression from left to right, accumulating a sum as we go, effectively like this:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>make
-gcc <span class="nt">-Wall</span> <span class="nt">-pedantic</span> <span class="nt">-std</span><span class="o">=</span>c11 <span class="nt">-ggdb</span>   <span class="nt">-c</span> <span class="nt">-o</span> names.o names.c
-gcc <span class="nt">-Wall</span> <span class="nt">-pedantic</span> <span class="nt">-std</span><span class="o">=</span>c11 <span class="nt">-ggdb</span>   <span class="nt">-c</span> <span class="nt">-o</span> bag.o bag.c
-gcc <span class="nt">-Wall</span> <span class="nt">-pedantic</span> <span class="nt">-std</span><span class="o">=</span>c11 <span class="nt">-ggdb</span>   <span class="nt">-c</span> <span class="nt">-o</span> readlinep.o readlinep.c
-gcc <span class="nt">-Wall</span> <span class="nt">-pedantic</span> <span class="nt">-std</span><span class="o">=</span>c11 <span class="nt">-ggdb</span> names.o bag.o readlinep.o <span class="nt">-o</span> names
-</code></pre></div></div>
-<p>This time, Make used the <code class="language-plaintext highlighter-rouge">gcc</code> compiler and all our flags.</p>
-
-<h2 id="which-target">Which target?</h2>
-
-<p>So far, we’ve just typed <code class="language-plaintext highlighter-rouge">make</code> at the command line.
-We can actually tell Make to build a particular target by naming it:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>make readlinep.o
-gcc <span class="nt">-Wall</span> <span class="nt">-pedantic</span> <span class="nt">-std</span><span class="o">=</span>c11 <span class="nt">-ggdb</span>   <span class="nt">-c</span> <span class="nt">-o</span> readlinep.o readlinep.c
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">a</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">c</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">d</span>
 </code></pre></div></div>
 
-<p>When given no target(s) on the command line, Make chooses the first target that has commands.
-In our <code class="language-plaintext highlighter-rouge">Makefile</code>, that was <code class="language-plaintext highlighter-rouge">names</code> - which is why we put it first.
-In a complex <code class="language-plaintext highlighter-rouge">Makefile</code>, it is common to place a target named <code class="language-plaintext highlighter-rouge">all</code> first, with a dependency (list) that indicates which target (list) is actually desired when one types <code class="language-plaintext highlighter-rouge">make all</code> or just <code class="language-plaintext highlighter-rouge">make</code>.</p>
+<p>Here, the <code class="language-plaintext highlighter-rouge">sum</code> acts as an <em>accumulator</em>.
+(Indeed, many early hardware architectures include an explicit register called an ‘accumulator’.)</p>
 
-<blockquote>
-  <p>This is a <em>phony target</em>, because the result of <code class="language-plaintext highlighter-rouge">make all</code> is never to produce a file called <code class="language-plaintext highlighter-rouge">all</code>.
-That’s ok - its purpose is to direct Make toward the target(s) we want it to build.</p>
-</blockquote>
+<p>We often see this approach generalized in code:</p>
 
-<h2 id="cleaning-up">Cleaning up</h2>
-
-<p>We’ve taught Make how to build our program - now let’s teach it how to clean up.
-By convention, every good <code class="language-plaintext highlighter-rouge">Makefile</code> has a target called <code class="language-plaintext highlighter-rouge">clean</code>.
-Let’s extend the above <code class="language-plaintext highlighter-rouge">Makefile</code> (by convention, the <code class="language-plaintext highlighter-rouge">clean</code> rule goes at the bottom of the file):</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">clean</span><span class="o">:</span>
-	<span class="nb">rm</span> <span class="nt">-f</span> names
-	<span class="nb">rm</span> <span class="nt">-f</span> <span class="k">*</span>~ <span class="k">*</span>.o
-	<span class="nb">rm</span> <span class="nt">-rf</span> <span class="k">*</span>.dSYM
-</code></pre></div></div>
-<p>The <code class="language-plaintext highlighter-rouge">-f</code> flag (“force”) asks <code class="language-plaintext highlighter-rouge">rm</code> to exit with success even if it fails - e.g., if there are no files by those names to be removed.
-The <code class="language-plaintext highlighter-rouge">-r</code> flag (“recursive”) removes a directory and its contents.
-These commands remove the <code class="language-plaintext highlighter-rouge">names</code> executable, and the object files <code class="language-plaintext highlighter-rouge">*.o</code>, and the emacs backup files <code class="language-plaintext highlighter-rouge">~</code>, and the dSYM directory <code class="language-plaintext highlighter-rouge">gcc</code> creates in support of <code class="language-plaintext highlighter-rouge">gdb</code>.</p>
-
-<p>Look how well it cleans up!</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls
-</span>Makefile	bag.h		names.c		readlinep.c
-Makefile~	bag.o		names.o		readlinep.h
-bag.c		names<span class="k">*</span>		names.txt	readlinep.o
-<span class="nv">$ </span>make clean
-<span class="nb">rm</span> <span class="nt">-f</span> names
-<span class="nb">rm</span> <span class="nt">-f</span> <span class="k">*</span>~ <span class="k">*</span>.o
-<span class="nb">rm</span> <span class="nt">-rf</span> <span class="k">*</span>.dSYM
-<span class="nv">$ </span><span class="nb">ls
-</span>Makefile	bag.h		names.txt	readlinep.h
-bag.c		names.c		readlinep.c
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">42</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">19</span><span class="p">};</span>
+<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+	<span class="n">sum</span> <span class="o">+=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"sum = %d; average = %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">sum</span><span class="p">,</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="n">sum</span> <span class="o">/</span> <span class="n">n</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p>In some Makefiles, you’ll see the author explicitly tell Make that this rule is “phony”:</p>
+<h3 id="precedence">Precedence</h3>
 
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">.PHONY</span><span class="o">:</span> <span class="nf">clean</span>
+<p>What if you have a mixture of operators, with precedence?</p>
+
+<p>Consider the following arithmetic expression:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span> <span class="o">+</span> <span class="n">d</span>
 </code></pre></div></div>
 
-<h2 id="more-on-macros">More on macros</h2>
+<p>Both addition and multiplication are <em>left-associative</em> operators, but multiplication has precedence over addition.
+Thus, we implicitly rewrite the above expression as follows:</p>
 
-<p>Any symbol that is defined in a Makefile like this</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME = VALUE
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">c</span><span class="p">))</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>is called a macro.
-Once defined, you can expand them using</p>
+<p>or, in sequence,</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>... $(NAME) ...
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">a</span> 
+<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">b</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">c</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">d</span>
 </code></pre></div></div>
 
-<p>It is also common to define macros for the name of the program being built, and the list of object files that go into it.
-Below, our final <code class="language-plaintext highlighter-rouge">Makefile</code> declares <code class="language-plaintext highlighter-rouge">PROG</code> and <code class="language-plaintext highlighter-rouge">OBJS</code> for this purpose, and uses them in the build command.
-I also included a list of library files needed by this program as <code class="language-plaintext highlighter-rouge">LIBS</code>; although <code class="language-plaintext highlighter-rouge">names</code> does not need the math library, it’s harmless to ask <code class="language-plaintext highlighter-rouge">gcc</code> to link with the math library and it serves as a good example here.
-(Certain libraries, like stdio and stdlib, are linked without you asking.)</p>
+<p>Notice how we ‘step aside’ from the sum for a moment while we compute the product <code class="language-plaintext highlighter-rouge">b * c</code> … using an exactly analogous process.  <code class="language-plaintext highlighter-rouge">prod</code> is an accumulator for the product; it is initialized to the <em>multiplicative identity</em> (1) instead of the <em>additive identity</em> (0), for reasons I hope are obvious.
+But then we just multiply in each of the successive items, one at a time.</p>
 
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PROG</span> <span class="o">=</span> names
-<span class="nv">OBJS</span> <span class="o">=</span> names.o bag.o readlinep.o
-<span class="nv">LIBS</span> <span class="o">=</span> <span class="nt">-lm</span>
+<p>This generalizes to longer expressions like</p>
 
-<span class="c"># executable depends on object files
-</span><span class="nl">$(PROG)</span><span class="o">:</span> <span class="nf">$(OBJS)</span>
-	<span class="nv">$(CC)</span> <span class="nv">$(CFLAGS)</span> <span class="nv">$(OBJS)</span> <span class="nv">$(LIBS)</span> <span class="nt">-o</span> <span class="nv">$(PROG)</span>
-</code></pre></div></div>
-<p>Notice how we were able to rewrite the build rule to be fully generic - it names no specific files.
-Indeed, you could use this rule in all your Makefiles!</p>
-
-<h2 id="complete-makefile">Complete Makefile</h2>
-
-<p>With the addition of the phony targets and a nice header comment, we’re done:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Makefile for the "names" program that uses the "bag" module.
-#
-# David Kotz - April 2017
-
-CC=gcc
-CFLAGS=-Wall -pedantic -std=c11 -ggdb
-PROG = names
-OBJS = names.o bag.o readlinep.o
-LIBS = -lm
-
-.PHONY: all clean
-
-all: names
-
-# executable depends on object files
-$(PROG): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(PROG)
-
-# object files depend on include files
-names.o: bag.h readlinep.h
-bag.o: bag.h
-readlinep.o: readlinep.h
-
-clean:
-	rm -f $(PROG)
-	rm -f *~ *.o
-	rm -rf *.dSYM
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">e</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">i</span>
 </code></pre></div></div>
 
-<p>The macro definitions at the top make it easy for a reader to quickly see what program will be built and from what files.
-The gnarly compilation rule is the same for every Makefile!
-Written once, and not likely needing to be changed.
-The dependencies at bottom are the only other part that varies with the specific program.</p>
+<p>becomes</p>
 
-<p>I saved this Makefile as <a href="/engs50/Examples/names-Makefile">names-Makefile</a> in our examples directory.</p>
-
-<h2 id="tips">Tips</h2>
-
-<p>Some other things to know about Make.</p>
-
-<h3 id="errors">Errors</h3>
-
-<p>If Make encounters an error while compiling, it stops and does not proceed with the rest of the build.
-If, for example, a C compilation step fails and prints its error messages, Make notices this, prints a message, and exits with error status 1.
-It will not proceed to compile other files, or build the overall program.
-If you want to ask Make to proceed even after encountering errors, run <code class="language-plaintext highlighter-rouge">make -k</code>.</p>
-
-<h3 id="make-command-line">Make command line</h3>
-
-<p>Make supports many command-line arguments.
-See <code class="language-plaintext highlighter-rouge">man make</code>.</p>
-
-<p><code class="language-plaintext highlighter-rouge">-f file</code> use <code class="language-plaintext highlighter-rouge">file</code> instead of default <code class="language-plaintext highlighter-rouge">Makefile</code></p>
-
-<p><code class="language-plaintext highlighter-rouge">-n</code> Determine which commands need to be run, but don’t actually execute any of them, just print them.</p>
-
-<p><code class="language-plaintext highlighter-rouge">-k</code> while a particular target and the things that depend on it might have failed, continue trying to make the other dependencies of these targets anyway.
-(My emacs command uses this flag.)</p>
-
-<p><code class="language-plaintext highlighter-rouge">-C dir</code> or <code class="language-plaintext highlighter-rouge">--directory=dir</code> tells Make to change its working directory (as if it internally runs <code class="language-plaintext highlighter-rouge">cd dir</code>) and then look for a Makefile (i.e., it will read from <code class="language-plaintext highlighter-rouge">dir/Makefile</code>).
-This option is useful for running Make in a subdirectory.</p>
-
-<h3 id="automatic-variables">Automatic variables</h3>
-
-<p>The make utility also provides some useful <a href="http://www.gnu.org/software/make/manual/make.html#Automatic-Variables">automatic variables</a>:</p>
-
-<p><code class="language-plaintext highlighter-rouge">$@</code>   name of the current target</p>
-
-<p><code class="language-plaintext highlighter-rouge">$?</code>   the list of dependencies that are newer than the target</p>
-
-<p><code class="language-plaintext highlighter-rouge">$^</code>	the list of dependencies for this target</p>
-
-<p>For example, we could rewrite our <code class="language-plaintext highlighter-rouge">names</code> target as follows</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">names</span><span class="o">:</span> <span class="nf">names.o bag.o readlinep.o</span>
-	<span class="nv">$(CC)</span> <span class="nv">$(CFLAGS)</span> <span class="nv">$^</span> <span class="nt">-o</span> <span class="nv">$@</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">a</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">b</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">c</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">d</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">e</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">f</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">g</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">h</span>
+<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">i</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
 </code></pre></div></div>
 
-<p>Although useful, I find the style we used in our complete example to be more readable.</p>
+<p>Let’s add some indentation to make this a little easier to read:</p>
 
-<h3 id="documentation">Documentation</h3>
-
-<p>You can view the <a href="http://www.gnu.org/software/make/manual/make.html">GNU documentation</a>, the manual pages for <code class="language-plaintext highlighter-rouge">make</code>, Steve Talbot’s “oldie but goodie” book “<em>Managing projects with make</em>” <a href="http://shop.oreilly.com/product/9780596006105.do">updated</a> in 2004 by Robert Mecklenburg for GNU <code class="language-plaintext highlighter-rouge">make</code>, or any of the variety of online tutorials for <code class="language-plaintext highlighter-rouge">make</code>.</p>
-
-<h3 id="for-emacs-users">for emacs users</h3>
-
-<p>If you use emacs, and you installed our CS50 customation:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nb">cp</span> ~cs50/.emacs ~
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">a</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">b</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">c</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">d</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">e</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">f</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">g</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">h</span>
+	<span class="n">prod</span> <span class="o">=</span> <span class="n">prod</span> <span class="o">*</span> <span class="n">i</span>
+<span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
 </code></pre></div></div>
 
-<p>Whenever you start emacs, it loads this file.
-This file defines a new keystroke <code class="language-plaintext highlighter-rouge">^X-c</code> (ctrl-X c), which tells emacs to run <code class="language-plaintext highlighter-rouge">make -k</code> in a separate subwindow.
-If you get any compiler errors, type the keystroke <code class="language-plaintext highlighter-rouge">^X-`</code> (ctrl-X backquote) and emacs jumps to the right file and right line.
-It’s handy!</p>
+<p>Notice what I did with <code class="language-plaintext highlighter-rouge">f</code>, and that I <em>never add anything to <code class="language-plaintext highlighter-rouge">sum</code> other than <code class="language-plaintext highlighter-rouge">prod</code></em>.</p>
 
-<blockquote>
-  <p>If <code class="language-plaintext highlighter-rouge">cp</code> warns you about over-writing an existing <code class="language-plaintext highlighter-rouge">.emacs</code> you might want to reconsider - perhaps you’ve customized <code class="language-plaintext highlighter-rouge">emacs</code> before and you should edit your <code class="language-plaintext highlighter-rouge">~/.emacs</code> to include commands from <code class="language-plaintext highlighter-rouge">~cs50/.emacs</code> rather than simply overwriting it!
-Best to <code class="language-plaintext highlighter-rouge">diff ~/cs50/.emacs ~/.emacs</code> to see what’s different, rather than simply overwriting yours.</p>
-</blockquote>
-
-<h2 id="non-compilation-makefiles">Non-compilation makefiles</h2>
-
-<p>You can use makefiles to solve many of your daily challenges involving a sequences of dependent actions:</p>
-
-<ul>
-  <li>running test shell scripts during development and regression testing</li>
-  <li>creating documents with LaTeX</li>
-  <li>maintaining webpages (staging and live directories)</li>
-  <li>automated documentation generation</li>
-  <li>source code management</li>
-</ul>
-
-<p>Here, for example, is the Makefile I use on my MacBook to compile and push the CS50 website to the webserver:</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Makefile for deploying Jekyll site.
-# David Kotz, Spring 2017, borrowing from Charles Palmer and Ira Jenkins
-</span>
-<span class="nv">DEST</span>    <span class="o">=</span>  cs50@green.cs.dartmouth.edu:public_html
-<span class="nv">DESTURL</span> <span class="o">=</span>  http://www.cs.dartmouth.edu/~cs50/
-<span class="nv">LOCALURL</span> <span class="o">=</span> http://127.0.0.1:4000
-
-<span class="c"># files *not* to push to the destination site
-</span><span class="nv">EXCLUDES</span> <span class="o">=</span> <span class="nt">--exclude</span><span class="o">=</span>/Makefile     <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Comics/future   <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Comics/unused   <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/examples/future <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/examples/unused <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Labs/future     <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Labs/unused     <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Sections/future <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Sections/unused <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Reading/future  <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Reading/unused  <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Lectures/future <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>/Lectures/unused <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span><span class="se">\*</span><span class="nt">-draft</span><span class="se">\*</span>       <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span><span class="se">\*</span>~              <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span><span class="se">\*</span>.o             <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span>a.out            <span class="se">\</span>
-	<span class="nt">--exclude</span><span class="o">=</span><span class="se">\*</span>.dSYM          <span class="se">\</span>
-	<span class="nt">--delete-excluded</span>
-
-<span class="nl">.PHONY</span><span class="o">:</span> <span class="nf">build deploy local clean</span>
-
-<span class="c"># just for testing the build
-</span><span class="nl">build</span><span class="o">:</span>
-	<span class="p">@</span><span class="nb">echo</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">Building..."</span>
-	<span class="nb">cat </span>_config-<span class="o">{</span>base,cs<span class="o">}</span> <span class="o">&gt;</span> _config.yml
-	jekyll build
-
-<span class="c"># build and push to CS server
-</span><span class="nl">deploy</span><span class="o">:</span>
-	<span class="nb">cat </span>_config-<span class="o">{</span>base,cs<span class="o">}</span> <span class="o">&gt;</span> _config.yml
-	<span class="p">@</span><span class="nb">echo</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">Building for CS..."</span>
-	jekyll build <span class="nt">--destination</span> _site
-	<span class="p">-</span><span class="nb">rm </span>_config.yml
-
-	<span class="err">@echo</span> <span class="s2">"\nFixing permissions..."</span>
-	<span class="err">chmod</span> <span class="err">-R</span> <span class="err">go-w</span> <span class="err">_site/*</span>
-	<span class="err">chmod</span> <span class="err">-R</span> <span class="err">go+rX</span> <span class="err">_site/*</span>
-
-	<span class="err">@echo</span> <span class="s2">"\nAdding data..."</span>
-	<span class="err">ln</span> <span class="err">-s</span> <span class="err">../data</span> <span class="err">_site/data</span>
-
-	<span class="err">@echo</span> <span class="s2">"\nDeploying..."</span>
-	<span class="err">rsync</span> <span class="err">-e</span> <span class="err">ssh</span> <span class="err">-alcvz</span> <span class="err">$(EXCLUDES)</span> <span class="err">--delete</span>  <span class="err">_site/</span> <span class="err">$(DEST)</span>
-	<span class="err">open</span> <span class="err">$(DESTURL)</span>
-
-<span class="c"># build and open in a local server (jekyll serve runs jekyll build first)
-</span><span class="nl">local</span><span class="o">:</span>
-	<span class="p">@</span><span class="nb">echo</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">Building for local viewing..."</span>
-	<span class="nb">cat </span>_config-<span class="o">{</span>base,local<span class="o">}</span> <span class="o">&gt;</span> _config.yml
-	<span class="o">(</span><span class="nb">sleep </span>5<span class="p">;</span> open <span class="nv">$(LOCALURL)</span><span class="o">)</span> &amp;
-	jekyll serve <span class="nt">--incremental</span>
-	<span class="p">-</span><span class="nb">rm </span>_config.yml
-
-<span class="nl">clean</span><span class="o">:</span>
-	jekyll clean
-	<span class="p">-</span><span class="nb">rm</span> <span class="nt">-f</span> _config.yml
-</code></pre></div></div>
-
-<p>The leading <code class="language-plaintext highlighter-rouge">@</code> on some command lines tells <code class="language-plaintext highlighter-rouge">make</code> not to print that command out for the user to see - just to execute the command.
-Here I use it for <code class="language-plaintext highlighter-rouge">echo</code> commands because, of course, those print their arguments for the user to see.</p>
-
-<p>The leading <code class="language-plaintext highlighter-rouge">-</code> on some command lines tells <code class="language-plaintext highlighter-rouge">make</code> to ignore the exit status of that command - so even a non-zero exit status will allow <code class="language-plaintext highlighter-rouge">make</code> to continue and not exit with an error message.</p>
+<p>This structure should give you a hint about how you might write code to evaluate such expressions…
+if you have a <code class="language-plaintext highlighter-rouge">product</code> function to scan the expression left to right from a given starting point, accumulating a product of individual items until it sees a <code class="language-plaintext highlighter-rouge">+</code> or the end of the expression, you can then write a function <code class="language-plaintext highlighter-rouge">sum</code> that scans the expression left to right from the start, accumulating a sum of products by calling <code class="language-plaintext highlighter-rouge">product</code> at the start and after each <code class="language-plaintext highlighter-rouge">+</code>.</p>
 
 <h2 id="activity">Activity</h2>
 
-<p>In today’s <a href="activity.html">activity</a> we extend the <code class="language-plaintext highlighter-rouge">Makefile</code> for <code class="language-plaintext highlighter-rouge">names</code> to add a phony <em>test</em> target.</p>
+<p>In today’s <a href="activity.html">activity</a> your group will discuss how the above ideas relate to <code class="language-plaintext highlighter-rouge">and</code> an <code class="language-plaintext highlighter-rouge">or</code> operators in a query expression.</p>
 
   </div>
 

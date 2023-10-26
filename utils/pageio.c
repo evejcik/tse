@@ -56,10 +56,11 @@ webpage_t *pageload(int id, char *dirnm){
 	int i;
 
 
-	fscanf("%s%d%d", url,&depth,&htmllen);
+	fscanf(file,"%s%d%d", url,&depth,&htmllen);
 	printf("%s\n",url);
 	printf("%d\n", depth);
-	printf("%d", htmllen);
+	printf("%d\n", htmllen);
+
 
 	for(i = 0; i < htmllen; i++){
 		c = fgetc(file);

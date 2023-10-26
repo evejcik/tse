@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Labs/ 
- 2 
- 2576 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/c1/activity.html
+3
+3621
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -9,13 +9,13 @@ https://thayer.github.io/engs50/Labs/
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Labs</title>
+  <title>Activity - C program</title>
   <meta name="description" content="In Engs 50 you will learn how to design & build large, reliable, maintainable, and understandable software systems.  In the process you will learn to program in C with Unix development tools.
 ">
 
   <link rel="shortcut icon" href="/engs50/50.png" />
   <link rel="stylesheet" href="/engs50/css/main.css">
-  <link rel="canonical" href="/engs50/Labs/">
+  <link rel="canonical" href="/engs50/Notes/c1/activity.html">
 </head>
 
 
@@ -44,25 +44,45 @@ https://thayer.github.io/engs50/Labs/
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Labs</h1>
+    <h1 class="post-title">Activity - C program</h1>
   </header>
 
   <div class="post-content">
-    <h1 id="this-is-a-legacy-page-and-not-used-please-refer-to-canvas-modules-for-assignments">This is a legacy page and not used. Please refer to Canvas Modules for assignments.</h1>
+    <h2 id="goals">Goals</h2>
 
-<h2 id="click-to-view">Click to view!</h2>
+<p>To experience use of <code class="highlighter-rouge">mygcc</code> to compile C programs, to use editor to edit a C program, and to write some simple C code.</p>
+
+<h2 id="tasks">Tasks</h2>
 
 <ul>
-  <li><a href="Lab1/">Lab 1 - Bash</a>.</li>
-  <li><a href="Lab2/">Lab 2 - C</a>.</li>
-  <li><a href="Lab3/">Lab 3 - Data structures in C</a>.</li>
-  <li><a href="Lab4/">Lab 4 - TSE Crawler</a>.</li>
-  <li><a href="Lab5/">Lab 5 - TSE Indexer</a>.</li>
-  <li><a href="Lab6/">Lab 6 - TSE Querier</a>.</li>
+  <li>Copy the <code class="highlighter-rouge">guessprime</code> program into your own directory, and compile it:</li>
 </ul>
 
-<p>Please follow the <a href="/engs50/Resources/CodingStyle.html">CS50 coding style</a>
-in C assignments.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/cs50
+cp ~cs50/examples/guessprime4.c guessprime.c
+mygcc <span class="nt">-o</span> guessprime guessprime.c
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Try running the program a few times.</p>
+  </li>
+  <li>
+    <p>Edit <code class="highlighter-rouge">guessprime.c</code> to add and call a new function:</p>
+  </li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">// print the list of prime numbers from min to max inclusive
+</span>    <span class="kt">void</span> <span class="n">listPrimes</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">min</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">max</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>and arrange to call it when the player gets the right answer:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enter a prime between 1-100: 31
+You win! here's a list of primes in [1..100]:
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
+</code></pre></div></div>
+
 
   </div>
 
@@ -84,7 +104,7 @@ in C assignments.</p>
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

@@ -22,9 +22,9 @@
 
 int main(){
 
-	webpage_t* page = pageload(11, "pages");
+	webpage_t* page = pageload(11, "test");
 
-	pagesave(page, 11, "test");
+	pagesave(page, 12, "test");
 
 	free(page);
 	printf("test complete \n");

@@ -1,6 +1,6 @@
-https://thayer.github.io/engs50/Resources/ 
+https://thayer.github.io/engs50/Labs/Lab5/ 
  2 
- 16835 
+ 23682 
  <!DOCTYPE html>
 <html>
 
@@ -9,13 +9,13 @@ https://thayer.github.io/engs50/Resources/
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Resources</title>
+  <title>Lab 5 - Indexer</title>
   <meta name="description" content="In Engs 50 you will learn how to design & build large, reliable, maintainable, and understandable software systems.  In the process you will learn to program in C with Unix development tools.
 ">
 
   <link rel="shortcut icon" href="/engs50/50.png" />
   <link rel="stylesheet" href="/engs50/css/main.css">
-  <link rel="canonical" href="/engs50/Resources/">
+  <link rel="canonical" href="/engs50/Labs/Lab5/">
 </head>
 
 
@@ -44,164 +44,259 @@ https://thayer.github.io/engs50/Resources/
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Resources</h1>
+    <h1 class="post-title">Lab 5 - Indexer</h1>
   </header>
 
   <div class="post-content">
-    <h2 id="textbooks-and-resources">Textbooks and Resources</h2>
+    <p><strong>Due Friday, May 5, at 10pm</strong></p>
 
-<p><strong>There is no required textbook for this course</strong>.
-However, we do highly recommend <em>C: A Reference Manual</em> by Harbison and Steele.
-I have found it to be invaluable and always near my desk.
-There is a copy <a href="http://libcat.dartmouth.edu/search/r?SEARCH=cosc+050">on reserve</a> at Baker Library.
-There may be copies available in local bookstores, or you can order it from <a href="http://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X/">Amazon</a> or <a href="http://www.barnesandnoble.com/w/c-samuel-p-harbison/1002260874?ean=9780130895929">Barnes &amp; Noble</a>.
-Look for the most recent (fifth) edition.</p>
+<p>In this lab you’ll continue the Tiny Search Engine (TSE) by coding the Indexer and a program for testing a unit that saves and loads index files, according to the <a href="REQUIREMENTS.html">Indexer Requirements Spec</a>.</p>
 
-<p>When we need a more traditional C text, we refer to <em><a href="http://publications.gbdirect.co.uk/c_book">The C Book</a></em>, second edition, by Mike Banahan, Declan Brady and Mark Doran, originally published by Addison Wesley in 1991.
-This book is available online <a href="http://publications.gbdirect.co.uk/c_book">here</a>.</p>
-
-<p>The UNIX operating system and the C programming language have both been around for quite some time.
-UNIX was originally developed in the late 1960’s in assembly language and was mostly reimplemented in the new C programming language by the early 1970’s.
-The first book on C, Kernighan and Ritchie’s <em><a href="http://www.amazon.com/Programming-Language-2nd-Brian-Kernighan/dp/0131103628/ref=sr_1_1?ie=UTF8&amp;qid=1321068335&amp;sr=8-1">C Programming Language</a>,</em> is still in print, and is owned by most UNIX geeks – not because it’s such a great reference, but, well, just because.
-There are a large number of number of books on UNIX and all of its variants, including Linux (see below).</p>
-
-<p>UNIX systems contain lots of documentation in the form of what are called   <code class="language-plaintext highlighter-rouge">man pages</code>, which is short for “manual pages”.
-Thus, a hardcopy book on UNIX may not be really necessary – I didn’t own a UNIX book until many years after I began using UNIX.</p>
-
-<p>Documentation for many of the tools we will be using will either be found in   <code class="language-plaintext highlighter-rouge">man pages</code> or will be supplied as URL’s on this page.
-Of course, you’re welcome to employ your favorite search engine, but beware that there are subtle variations in UNIX tools across its many flavors and distributions.
-For CS50, the <code class="language-plaintext highlighter-rouge">man pages</code> on CS department servers are the definitive reference.</p>
-
-<p>Other resources, papers, and references will appear on in this page as they are identified.
-If you find others that you like, please let me know and we’ll share them with everyone.</p>
-
-<h3 id="general">General</h3>
-
-<p><a href="https://wiki.cs.dartmouth.edu/faq/doku.php/users_faq:first">CS Department User’s FAQ</a>; you’ll need to log in using your CS UNIX username and password.</p>
-
-<h3 id="bash">Bash</h3>
-
-<p>Here are some good links to bash scripting information.</p>
-
-<ul>
-  <li><a href="http://www.panix.com/~elflord/unix/bash-tute.html">Short bash tutorial</a></li>
-  <li><a href="http://www.gnu.org/software/bash/">GNU bash manual</a></li>
-  <li><a href="http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html">BASH Programming - Introduction HOW-TO</a></li>
-  <li><a href="http://tldp.org/LDP/abs/html/">Advanced bash scripting guide</a></li>
-  <li><em><a href="http://www.amazon.com/Bash-Pocket-Reference-Power-Admins/dp/1491941596">Bash Pocket Reference: Help for Power Users and Sys Admins</a>,</em> 2nd Edition, by Arnold Robbins; a short and useful book for less than ten bucks.</li>
-  <li><a href="http://explainshell.com">explainshell</a>, a <em>very cool</em> website that lets you type a bash command and get feedback on what it’s supposed to do.  (It’s drawing on the man pages.)</li>
+<ul id="markdown-toc">
+  <li><a href="#preparation" id="markdown-toc-preparation">Preparation</a></li>
+  <li><a href="#assignment" id="markdown-toc-assignment">Assignment</a>    <ul>
+      <li><a href="#whatsubmit" id="markdown-toc-whatsubmit">Submission - what</a></li>
+      <li><a href="#howsubmit" id="markdown-toc-howsubmit">Submission - how</a></li>
+      <li><a href="#extensions" id="markdown-toc-extensions">Extensions</a></li>
+    </ul>
+  </li>
+  <li><a href="#hints-and-tips" id="markdown-toc-hints-and-tips">Hints and tips</a>    <ul>
+      <li><a href="#review-the-lecture-notes" id="markdown-toc-review-the-lecture-notes">Review the lecture notes</a></li>
+      <li><a href="#libcs50" id="markdown-toc-libcs50">libcs50</a></li>
+      <li><a href="#markdown" id="markdown-toc-markdown">Markdown</a></li>
+      <li><a href="#testing" id="markdown-toc-testing">Testing</a></li>
+      <li><a href="#use-valgrind-and-gdb" id="markdown-toc-use-valgrind-and-gdb">Use valgrind and gdb</a></li>
+      <li><a href="#memory-allocation" id="markdown-toc-memory-allocation">Memory allocation</a></li>
+      <li><a href="#hashtable" id="markdown-toc-hashtable">Hashtable</a></li>
+      <li><a href="#pagedirectory" id="markdown-toc-pagedirectory">pageDirectory</a></li>
+      <li><a href="#index-files" id="markdown-toc-index-files">Index files</a></li>
+      <li><a href="#makefile" id="markdown-toc-makefile">Makefile</a></li>
+    </ul>
+  </li>
 </ul>
 
-<h3 id="editors">Editors</h3>
+<h2 id="preparation">Preparation</h2>
 
-<p>Editor software (a very personal choice - I have used <code class="language-plaintext highlighter-rouge">emacs</code> for many years, as it is extensible (via Lisp) and customizable.
-Others prefer the increasingly popular <code class="language-plaintext highlighter-rouge">sublime text</code> editor ($70) - I’m told it is fast, highly extensible using python &amp; JSON.
-They are both excellent for longer sessions.
-Others prefer <code class="language-plaintext highlighter-rouge">vim</code>.
-For quick fixes and slow ssh connections the <code class="language-plaintext highlighter-rouge">vi</code> editor is a workable alternative.</p>
+<ol>
+  <li>
+    <p>Start with the same Gitlab project you used for Lab 4.
+<em>Before you begin</em>, make sure you submitted Lab 4 correctly: you tagged the submitted version with <code class="language-plaintext highlighter-rouge">lab4submit</code>, <a href="/engs50/Labs/Lab4/#howsubmit">as instructed</a>, and pushed that tag to your Gitlab remote.</p>
+  </li>
+  <li>
+    <p>Check to ensure your local repo is clean with <code class="language-plaintext highlighter-rouge">make clean</code> and everything has been committed and pushed according to <code class="language-plaintext highlighter-rouge">git status</code>.
+If you have files that need to be committed, or commits that should be pushed, do that now.
+(oops - were those supposed to be part of your Lab 4 submission?
+See the first step above.)</p>
+  </li>
+  <li>
+    <p><strong>Do not proceed</strong> if you have uncommitted changes or unpushed commits.
+Seek help if you need to sort out your repo and Gitlab.</p>
+  </li>
+  <li>Pull the updated and additional files from the upstream master (the TSE starter kit) into your local repository:
+<code class="language-plaintext highlighter-rouge">git pull upstream master</code>
+(this works if you earlier followed the <a href="/05/">instructions from Section meeting</a>).
+    <blockquote>
+      <p><a href="https://gitlab.cs.dartmouth.edu/CS50/tse/compare/341328cc0ba0501a0f53eabace60a5cdbbd5b762...HEAD">Here</a> you can see the changes that will happen when you run this command - all the changes made to the starter kit since it was released.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>Commit and push your changes; perhaps tag this commit for easy reference later: <code class="language-plaintext highlighter-rouge">git commit -a; git tag lab5start; git push --tags</code>.</p>
+  </li>
+  <li>Check again to be sure your Gitlab repo is <strong><em>private</em></strong> (not <em>internal</em> or <em>public</em>).
+Visit your repo on Gitlab, click on <em>Settings</em>, and scroll down to <em>Project Visibility</em>.</li>
+</ol>
+
+<h2 id="assignment">Assignment</h2>
+
+<p>Write the <em>indexer</em>, second sub-system of the Tiny Search Engine.
+Please follow the <a href="/engs50/Resources/CodingStyle.html">CS50 coding style guidelines</a> and the <a href="REQUIREMENTS.html">Indexer Requirements Spec</a>, and make good use of our abstract data structures.</p>
+
+<p>Now is a good time to read Section 4 in <em><a href="/engs50/Reading/searchingtheweb.pdf">Searching the Web</a></em>, the paper about search engines.</p>
+
+<ol>
+  <li>In the <code class="language-plaintext highlighter-rouge">indexer</code> subdirectory, write
+    <ul>
+      <li>a program <code class="language-plaintext highlighter-rouge">indexer</code>;</li>
+      <li>a program <code class="language-plaintext highlighter-rouge">indextest</code>;</li>
+      <li>a short file <code class="language-plaintext highlighter-rouge">README.md</code> to provide any special information about compiling or using your indexer or indextest programs;</li>
+      <li>a file <code class="language-plaintext highlighter-rouge">DESIGN.md</code> to provide the Design Spec for indexer (not index tester), drawing inspiration from the <a href="/indexer/">lecture notes</a>;</li>
+      <li>a file <code class="language-plaintext highlighter-rouge">IMPLEMENTATION.md</code> to provide the implementation spec and testing plan for indexer (not index tester);</li>
+      <li>a file <code class="language-plaintext highlighter-rouge">TESTING.md</code>, telling the grader how you tested your indexer (see <a href="#testing">about testing</a> below);</li>
+      <li>a <code class="language-plaintext highlighter-rouge">.gitignore</code> file telling Git to ignore the binary files (libraries, executables) in this directory.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Both programs shall leverage common code from <code class="language-plaintext highlighter-rouge">common.a</code> in the <code class="language-plaintext highlighter-rouge">../common</code> directory:</p>
+
+    <ul>
+      <li>a module <code class="language-plaintext highlighter-rouge">index.c</code> that contains all the logic for saving and loading index files (this module is common between the Indexer, Querier, and indextest);</li>
+      <li>a module <code class="language-plaintext highlighter-rouge">pagedir.c</code> that contains all the logic for saving pages to a crawler output directory, for loading pages from a crawler output directory (this module is common between the Crawler and Indexer);</li>
+      <li>(optionally) a module <code class="language-plaintext highlighter-rouge">word.c</code> that implements <code class="language-plaintext highlighter-rouge">NormalizeWord</code> (this module is common between the Indexer and Querier);</li>
+      <li>a <code class="language-plaintext highlighter-rouge">Makefile</code> that builds <code class="language-plaintext highlighter-rouge">common.a</code> for use by the programs;</li>
+      <li>a short <code class="language-plaintext highlighter-rouge">README.md</code> file explaining how to build <code class="language-plaintext highlighter-rouge">common.a</code>;</li>
+      <li>a <code class="language-plaintext highlighter-rouge">.gitignore</code> file telling Git to ignore the binary files (libraries, executables) in this directory.</li>
+    </ul>
+  </li>
+  <li>Review your top-level <code class="language-plaintext highlighter-rouge">README.md</code> and <code class="language-plaintext highlighter-rouge">Makefile</code> to update as needed.</li>
+</ol>
+
+<h3 id="whatsubmit">Submission - what</h3>
+
+<p>In this lab you shall edit or add files as described above.
+<strong><em>You must arrange your directory like ours, so we can better navigate and test your code.</em></strong>  Of course, you may have additional files - test scripts, test output, code you’ve chosen to break into multiple files.
+Here is the solution’s <a href="/engs50/Labs/Lab5/tse-tree.txt">directory structure</a>; it includes some of the optional files and some of the testing files, which may not be present in your solution.
+The point is that your code must be organized in the same <em>directory</em> structure.</p>
+
+<p><em>You shall NOT modify any of the code we provide in <code class="language-plaintext highlighter-rouge">libcs50</code></em>.</p>
+
+<p><em>You shall NOT include any data files produced by the crawler or indexer, or any binary/object files produced by the compiler, backup files, core dumps, etc.</em></p>
+
+<h3 id="howsubmit">Submission - how</h3>
+
+<p>When you are ready for final submission,</p>
 
 <ul>
-  <li><a href="/engs50/Resources/StartingSublime.pdf">Getting started with Sublime Text</a> and <a href="http://code.tutsplus.com/articles/perfect-workflow-in-sublime-text-free-course--net-27293">a great tutorial</a></li>
-  <li><a href="http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html">Emacs tutorial</a></li>
-  <li><a href="http://marc-abramowitz.com/download/emacs_22_reference_card.ps2pdf14.pdf">Emacs quick reference guide</a></li>
-  <li><a href="http://heather.cs.ucdavis.edu/~matloff/UnixAndC/Editors/ViIntro.html">An Extremely Quick and Simple Introduction to the Vi Text Editor</a></li>
-  <li><a href="http://blog.interlinked.org/tutorials/vim_tutorial.html">vim tutorial</a></li>
+  <li><strong>Add</strong> all required files using an appropriate <code class="language-plaintext highlighter-rouge">git add</code> commandline.</li>
+  <li><strong>Commit</strong> all changes using an appropriate <code class="language-plaintext highlighter-rouge">git commit</code> commandline.</li>
+  <li><strong>Tag</strong>: <code class="language-plaintext highlighter-rouge">git tag lab5submit</code></li>
+  <li><strong>Push</strong>: <code class="language-plaintext highlighter-rouge">git push --tags</code> to ensure the tags are pushed to the remote.
+See <a href="/git/tags.html">more about tags</a>.</li>
 </ul>
+
+<p>Use your web browser to view your remote on Gitlab and make sure there is a tag <code class="language-plaintext highlighter-rouge">lab5submit</code> and the files associated with that tagged commit include everything we’ll need to grade your lab.</p>
+
+<p>We grade the version tagged <code class="language-plaintext highlighter-rouge">lab5submit</code> so it is safe for you to continue work (e.g., so you can start work on Lab 6), even if you commit or push.</p>
+
+<p>We will clone your repo at 0h, 24h, 48h, and 72h after the original deadline.
+We will start grading when we first see one with tag <code class="language-plaintext highlighter-rouge">lab5submit</code>, and judge it late if that tag was added after the deadline.
+To avoid confusion, <em>please blitz the team <code class="language-plaintext highlighter-rouge">cs50 AT cs.dartmouth.edu</code> if you want a late submission to be graded instead of your on-time submission.</em></p>
+
+<p><strong><em>Your entire codebase must compile with <code class="language-plaintext highlighter-rouge">make</code> from the top-level directory and produce no compiler warnings.</em></strong>  If we find that your code will not compile, or has <strong>segmentation faults</strong>, we will send it back to you as soon as we can for repair; recall the <a href="/#crashes">grading policy</a>.</p>
+
+<p>We will run your indexer on our own set of test data.</p>
+
+<p>We will run <code class="language-plaintext highlighter-rouge">valgrind</code> on your program to look for memory leaks; you will lose points for memory leaks or memory errors.</p>
+
+<h3 id="extensions">Extensions</h3>
+
+<p>If you want to claim your extension, create a file <code class="language-plaintext highlighter-rouge">EXTENSION</code> at the top-level directory of your repository.
+Don’t forget to <code class="language-plaintext highlighter-rouge">git push</code> <em>(before the deadline!)</em> so we will see the file.
+For example,</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">touch </span>EXTENSION
+<span class="nv">$ </span>git add EXTENSION
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"extension request"</span>
+<span class="nv">$ </span>git tag lab5submit     <span class="c"># add tag, as above</span>
+<span class="nv">$ </span>git push <span class="nt">--tags</span>        <span class="c"># push to gitlab, including tags</span>
+</code></pre></div></div>
+
+<p>Use your web browser to view your remote on Gitlab and make sure there is a tag <code class="language-plaintext highlighter-rouge">lab5submit</code> and that its files include <code class="language-plaintext highlighter-rouge">EXTENSION</code>.</p>
+
+<p>When you are ready to submit your code, remove <code class="language-plaintext highlighter-rouge">EXTENSION</code> as follows, <em>update your submission tag</em>, and push to Gitlab:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git <span class="nb">rm </span>EXTENSION
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"ready for grading"</span>
+<span class="nv">$ </span>git push <span class="nt">--delete</span> origin lab5submit <span class="c"># remove the tag from remote</span>
+<span class="nv">$ </span>git tag <span class="nt">-f</span> lab5submit  <span class="c"># move the local tag forward to this commit</span>
+<span class="nv">$ </span>git push <span class="nt">--tags</span>        <span class="c"># push to gitlab remote, including tags</span>
+</code></pre></div></div>
+
+<p>Use your web browser to view your remote on Gitlab and make sure there is a tag <code class="language-plaintext highlighter-rouge">lab5submit</code>, that its files do <em>not</em> include <code class="language-plaintext highlighter-rouge">EXTENSION</code>, and its files include everything we’ll need to grade your lab.</p>
+
+<h2 id="hints-and-tips">Hints and tips</h2>
+
+<h3 id="review-the-lecture-notes">Review the lecture notes</h3>
+
+<p>There are some design tips in the <a href="/indexer/">lecture notes</a>.
+This week’s <a href="/engs50/Reading/#week-6">reading</a> is great too!</p>
+
+<h3 id="libcs50">libcs50</h3>
+
+<p>We provide several modules in the <code class="language-plaintext highlighter-rouge">libcs50</code> directory, which compiles to a library <code class="language-plaintext highlighter-rouge">libcs50.a</code> you can link with your indexer.
+<em>You should not change any of our code.</em>
+You may drop in your <code class="language-plaintext highlighter-rouge">set.[ch]</code>, <code class="language-plaintext highlighter-rouge">counters.[ch]</code>, <code class="language-plaintext highlighter-rouge">hashtable.[ch]</code> files from Lab 3.
+If you’d prefer to use our version of <em>set</em>, <em>counters</em>, and <em>hashtable</em>, that’s totally fine; the starter kit includes a pre-compiled library you can use instead; see <code class="language-plaintext highlighter-rouge">libcs50/README.md</code>.</p>
+
+<p>Most of the modules in this directory are documented with a corresponding Markdown file.</p>
 
 <h3 id="markdown">Markdown</h3>
 
-<p>A file with extension <code class="language-plaintext highlighter-rouge">.md</code> is assumed to be a text file in ‘Markdown’ syntax, which provides very simple (and readable) markup for headings, lists, italics, bold, hyperlinks, code snippets, and embedded images.
-(This course website is written in Markdown and rendered with Jekyll.) Many source-code web portals (like our Gitlab and the popular Github) allow you to browse the files in your repository - automatically rendering any that are in Markdown format, making such files much nicer to look at than plain-text files.
-You can edit Markdown files in any text editor, but there are some specialized editors available.
-Markdown is easy to learn and there are many useful resources online:</p>
+<p>In this and subsequent labs, you must provide documentation files in Markdown format, that is, you should supply <code class="language-plaintext highlighter-rouge">README.md</code>, <code class="language-plaintext highlighter-rouge">DESIGN.md</code>, <code class="language-plaintext highlighter-rouge">IMPLEMENTATION.md</code>, and <code class="language-plaintext highlighter-rouge">TESTING.md</code>.
+The Markdown syntax provides very simple (and readable) markup for headings, lists, italics, bold, and code snippets.
+(This course website is written in Markdown.) See <a href="/engs50/Resources/#markdown">Markdown resources</a>.</p>
 
-<ul>
-  <li>a quick <a href="http://www.markdown-tutorial.com/#/overview">tutorial</a>.</li>
-  <li>Gitlab’s <a href="https://gitlab.cs.dartmouth.edu/help/user/markdown.md">Markdown guide</a> (after all, CS50 uses Gitlab!)</li>
-  <li>Github’s <em><a href="https://guides.github.com/features/mastering-markdown/">Mastering Markdown</a></em> tutorial.</li>
-  <li>Github’s <em><a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown cheatsheet</a>.</em></li>
-  <li>Brett Terpstra’s <em><a href="http://brettterpstra.com/2015/08/24/write-better-markdown/">Write better Markdown</a></em>, which recognizes that many flavors of Markdown exist.</li>
-  <li><a href="https://robots.thoughtbot.com/markoff-free-markdown-previewer">Markoff</a>, a MacOS application for previewing Markdown files.</li>
-  <li><a href="http://macdown.uranusjr.com">Macdown</a>, a MacOS application for editing Markdown files.</li>
-</ul>
+<h3 id="testing">Testing</h3>
 
-<h3 id="git">Git</h3>
+<p>If your crawler never quite worked, never fear!
+You do not need a working crawler to write or test your indexer.
+Try your indexer on the crawler’s output, which is in <code class="language-plaintext highlighter-rouge">~cs50/demo/crawler-output/</code>.</p>
 
-<p>Great references for the <code class="language-plaintext highlighter-rouge">git</code> distributed version control system that we use</p>
+<p>We recommend that you write a bash script to execute your indexer; you might run that script from a <code class="language-plaintext highlighter-rouge">make test</code> target.
+Your <code class="language-plaintext highlighter-rouge">TESTING.md</code> file can name the script and describe what it does.</p>
 
-<ul>
-  <li>Instructions for setting up <a href="gitlab-ssh.html">Gitlab with SSH</a>.</li>
-  <li>Free <a href="http://git-scm.com/book">“Pro Git” book</a> by Scott Chacon, plus the website has LOTS of additional git references, including videos!</li>
-  <li>Some interactive tutorials
-    -   <a href="http://try.github.io/levels/1/challenges/1">try.github</a>
-    -   <a href="https://onlywei.github.io/explain-git-with-d3/">explain git</a></li>
-  <li>Some other non-interactive video tutorials</li>
-  <li><a href="http://www.git-tower.com/learn/videos">learn version control with git</a></li>
-  <li><a href="http://gitimmersion.com/index.html">git tutorial (requires Ruby)</a></li>
-  <li><a href="https://help.github.com/articles/resolving-a-merge-conflict-using-the-command-line/">resolving conflicts</a></li>
-  <li>A very slick (and free) GUI for <code class="language-plaintext highlighter-rouge">git</code> called <a href="https://www.atlassian.com/software/sourcetree">SourceTree</a> is very popular, as is the excellent licensed (not free) application <a href="http://www.git-tower.com/">Tower<sup>2</sup>.</a></li>
-  <li>Reference for <a href="https://github.com/github/gitignore">common <code class="language-plaintext highlighter-rouge">.gitignore</code> files</a></li>
-</ul>
+<p>Because some of our data-structure implementations have unspecified ordering – the order in which data appears when traversing the structure may not be the same as the order items were inserted – the file saved by the index tester may not be literally identical to the file read by that program.
+We provide an <a href="/engs50/Labs/Lab5/indexsort.awk"><code class="language-plaintext highlighter-rouge">indexsort.awk</code></a>  script that sorts the index file into a ‘canonical’ ordering, making it possible to compare two index files for their content.</p>
 
-<h3 id="tools">Tools</h3>
+<p>Note that <code class="language-plaintext highlighter-rouge">TESTING.md</code> is different from the ‘Testing plan’, which is a short high-level description written before you code.
+<code class="language-plaintext highlighter-rouge">TESTING.md</code> contains (or refers to) results from the tests.
+It may refer to other files that contain input to or output from your test runs, or scripts to run the tests; they need not be copied into this file.
+(Indeed, your file will be much more readable if you don’t fill it with long scripts or output!)</p>
 
-<p>Software tools we may be using</p>
+<h3 id="use-valgrind-and-gdb">Use valgrind and gdb</h3>
 
-<ul>
-  <li><a href="http://valgrind.org/">valgrind</a>: a family of tools for dynamic analysis of programs.</li>
-  <li>
-    <p><a href="https://web.stanford.edu/class/cs107/guide_valgrind.html">quick guide to valgrind</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.gnu.org/software/make/manual/make.html">GNU make</a> is a utility for determining what needs to be done (e.g., compile, link, copy, etc.) to build a program or other target, and then issues the commands to do it.</p>
-  </li>
-  <li>
-    <p><a href="http://johnmacfarlane.net/pandoc/">pandoc</a>: A universal document converter.</p>
-  </li>
-  <li>
-    <p><a href="http://www.gtk.org/documentation.php">gtk</a>: A popular toolkit for creating graphical user interfaces.
-Follow the X11 instructions below to learn how to compile and use <code class="language-plaintext highlighter-rouge">gtk</code>.</p>
-  </li>
-  <li><a href="XQuartz/">X11 and XQuartz</a>: to run window-based (or graphical) applications on the CS50 Unix servers, but allow them to pop open windows on your Mac, you’ll need to install XQuartz.
-Installation is simple; this link has instructions for installing and using XQuartz, and for compiling <code class="language-plaintext highlighter-rouge">gtk</code> applications.</li>
-</ul>
+<p>In <a href="/debug/">Lecture</a> we learned how to use <code class="language-plaintext highlighter-rouge">valgrind</code> and <code class="language-plaintext highlighter-rouge">gdb</code>; make use of them.</p>
 
-<h3 id="unix-books">Unix books</h3>
+<h3 id="memory-allocation">Memory allocation</h3>
 
-<p>Unix &amp; Linux books / links</p>
+<p>You may find the <code class="language-plaintext highlighter-rouge">memory.c</code> module useful.
+Its use is optional, but it is ready to use as part of library <code class="language-plaintext highlighter-rouge">libcs50.a</code>.</p>
 
-<ul>
-  <li><em><a href="http://www.amazon.com/Practical-Commands-Editors-Programming-Edition/dp/013308504X/ref=sr_1_1?ie=UTF8&amp;qid=1394757793&amp;sr=8-1&amp;keywords=Linux+Commands,+Editors,+and+Shell+Programming+Mark+G.+Sobell">A Practical Guide to Linux Commands, Editors, and Shell Programming</a>,</em> by Mark G. Sobell; an excellent, comprehensive, hands-on book on Linux and shell programming as well as Python, Perl, and MySQL.</li>
-  <li><em><a href="http://www.amazon.com/Beginning-Linux-Programming-Neil-Matthew-ebook/dp/B004YK0KO8/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1393966477&amp;sr=1-1&amp;keywords=beginning+linux+programming">Beginning Linux Programming, 4th Edition</a>,</em> by Neil Matthew, Richard Stones; A really good book covering, debugging, processes, threads, and socket programming in clear and easy manner</li>
-  <li><em><a href="http://www.amazon.com/Practice-Programming-Addison-Wesley-Professional-Computing/dp/020161586X/ref=pd_bbs_sr_2?ie=UTF8&amp;s=books&amp;qid=1199226460&amp;sr=1-2">The Practice of Programming</a>,</em> by Brian W. Kernighan, Rob Pike; a great classic book on design and programming for Unix and C.</li>
-  <li><em><a href="http://www.amazon.com/Professional-Linux-Programming-Jon-Masters/dp/0471776130/ref=sr_1_cc_2?s=aps&amp;ie=UTF8&amp;qid=1399424116&amp;sr=1-2-catcorr&amp;keywords=masters+and+blum+linux">Professional Linux Programming</a>,</em> by Jon Masters and Richard Blum; an oldie (2007) but a goodie.</li>
-  <li><em><a href="http://www.amazon.com/Unix-Network-Programming-Sockets-Networking/dp/0131411551/ref=sr_1_2?ie=UTF8&amp;qid=1329757685&amp;sr=8-2">UNIX Network Programming</a>,</em> by W. Richard Stevens, 2003; Prentice-Hall.</li>
-  <li><em><a href="http://www.amazon.com/Linux-Nutshell-Ellen-Siever/dp/0596154488">Linux in a Nutshell</a></em></li>
-  <li><em><a href="http://www.amazon.com/Linux-System-Programming-Talking-Directly/dp/1449339530">Linux System Programming</a></em></li>
-  <li><em><a href="http://www.linuxdevcenter.com/lpt/a/6109">What Is the X Window System</a>,</em> from O’Reilly’s linux devcenter.com</li>
-  <li><em><a href="http://www.computerhope.com/unix.htm#04">Unix, Linux, and variants</a></em>, free website listing common Unix commands</li>
-  <li><em><a href="http://www.math.utah.edu/docs/info/features_7.html">Bash command line editing</a></em></li>
-  <li><em><a href="https://www.lynda.com/Mac-OS-X-10-6-tutorials/Unix-for-Mac-OS-X-Users/78546-2.html">Unix for MacOS X users</a>,</em> a video tutorial from 2011 version of MacOS X. From Lynda.com, which is free to Dartmouth users.</li>
-  <li><a href="Homebrew.html">Homebrew</a>, a tool for installing Unix tools on MacOS. Highly recommended for CS50!</li>
-</ul>
+<p>In our Lab3 we tried to recover gracefully from memory-allocation failures.
+In the TSE application programs, we’ll be a bit more lazy: on NULL return from malloc/calloc you can print an error and exit with non-zero exit status.
+(You may find the <code class="language-plaintext highlighter-rouge">assertp()</code> function, defined by the <code class="language-plaintext highlighter-rouge">memory</code> module, to be useful here.)</p>
 
-<h3 id="programming">Programming</h3>
+<h3 id="hashtable">Hashtable</h3>
 
-<ul>
-  <li>
-    <p><a href="https://www.lynda.com/Programming-Languages-training-tutorials/1467-0.html?category=c_1249">C programming tutorials</a> – video tutorials from Lynda.com, which are free to Dartmouth users.</p>
-  </li>
-  <li><em><a href="http://pragprog.com/book/tpp/the-pragmatic-programmer">The Pragmatic Programmer</a></em><a href="http://pragprog.com/book/tpp/the-pragmatic-programmer">, by Andrew Hunt and David Thomas. 2000, Addison Wesley.</a></li>
-  <li><a href="http://www.amazon.com/Things-Every-Programmer-Should-Know/dp/0596809484/ref=sr_1_2?ie=UTF8&amp;qid=1363813033&amp;sr=8-2&amp;keywords=97+things+every+programmer+should+know">97 things every programmer should know, by Kevlin Henney. O’Reilly 2010.</a></li>
-  <li><em><a href="http://www.amazon.com/First-Book-Fourth-Introduction-Programming/dp/1418835560/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1363813105&amp;sr=1-1&amp;keywords=bronson+ansi+c">A First Book of ANSI C, Fourth Edition,</a></em> <a href="http://www.amazon.com/First-Book-Fourth-Introduction-Programming/dp/1418835560/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1363813105&amp;sr=1-1&amp;keywords=bronson+ansi+c">by Gary J. Bronson</a>; a very good book for learning C</li>
-  <li><a href="http://en.wikipedia.org/wiki/C_programming_language">The Wikipedia entry for the C programming language</a></li>
-  <li><a href="http://groups.google.com/group/comp.lang.c/browse_frm/thread/1ce1b07f3725e0c7?q=%22Why+is+C+good%3F%3F%3F%22&amp;hl=en&amp;pli=1">The USENET discussion Why is C good?</a></li>
-  <li><em><a href="/engs50/Resources/RC13972-C-Programming.pdf">An Introduction to the C programming language</a>,</em> by Charles Palmer (1988). Easy read with lots of simple examples. Skip to page 20 to start, and remember some of the comments are dated (e.g., “<em>variables in all lower case</em>”).</li>
-  <li>Quick reference cards for <a href="http://users.ece.utexas.edu/~adnan/c-refcard.pdf">C</a> and <a href="http://users.ece.utexas.edu/~adnan/gdb-refcard.pdf">gdb</a>.</li>
-</ul>
+<p>“How big should the hashtable be?”</p>
 
-<p>Remember that we’re not suggesting you buy all these books.
-The text by Harbison and Steele is highly recommended for this course and may be in local bookstores.</p>
+<p>In the indexer/querier, we use a hashtable to store an inverted index (words –&gt; documents), and thus the hashtable is keyed by words.
+The answer to the above question, then, depends on how many words will be in the index.</p>
+
+<p>When building the inverted index, it’s impossible to know in advance how many words you will find in all those pages encountered by the crawler.
+Pick a reasonable size, perhaps something in the range of 200..900 slots.</p>
+
+<p>When loading an inverted index from a file, though, you <em>can</em> know how many words… because there is one word per line in the index file, and it’s easy to count the number of lines (see <code class="language-plaintext highlighter-rouge">file.c</code>).
+Once your code can obtain the number of words, think about how it can compute a good size for your hashtable.</p>
+
+<h3 id="pagedirectory">pageDirectory</h3>
+
+<p>Recall that the Crawler fills a directory with saved pages; in Lab 4 we recommended that you also create and leave a file <code class="language-plaintext highlighter-rouge">.crawler</code> in the page directory.
+If you followed that advice, you now have a great opportunity!
+You might include a function <code class="language-plaintext highlighter-rouge">isCrawlerDirectory(char *dir)</code> in your <code class="language-plaintext highlighter-rouge">pagedir</code> module, which can easily verify whether <code class="language-plaintext highlighter-rouge">dir</code> is indeed a Crawler-produced directory.
+If it can open a file <code class="language-plaintext highlighter-rouge">dir/.crawler</code> for reading, then <code class="language-plaintext highlighter-rouge">dir</code> is a Crawler-produced directory; if not, either the <code class="language-plaintext highlighter-rouge">dir</code> is not a valid pathname, not a directory, not a readable directory, it’s not a Crawler produced directory, or some other error - all easily caught by this simple test.</p>
+
+<h3 id="index-files">Index files</h3>
+
+<p>To read each line of the index file, it works well to read the word, then loop calling <code class="language-plaintext highlighter-rouge">fscanf</code> with format <code class="language-plaintext highlighter-rouge">"%d %d "</code> to pull off one pair at a time, checking the return value of <code class="language-plaintext highlighter-rouge">fscanf</code>.</p>
+
+<p>To write the index file, use the <code class="language-plaintext highlighter-rouge">_iterate</code> methods built into your data structures.
+(Indeed you may need to have iterators call iterators!) Do <em>not</em> use your <code class="language-plaintext highlighter-rouge">_print</code> methods for this purpose; those are meant for producing pretty human-readable output for debugging purposes.</p>
+
+<p>The functions found in <code class="language-plaintext highlighter-rouge">file.c</code> should be helpful.</p>
+
+<h3 id="makefile">Makefile</h3>
+
+<p>Your <code class="language-plaintext highlighter-rouge">indexer/Makefile</code> needs to build both <code class="language-plaintext highlighter-rouge">indexer</code> and <code class="language-plaintext highlighter-rouge">indextest</code>.
+It may be most convenient to add a phony top-most rule:</p>
+
+<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">all</span><span class="o">:</span> <span class="nf">indexer indextest</span>
+</code></pre></div></div>
+
+<p>so that <code class="language-plaintext highlighter-rouge">make</code> or <code class="language-plaintext highlighter-rouge">make all</code> will build both programs; if you want to build just one, run <code class="language-plaintext highlighter-rouge">make indexer</code> or <code class="language-plaintext highlighter-rouge">make indextest</code>.</p>
+
+<p>You may also find it useful to add phony rules so you can <code class="language-plaintext highlighter-rouge">make test</code> or <code class="language-plaintext highlighter-rouge">make valgrind</code>.</p>
+
+<p>Good luck!</p>
 
   </div>
 

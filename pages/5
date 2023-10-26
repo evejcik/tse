@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Resources/ 
- 1 
- 16835 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Resources/
+1
+16588
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -65,12 +65,12 @@ UNIX was originally developed in the late 1960’s in assembly language and was 
 The first book on C, Kernighan and Ritchie’s <em><a href="http://www.amazon.com/Programming-Language-2nd-Brian-Kernighan/dp/0131103628/ref=sr_1_1?ie=UTF8&amp;qid=1321068335&amp;sr=8-1">C Programming Language</a>,</em> is still in print, and is owned by most UNIX geeks – not because it’s such a great reference, but, well, just because.
 There are a large number of number of books on UNIX and all of its variants, including Linux (see below).</p>
 
-<p>UNIX systems contain lots of documentation in the form of what are called   <code class="language-plaintext highlighter-rouge">man pages</code>, which is short for “manual pages”.
+<p>UNIX systems contain lots of documentation in the form of what are called   <code class="highlighter-rouge">man pages</code>, which is short for “manual pages”.
 Thus, a hardcopy book on UNIX may not be really necessary – I didn’t own a UNIX book until many years after I began using UNIX.</p>
 
-<p>Documentation for many of the tools we will be using will either be found in   <code class="language-plaintext highlighter-rouge">man pages</code> or will be supplied as URL’s on this page.
+<p>Documentation for many of the tools we will be using will either be found in   <code class="highlighter-rouge">man pages</code> or will be supplied as URL’s on this page.
 Of course, you’re welcome to employ your favorite search engine, but beware that there are subtle variations in UNIX tools across its many flavors and distributions.
-For CS50, the <code class="language-plaintext highlighter-rouge">man pages</code> on CS department servers are the definitive reference.</p>
+For CS50, the <code class="highlighter-rouge">man pages</code> on CS department servers are the definitive reference.</p>
 
 <p>Other resources, papers, and references will appear on in this page as they are identified.
 If you find others that you like, please let me know and we’ll share them with everyone.</p>
@@ -94,11 +94,11 @@ If you find others that you like, please let me know and we’ll share them with
 
 <h3 id="editors">Editors</h3>
 
-<p>Editor software (a very personal choice - I have used <code class="language-plaintext highlighter-rouge">emacs</code> for many years, as it is extensible (via Lisp) and customizable.
-Others prefer the increasingly popular <code class="language-plaintext highlighter-rouge">sublime text</code> editor ($70) - I’m told it is fast, highly extensible using python &amp; JSON.
+<p>Editor software (a very personal choice - I have used <code class="highlighter-rouge">emacs</code> for many years, as it is extensible (via Lisp) and customizable.
+Others prefer the increasingly popular <code class="highlighter-rouge">sublime text</code> editor ($70) - I’m told it is fast, highly extensible using python &amp; JSON.
 They are both excellent for longer sessions.
-Others prefer <code class="language-plaintext highlighter-rouge">vim</code>.
-For quick fixes and slow ssh connections the <code class="language-plaintext highlighter-rouge">vi</code> editor is a workable alternative.</p>
+Others prefer <code class="highlighter-rouge">vim</code>.
+For quick fixes and slow ssh connections the <code class="highlighter-rouge">vi</code> editor is a workable alternative.</p>
 
 <ul>
   <li><a href="/engs50/Resources/StartingSublime.pdf">Getting started with Sublime Text</a> and <a href="http://code.tutsplus.com/articles/perfect-workflow-in-sublime-text-free-course--net-27293">a great tutorial</a></li>
@@ -110,7 +110,7 @@ For quick fixes and slow ssh connections the <code class="language-plaintext hig
 
 <h3 id="markdown">Markdown</h3>
 
-<p>A file with extension <code class="language-plaintext highlighter-rouge">.md</code> is assumed to be a text file in ‘Markdown’ syntax, which provides very simple (and readable) markup for headings, lists, italics, bold, hyperlinks, code snippets, and embedded images.
+<p>A file with extension <code class="highlighter-rouge">.md</code> is assumed to be a text file in ‘Markdown’ syntax, which provides very simple (and readable) markup for headings, lists, italics, bold, hyperlinks, code snippets, and embedded images.
 (This course website is written in Markdown and rendered with Jekyll.) Many source-code web portals (like our Gitlab and the popular Github) allow you to browse the files in your repository - automatically rendering any that are in Markdown format, making such files much nicer to look at than plain-text files.
 You can edit Markdown files in any text editor, but there are some specialized editors available.
 Markdown is easy to learn and there are many useful resources online:</p>
@@ -127,7 +127,7 @@ Markdown is easy to learn and there are many useful resources online:</p>
 
 <h3 id="git">Git</h3>
 
-<p>Great references for the <code class="language-plaintext highlighter-rouge">git</code> distributed version control system that we use</p>
+<p>Great references for the <code class="highlighter-rouge">git</code> distributed version control system that we use</p>
 
 <ul>
   <li>Instructions for setting up <a href="gitlab-ssh.html">Gitlab with SSH</a>.</li>
@@ -139,8 +139,8 @@ Markdown is easy to learn and there are many useful resources online:</p>
   <li><a href="http://www.git-tower.com/learn/videos">learn version control with git</a></li>
   <li><a href="http://gitimmersion.com/index.html">git tutorial (requires Ruby)</a></li>
   <li><a href="https://help.github.com/articles/resolving-a-merge-conflict-using-the-command-line/">resolving conflicts</a></li>
-  <li>A very slick (and free) GUI for <code class="language-plaintext highlighter-rouge">git</code> called <a href="https://www.atlassian.com/software/sourcetree">SourceTree</a> is very popular, as is the excellent licensed (not free) application <a href="http://www.git-tower.com/">Tower<sup>2</sup>.</a></li>
-  <li>Reference for <a href="https://github.com/github/gitignore">common <code class="language-plaintext highlighter-rouge">.gitignore</code> files</a></li>
+  <li>A very slick (and free) GUI for <code class="highlighter-rouge">git</code> called <a href="https://www.atlassian.com/software/sourcetree">SourceTree</a> is very popular, as is the excellent licensed (not free) application <a href="http://www.git-tower.com/">Tower<sup>2</sup>.</a></li>
+  <li>Reference for <a href="https://github.com/github/gitignore">common <code class="highlighter-rouge">.gitignore</code> files</a></li>
 </ul>
 
 <h3 id="tools">Tools</h3>
@@ -160,10 +160,10 @@ Markdown is easy to learn and there are many useful resources online:</p>
   </li>
   <li>
     <p><a href="http://www.gtk.org/documentation.php">gtk</a>: A popular toolkit for creating graphical user interfaces.
-Follow the X11 instructions below to learn how to compile and use <code class="language-plaintext highlighter-rouge">gtk</code>.</p>
+Follow the X11 instructions below to learn how to compile and use <code class="highlighter-rouge">gtk</code>.</p>
   </li>
   <li><a href="XQuartz/">X11 and XQuartz</a>: to run window-based (or graphical) applications on the CS50 Unix servers, but allow them to pop open windows on your Mac, you’ll need to install XQuartz.
-Installation is simple; this link has instructions for installing and using XQuartz, and for compiling <code class="language-plaintext highlighter-rouge">gtk</code> applications.</li>
+Installation is simple; this link has instructions for installing and using XQuartz, and for compiling <code class="highlighter-rouge">gtk</code> applications.</li>
 </ul>
 
 <h3 id="unix-books">Unix books</h3>
@@ -223,7 +223,7 @@ The text by Harbison and Steele is highly recommended for this course and may be
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

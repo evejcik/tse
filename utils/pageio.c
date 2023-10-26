@@ -62,14 +62,15 @@ webpage_t *pageload(int id, char *dirnm){
 	printf("%d\n", htmllen);
 
 
-	for(i = 0; i <= htmllen; i++){
+	for(i = 0; i < htmllen; i++){
 		c = fgetc(file);
 		htmlBuffer[i] = c;
 	}	
 	webpage_t* page = webpage_new(url, depthInt, htmlBuffer);                                               
   //        free(file);                                                                                   
   fclose(file);                                                                                           
-  return(page); 
+  return(page);
+}
 	
 	/*if(i == 0){
 		while((c = fgetc(file)) != '\n'){
@@ -145,5 +146,5 @@ webpage_t *pageload(int id, char *dirnm){
 	fclose(file);
 	return(page);*/
 		
-}
+//}
 

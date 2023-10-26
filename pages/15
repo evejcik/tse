@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/intro/ 
- 2 
- 31558 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/intro/
+2
+30142
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -121,7 +121,7 @@ documentation.  The goal of this activity is to help you develop the
 confidence, skills, and habits necessary to write large computer
 programs while part of a multi-person team.  You will become
 conversant in software engineering paradigms, such as source code
-control with <code class="language-plaintext highlighter-rouge">git</code> and other open source tools that ease the software
+control with <code class="highlighter-rouge">git</code> and other open source tools that ease the software
 development process.  In addition, you will develop vital skills in
 self-directed learning, problem solving, and communication.  The
 project concludes with a demo and a review of your design and
@@ -163,7 +163,7 @@ interaction occurs over the ‘command line’.</p>
 <p>Modern Unix systems support rich graphical user interfaces, but under
 the hood they all support the command line.  In this class, I will
 demonstrate everything using the MacOS command line, accessed via the
-MacOS application called <code class="language-plaintext highlighter-rouge">Terminal</code>.  If you have a Mac, you can
+MacOS application called <code class="highlighter-rouge">Terminal</code>.  If you have a Mac, you can
 follow along.  If you use Windows, consider installing Linux on your
 laptop (either ‘dual boot’ or ‘virtual machine’).  But all of us can
 (and will) also use the Thayer M210 machines.</p>
@@ -188,25 +188,25 @@ Hello CS50
 <span class="o">[</span>MacBook ~]<span class="nv">$ </span>
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">ls</code> command is the “list directory contents” command.
-The <code class="language-plaintext highlighter-rouge">echo</code> command is like a print statement - it echos its arguments back.</p>
+<p>The <code class="highlighter-rouge">ls</code> command is the “list directory contents” command.
+The <code class="highlighter-rouge">echo</code> command is like a print statement - it echos its arguments back.</p>
 
 <p>Most commands quickly produce some output and then exit.  Some will
 run too long - perhaps printing too much output; you can stop (kill)
-the command, forcing it to exit, by typing control-C <code class="language-plaintext highlighter-rouge">^C</code> at the
-keyboard.  One silly program, <code class="language-plaintext highlighter-rouge">yes</code>, just prints an infinite sequence
-of <code class="language-plaintext highlighter-rouge">y</code> characters until you kill it:</p>
+the command, forcing it to exit, by typing control-C <code class="highlighter-rouge">^C</code> at the
+keyboard.  One silly program, <code class="highlighter-rouge">yes</code>, just prints an infinite sequence
+of <code class="highlighter-rouge">y</code> characters until you kill it:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>DFK:~] <span class="nb">yes
-</span>y
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>DFK:~] yes
+y
 y
 y
 ^C
 <span class="o">[</span>DFK:~]
 </code></pre></div></div>
 
-<p>Some commands ask for your input, and continue to read input until they read an “end of file” (EOF); you can cause the program to detect an EOF by typing control-D <code class="language-plaintext highlighter-rouge">^D</code> at the beginning of an input line.
-Below I typed three lines of text, the <code class="language-plaintext highlighter-rouge">^D</code> at the start of the fourth input line, to the <code class="language-plaintext highlighter-rouge">cat</code> program:</p>
+<p>Some commands ask for your input, and continue to read input until they read an “end of file” (EOF); you can cause the program to detect an EOF by typing control-D <code class="highlighter-rouge">^D</code> at the beginning of an input line.
+Below I typed three lines of text, the <code class="highlighter-rouge">^D</code> at the start of the fourth input line, to the <code class="highlighter-rouge">cat</code> program:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>cs50@flume ~]<span class="nv">$ </span>mail kotz@cs
 Subject: Hello from cs50
@@ -217,27 +217,27 @@ EOT
 <span class="o">[</span>cs50@flume ~]<span class="nv">$ </span>
 </code></pre></div></div>
 
-<p>Here, when we typed ctrl-D the <code class="language-plaintext highlighter-rouge">mail</code> program detected an end of file (EOF) on its input (i.e., the keyboard), then printed <code class="language-plaintext highlighter-rouge">EOT</code> and exited.
+<p>Here, when we typed ctrl-D the <code class="highlighter-rouge">mail</code> program detected an end of file (EOF) on its input (i.e., the keyboard), then printed <code class="highlighter-rouge">EOT</code> and exited.
 Moments later, the mail message landed in my inbox.</p>
 
-<p>Notice the difference between <code class="language-plaintext highlighter-rouge">^C</code> and <code class="language-plaintext highlighter-rouge">^D</code>; the former kills the program immediately, whereas the latter causes it to detect EOF when it next reads input from the keyboard.</p>
+<p>Notice the difference between <code class="highlighter-rouge">^C</code> and <code class="highlighter-rouge">^D</code>; the former kills the program immediately, whereas the latter causes it to detect EOF when it next reads input from the keyboard.</p>
 
-<h2 id="logging-into-a-remote-machine-using-ssh">Logging into a remote machine using <code class="language-plaintext highlighter-rouge">ssh</code></h2>
+<h2 id="logging-into-a-remote-machine-using-ssh">Logging into a remote machine using <code class="highlighter-rouge">ssh</code></h2>
 
 <p>Thayer operates a set of Linux machines called
 hubN.thayer.dartmouth.edu where N is a number between 1 and 16. You
 can use these to practice using ssh, but use the M210 machines for
 verifying your labs before you hand them in your labs.</p>
 
-<p>I’ll login in from my Mac using the <strong>s</strong>ecure <strong>sh</strong>ell (<code class="language-plaintext highlighter-rouge">ssh</code>) Unix command.
-The <code class="language-plaintext highlighter-rouge">ssh</code> command establishes a secure channel and uses public-key cryptography to authenticate the remote computer and the user.</p>
+<p>I’ll login in from my Mac using the <strong>s</strong>ecure <strong>sh</strong>ell (<code class="highlighter-rouge">ssh</code>) Unix command.
+The <code class="highlighter-rouge">ssh</code> command establishes a secure channel and uses public-key cryptography to authenticate the remote computer and the user.</p>
 
 <blockquote>
-  <p>The <code class="language-plaintext highlighter-rouge">ssh</code> command replaces the archaic <code class="language-plaintext highlighter-rouge">telnet</code> (remote communications with another computer) and <code class="language-plaintext highlighter-rouge">rlogin</code> (remote login) because they lack security.
-The <code class="language-plaintext highlighter-rouge">ssh</code> command is exclusively used, these days, because your session is encrypted when it’s transmitted over the network, rather than being sent in clear text.</p>
+  <p>The <code class="highlighter-rouge">ssh</code> command replaces the archaic <code class="highlighter-rouge">telnet</code> (remote communications with another computer) and <code class="highlighter-rouge">rlogin</code> (remote login) because they lack security.
+The <code class="highlighter-rouge">ssh</code> command is exclusively used, these days, because your session is encrypted when it’s transmitted over the network, rather than being sent in clear text.</p>
 </blockquote>
 
-<p>Below, I remotely log in as user <code class="language-plaintext highlighter-rouge">kotz</code> to the server named <code class="language-plaintext highlighter-rouge">flume</code> by giving its full IP name - <code class="language-plaintext highlighter-rouge">flume.cs.dartmouth.edu</code>.</p>
+<p>Below, I remotely log in as user <code class="highlighter-rouge">kotz</code> to the server named <code class="highlighter-rouge">flume</code> by giving its full IP name - <code class="highlighter-rouge">flume.cs.dartmouth.edu</code>.</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>MacBook ~]<span class="nv">$ </span>ssh <span class="nt">-l</span> kotz flume.cs.dartmouth.edu
 Last login: Fri Jan 27 13:25:26 2017 from 10.31.126.2
@@ -257,26 +257,26 @@ I won’t be using X in this course, but you may wish to explore the option.</p>
 </blockquote>
 
 <p>There are hundreds of Unix commands – but you probably only need a few dozen to get by.
-Each Unix command has a short abbreviated command name (e.g., LiSt directory (ls) or Secure SHell (ssh)) and its associated syntax that typically includes various arguments, and options; typically, these options (or <em>switches</em> as they are also known) are either a single letter preceded by a hyphen (e.g., <code class="language-plaintext highlighter-rouge">-l</code>) or one or more words preceded by two hyphens (e.g., <code class="language-plaintext highlighter-rouge">--verbose</code>).
-For example, the format of an <code class="language-plaintext highlighter-rouge">ssh</code> command line looks like this:</p>
+Each Unix command has a short abbreviated command name (e.g., LiSt directory (ls) or Secure SHell (ssh)) and its associated syntax that typically includes various arguments, and options; typically, these options (or <em>switches</em> as they are also known) are either a single letter preceded by a hyphen (e.g., <code class="highlighter-rouge">-l</code>) or one or more words preceded by two hyphens (e.g., <code class="highlighter-rouge">--verbose</code>).
+For example, the format of an <code class="highlighter-rouge">ssh</code> command line looks like this:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	ssh <span class="o">[</span>options] <span class="o">[</span>user@] <span class="nb">hostname</span> <span class="o">[</span><span class="nb">command</span><span class="o">]</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	ssh <span class="o">[</span>options] <span class="o">[</span>user@] hostname <span class="o">[</span><span class="nb">command</span><span class="o">]</span>
 </code></pre></div></div>
 
-<p>In <code class="language-plaintext highlighter-rouge">ssh -l kotz flume.cs.dartmouth.edu</code>, the switch <code class="language-plaintext highlighter-rouge">-l</code> informs the <code class="language-plaintext highlighter-rouge">ssh</code> command that the username of the user logging in is kotz.
-(Alternately, I could have used the form <code class="language-plaintext highlighter-rouge">ssh kotz@flume.cs.dartmouth.edu</code>).</p>
+<p>In <code class="highlighter-rouge">ssh -l kotz flume.cs.dartmouth.edu</code>, the switch <code class="highlighter-rouge">-l</code> informs the <code class="highlighter-rouge">ssh</code> command that the username of the user logging in is kotz.
+(Alternately, I could have used the form <code class="highlighter-rouge">ssh kotz@flume.cs.dartmouth.edu</code>).</p>
 
 <p>This is a good time to look at the formatting of these command help texts.
-The <code class="language-plaintext highlighter-rouge">[ ]</code> are used to denote optional things, like</p>
+The <code class="highlighter-rouge">[ ]</code> are used to denote optional things, like</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[command]
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[command]
 </code></pre></div></div>
 
-<p>while the things outside of the <code class="language-plaintext highlighter-rouge">[ ]</code> , like <code class="language-plaintext highlighter-rouge">hostname</code>, must be specified.</p>
+<p>while the things outside of the <code class="highlighter-rouge">[ ]</code> , like <code class="highlighter-rouge">hostname</code>, must be specified.</p>
 
 <h2 id="getting-information-using-the-online-manual-man">Getting Information using the online manual (man)</h2>
 
-<p>If you want the detailed syntax of a Unix command you can use the manual command followed by the command, as in <code class="language-plaintext highlighter-rouge">man ssh</code> which produced the following:</p>
+<p>If you want the detailed syntax of a Unix command you can use the manual command followed by the command, as in <code class="highlighter-rouge">man ssh</code> which produced the following:</p>
 
 <pre><code class="language-man">    SSH(1)                    BSD General Commands Manual                   SSH(1)
 
@@ -320,20 +320,20 @@ The <code class="language-plaintext highlighter-rouge">[ ]</code> are used to de
     ... and a whole lot more
 </code></pre>
 
-<p>This is just a snippet of the <code class="language-plaintext highlighter-rouge">man ssh</code> output (<code class="language-plaintext highlighter-rouge">man</code> is short for manual).
+<p>This is just a snippet of the <code class="highlighter-rouge">man ssh</code> output (<code class="highlighter-rouge">man</code> is short for manual).
 The manual output includes all the nitty gritty details on options and about the command.
-For most commands you can use the common option <code class="language-plaintext highlighter-rouge">--help</code> (two hyphens) to get a brief breakdown of the command and its switches.
-This doesn’t work for all commands (including <code class="language-plaintext highlighter-rouge">ssh</code>, interestingly), but in that case the use of <code class="language-plaintext highlighter-rouge">-help</code> is interpreted as an invalid entry by ssh and it lists of the options anyway.</p>
+For most commands you can use the common option <code class="highlighter-rouge">--help</code> (two hyphens) to get a brief breakdown of the command and its switches.
+This doesn’t work for all commands (including <code class="highlighter-rouge">ssh</code>, interestingly), but in that case the use of <code class="highlighter-rouge">-help</code> is interpreted as an invalid entry by ssh and it lists of the options anyway.</p>
 
 <p>You can use</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>man -k keyword
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>man -k keyword
 </code></pre></div></div>
 
 <p>to search through the manual pages for matches on a keyword.
 For example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[kotz@flume ~]$ man -k shell
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[kotz@flume ~]$ man -k shell
 bash (1)             - GNU Bourne-Again SHell
 capsh (1)            - capability shell wrapper
 chroot (1)           - run command or interactive shell with special root directory
@@ -347,11 +347,11 @@ csh (1)              - C shell with file name completion and command line editin
 <h2 id="your-home-directory-and-its-files">Your home directory and its files</h2>
 
 <p>Each user has a ‘home directory’.  After you have logged in using
-<code class="language-plaintext highlighter-rouge">ssh</code> you are in your home directory - that is, the shell’s notion of
+<code class="highlighter-rouge">ssh</code> you are in your home directory - that is, the shell’s notion of
 your ‘current working directory’ is your home directory.</p>
 
-<p>We can look at our home directory ‘path’ using the <code class="language-plaintext highlighter-rouge">pwd</code> (print
-working directory) command.  You can always use the <code class="language-plaintext highlighter-rouge">man</code> and <code class="language-plaintext highlighter-rouge">info</code>
+<p>We can look at our home directory ‘path’ using the <code class="highlighter-rouge">pwd</code> (print
+working directory) command.  You can always use the <code class="highlighter-rouge">man</code> and <code class="highlighter-rouge">info</code>
 commands to get more information.</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>kotz@flume ~]<span class="nv">$ </span><span class="nb">pwd</span>
@@ -385,18 +385,18 @@ drwxr-xr-x 2 kotz root 4096 Jan 28 10:14 project/
 <span class="o">[</span>kotz@flume ~/cs50]<span class="nv">$ </span>
 </code></pre></div></div>
 
-<p>Yes, I mistyped two commands in that example: <code class="language-plaintext highlighter-rouge">cd cs500</code> and <code class="language-plaintext highlighter-rouge">cs
+<p>Yes, I mistyped two commands in that example: <code class="highlighter-rouge">cd cs500</code> and <code class="highlighter-rouge">cs
 cs50</code>.  I wanted you to see what the system says when you make a
 mistake … just in case you make one yourself sometime. ;-)</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">cd</code> command changes the current working directory; I finally
+<p>The <code class="highlighter-rouge">cd</code> command changes the current working directory; I finally
 typed it right and the shell reported that my working directory is
-<code class="language-plaintext highlighter-rouge">~/cs50</code>.  The same command, <code class="language-plaintext highlighter-rouge">ls -l</code>, listed <em>that</em> directory the
+<code class="highlighter-rouge">~/cs50</code>.  The same command, <code class="highlighter-rouge">ls -l</code>, listed <em>that</em> directory the
 second time.</p>
 
 <p>Files can be plain files, directories, or special files (more later).
 We can see that each file has file permissions and other data
-associated with it; for example, the directory <code class="language-plaintext highlighter-rouge">public_html</code>:</p>
+associated with it; for example, the directory <code class="highlighter-rouge">public_html</code>:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>drwxr-xr-x 3 kotz root 4096 Mar 17 12:01 public_html/
 </code></pre></div></div>
@@ -416,10 +416,10 @@ my shell is /bin/bash
 <span class="o">[</span>kotz@flume ~/cs50]<span class="nv">$ </span>
 </code></pre></div></div>
 
-<p>The last parameter to <code class="language-plaintext highlighter-rouge">echo</code> substitutes the value of the variable <code class="language-plaintext highlighter-rouge">SHELL</code>.
+<p>The last parameter to <code class="highlighter-rouge">echo</code> substitutes the value of the variable <code class="highlighter-rouge">SHELL</code>.
 More on the bash shell later.</p>
 
-<p>Another useful command for copying files between machines is the <code class="language-plaintext highlighter-rouge">scp</code> - secure copy (remote file copy program) command.
+<p>Another useful command for copying files between machines is the <code class="highlighter-rouge">scp</code> - secure copy (remote file copy program) command.
 Below I find, then copy, of the schedule for CS50 from the course website.</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>DFK:~] ssh kotz@flume
@@ -440,20 +440,20 @@ Schedule.pdf                                           100%   44KB  44.1KB/s   0
 <span class="o">[</span>DFK:~] 
 </code></pre></div></div>
 
-<p>Recall that <code class="language-plaintext highlighter-rouge">~</code> is my home directory, so <code class="language-plaintext highlighter-rouge">~cs50</code> is the home directory
-for user <code class="language-plaintext highlighter-rouge">cs50</code>.  I changed my working directory to the cs50 home,
-then into its <code class="language-plaintext highlighter-rouge">public_html</code>, and listed the files there.  Now I know
+<p>Recall that <code class="highlighter-rouge">~</code> is my home directory, so <code class="highlighter-rouge">~cs50</code> is the home directory
+for user <code class="highlighter-rouge">cs50</code>.  I changed my working directory to the cs50 home,
+then into its <code class="highlighter-rouge">public_html</code>, and listed the files there.  Now I know
 the ‘path name’ for the desired file - the directory name followed by
-slash followed by the filename.  The <code class="language-plaintext highlighter-rouge">scp</code> command allows me to
+slash followed by the filename.  The <code class="highlighter-rouge">scp</code> command allows me to
 specify the host and pathname for the source and destination of the
-copy; here the destination is <code class="language-plaintext highlighter-rouge">.</code>, a shorthand for ‘current working
-directory.  Finally, I used the MacOS command <code class="language-plaintext highlighter-rouge">open</code> to open the file,
-which launches <code class="language-plaintext highlighter-rouge">Preview</code> to show me the pdf.</p>
+copy; here the destination is <code class="highlighter-rouge">.</code>, a shorthand for ‘current working
+directory.  Finally, I used the MacOS command <code class="highlighter-rouge">open</code> to open the file,
+which launches <code class="highlighter-rouge">Preview</code> to show me the pdf.</p>
 
 <h3 id="logging-out">Logging out</h3>
 
 <p>When we are ready to logout from our session on
-flume.cs.dartmouth.edu, we use <code class="language-plaintext highlighter-rouge">logout</code> or <code class="language-plaintext highlighter-rouge">exit</code>:</p>
+flume.cs.dartmouth.edu, we use <code class="highlighter-rouge">logout</code> or <code class="highlighter-rouge">exit</code>:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>kotz@flume ~]<span class="nv">$ </span><span class="nb">logout
 </span>Connection to flume.cs.dartmouth.edu closed.
@@ -470,11 +470,11 @@ on a machine in M210.</p>
 
 <p><strong>Mac</strong>: Mac OSX Unix conforms to the POSIX standard for the C API,
 shell utilities, and threads and can compile and run your existing
-code.  The GNU tools we will be using, such as <code class="language-plaintext highlighter-rouge">gcc</code>, <code class="language-plaintext highlighter-rouge">make</code>, etc.,
+code.  The GNU tools we will be using, such as <code class="highlighter-rouge">gcc</code>, <code class="highlighter-rouge">make</code>, etc.,
 are either included or freely available.  (You may need to install
 command-line tools via Xcode; if so, you will be prompted to do so
-when you first type <code class="language-plaintext highlighter-rouge">gcc</code> or <code class="language-plaintext highlighter-rouge">make</code> or related commands.) You can use
-the <code class="language-plaintext highlighter-rouge">Terminal</code> application.  You can also use the <code class="language-plaintext highlighter-rouge">ssh</code> command to
+when you first type <code class="highlighter-rouge">gcc</code> or <code class="highlighter-rouge">make</code> or related commands.) You can use
+the <code class="highlighter-rouge">Terminal</code> application.  You can also use the <code class="highlighter-rouge">ssh</code> command to
 remotely log on to computers, as discussed above.  <strong>We recommend you
 install <a href="/engs50/Resources/Homebrew.html">Homebrew</a>.</strong></p>
 
@@ -529,7 +529,7 @@ Fun.
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/bugs/ 
- 2 
- 65059 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/bugs/
+2
+64241
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -108,7 +108,7 @@ Even if it compiles, it may not run properly, because of changes in the underlyi
 <p>Jon Bentley (Author of <em>Programming Pearls</em> and other books) observed that a relatively simple piece of code for a binary sort that he had proven to be correct during a lecture at CMU had a bug in it that wasn’t discovered until 20 years later.
 Here’s the code:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="mi">1</span><span class="o">:</span>     <span class="kt">int</span> <span class="nf">binarySearch</span><span class="p">(</span><span class="kt">int</span><span class="p">[]</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">,</span> <span class="kt">int</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="mi">1</span><span class="o">:</span>     <span class="kt">int</span> <span class="n">binarySearch</span><span class="p">(</span><span class="kt">int</span><span class="p">[]</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">,</span> <span class="kt">int</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
     <span class="mi">2</span><span class="o">:</span>         <span class="kt">int</span> <span class="n">low</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">midVal</span><span class="p">;</span>
     <span class="mi">3</span><span class="o">:</span>         <span class="kt">int</span> <span class="n">high</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
     <span class="mi">4</span><span class="o">:</span>
@@ -121,10 +121,10 @@ Here’s the code:</p>
     <span class="mi">11</span><span class="o">:</span>             <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">midVal</span> <span class="o">&gt;</span> <span class="n">key</span><span class="p">)</span>
     <span class="mi">12</span><span class="o">:</span>                 <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
     <span class="mi">13</span><span class="o">:</span>             <span class="k">else</span>
-    <span class="mi">14</span><span class="o">:</span>                 <span class="k">return</span> <span class="n">mid</span><span class="p">;</span> <span class="c1">// key found</span>
-    <span class="mi">15</span><span class="o">:</span>         <span class="p">}</span>
-    <span class="mi">16</span><span class="o">:</span>         <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>  <span class="c1">// key not found.</span>
-    <span class="mi">17</span><span class="o">:</span>     <span class="p">}</span>
+    <span class="mi">14</span><span class="o">:</span>                 <span class="k">return</span> <span class="n">mid</span><span class="p">;</span> <span class="c1">// key found
+</span>    <span class="mi">15</span><span class="o">:</span>         <span class="p">}</span>
+    <span class="mi">16</span><span class="o">:</span>         <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>  <span class="c1">// key not found.
+</span>    <span class="mi">17</span><span class="o">:</span>     <span class="p">}</span>
 </code></pre></div></div>
 
 <p>The bug was found to be in line 6:</p>
@@ -132,8 +132,8 @@ Here’s the code:</p>
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="mi">6</span><span class="o">:</span>             <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
 </code></pre></div></div>
 
-<p>This looks correct, since it’s purpose is to find the average of <code class="language-plaintext highlighter-rouge">low</code> and <code class="language-plaintext highlighter-rouge">high</code>, rounded down to the nearest integer.
-However, if the sum of <code class="language-plaintext highlighter-rouge">low</code> and <code class="language-plaintext highlighter-rouge">high</code> exceed the maximum signed int value (<code class="language-plaintext highlighter-rouge">2^31-1</code> on some architectures), the sum goes negative and the resulting value for <code class="language-plaintext highlighter-rouge">mid</code> is also.</p>
+<p>This looks correct, since it’s purpose is to find the average of <code class="highlighter-rouge">low</code> and <code class="highlighter-rouge">high</code>, rounded down to the nearest integer.
+However, if the sum of <code class="highlighter-rouge">low</code> and <code class="highlighter-rouge">high</code> exceed the maximum signed int value (<code class="highlighter-rouge">2^31-1</code> on some architectures), the sum goes negative and the resulting value for <code class="highlighter-rouge">mid</code> is also.</p>
 
 <p>So how would you fix it?
 The following would work:</p>
@@ -189,16 +189,16 @@ Here’s an example from February 2014 in Apple MacOS X and iOS where hackers co
     <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
 </code></pre></div></div>
 
-<p>Yes, C does have a <code class="language-plaintext highlighter-rouge">goto</code> statement.
+<p>Yes, C does have a <code class="highlighter-rouge">goto</code> statement.
 It works as expected, providing an immediate transfer to the specified label.</p>
 
-<p>Here the programmer is verifying the certificate; if any of the checks fail the <code class="language-plaintext highlighter-rouge">err</code> variable is set non-zero and the code exits to the failure handler.
-Unfortunately, the programmer inserted two <code class="language-plaintext highlighter-rouge">goto fail</code>statements instead of just one.
-As a result, even if <code class="language-plaintext highlighter-rouge">err==0</code> the code transfers to the fail section.
-That returned with a return code of <code class="language-plaintext highlighter-rouge">err</code> which, if <code class="language-plaintext highlighter-rouge">err==0</code> means success, means the certificate is reported as valid, and ultimately accepted.
+<p>Here the programmer is verifying the certificate; if any of the checks fail the <code class="highlighter-rouge">err</code> variable is set non-zero and the code exits to the failure handler.
+Unfortunately, the programmer inserted two <code class="highlighter-rouge">goto fail</code>statements instead of just one.
+As a result, even if <code class="highlighter-rouge">err==0</code> the code transfers to the fail section.
+That returned with a return code of <code class="highlighter-rouge">err</code> which, if <code class="highlighter-rouge">err==0</code> means success, means the certificate is reported as valid, and ultimately accepted.
 This bug could allow website spoofing or the acceptance of a bogus certificate containing a mismatched private key.</p>
 
-<p>This bug was overlooked because the second <code class="language-plaintext highlighter-rouge">goto</code> is indented - but it is not part of the <code class="language-plaintext highlighter-rouge">if</code> statement.
+<p>This bug was overlooked because the second <code class="highlighter-rouge">goto</code> is indented - but it is not part of the <code class="highlighter-rouge">if</code> statement.
 Proper use of CS50 style (putting brackets around every code block) would have prevented this bug from manifesting itself!</p>
 
 <h4 id="loss-of-the-mars-climate-orbiter-and-mars-polar-lander">Loss of the Mars Climate Orbiter and Mars Polar Lander</h4>
@@ -387,17 +387,17 @@ Read your code, think like a computer, and write test code as you write the real
 <p>You already know many C idioms even if we haven’t always labeled them that way.
 In C, there are many ways to write a simple loop:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// example 1</span>
-      <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// example 1
+</span>      <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
       <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
           <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
 
-      <span class="c1">// example 2</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="p">)</span>
+      <span class="c1">// example 2
+</span>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="p">)</span>
           <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
 
-      <span class="c1">// example 3</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">)</span>
+      <span class="c1">// example 3
+</span>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">)</span>
           <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -405,10 +405,10 @@ In C, there are many ways to write a simple loop:</p>
 Idioms aid understanding because they are immediately recognizable and any errors in their use is also quickly discernible.</p>
 
 <p>All of the loops above would work… but they do not follow the C idiom for such loops.
-The idiomatic C <code class="language-plaintext highlighter-rouge">for</code> loop is:</p>
+The idiomatic C <code class="highlighter-rouge">for</code> loop is:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// Idiomatic form</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// Idiomatic form
+</span>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span>
           <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -419,32 +419,32 @@ Either way: take a second close look to convince yourself its one or the other.<
 
 <p>Here are some more examples of C idioms that you should be familiar with:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// Infinite loop idioms</span>
-      <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// Infinite loop idioms
+</span>      <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
          <span class="p">....</span>
       <span class="p">}</span>
 
-      <span class="c1">// or</span>
-
+      <span class="c1">// or
+</span>
       <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
          <span class="p">....</span>
       <span class="p">}</span>
 
-      <span class="c1">// malloc, string copy idiom</span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">newp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+      <span class="c1">// malloc, string copy idiom
+</span>      <span class="kt">char</span> <span class="o">*</span><span class="n">newp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
       <span class="k">if</span> <span class="p">(</span><span class="n">newp</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
       		<span class="n">strcpy</span><span class="p">(</span><span class="n">newp</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
       <span class="k">else</span> 
-      		<span class="c1">// handle the malloc error</span>
-
-      <span class="c1">// copying characters from stdin to stdout until end of file</span>
-      <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">())</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span>
+      		<span class="c1">// handle the malloc error
+</span>
+      <span class="c1">// copying characters from stdin to stdout until end of file
+</span>      <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">())</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span>
            <span class="n">putchar</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
 
-      <span class="c1">// traversal of a null-terminated string</span>
-      <span class="k">for</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">string</span><span class="p">;</span> <span class="o">*</span><span class="n">p</span> <span class="o">!=</span> <span class="sc">'\0'</span><span class="p">;</span> <span class="n">p</span><span class="o">++</span><span class="p">)</span>
-          <span class="c1">// do something with *p  </span>
-
+      <span class="c1">// traversal of a null-terminated string
+</span>      <span class="k">for</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="o">=</span><span class="n">string</span><span class="p">;</span> <span class="o">*</span><span class="n">p</span> <span class="o">!=</span> <span class="sc">'\0'</span><span class="p">;</span> <span class="n">p</span><span class="o">++</span><span class="p">)</span>
+          <span class="c1">// do something with *p  
+</span>
 </code></pre></div></div>
 
 <p>Write in idioms as much as possible; it makes it easier to spot bugs - and harder to create them.</p>
@@ -461,15 +461,15 @@ Every time <em>you</em> write a loop, verify the boundary cases to ensure the ex
 <ol>
   <li>empty input</li>
   <li>a single input character</li>
-  <li>an exactly full array - but could be a <code class="language-plaintext highlighter-rouge">malloc</code>‘ed buffer.</li>
+  <li>an exactly full array - but could be a <code class="highlighter-rouge">malloc</code>‘ed buffer.</li>
 </ol>
 
 <p>Consider the following code snippet from [KP, 1999]:</p>
 
 <h3 id="boundary-test-empty-line-input-with-only-newline">BOUNDARY TEST: empty line (input with only newline)</h3>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// read characters from stdin into a string</span>
-      <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="c1">// read characters from stdin into a string
+</span>      <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
       <span class="kt">char</span> <span class="n">s</span><span class="p">[</span><span class="n">MAX</span><span class="p">];</span>
 
       <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">())</span> <span class="o">!=</span> <span class="sc">'\n'</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
@@ -482,7 +482,7 @@ That should make us look very closely at the loop logic; particularly, the loop�
 Maybe, after studying the code and thinking about characters being input we convince ourselves that the code is non idiomatic but works.
 Now start to test boundaries.
 Consider the case where the user simply types ‘return’.
-The resulting code would terminate immediately on the first iteration with <code class="language-plaintext highlighter-rouge">i</code> still set to zero.
+The resulting code would terminate immediately on the first iteration with <code class="highlighter-rouge">i</code> still set to zero.
 Outside the loop, the assignment statement will write to s[i-1], which is <em>before the start of the array</em>.
 Not a good idea!</p>
 
@@ -490,25 +490,25 @@ Not a good idea!</p>
 
 <p>OK. The smart thing to do is rewrite this convoluted loop as an idiom and solve the problem; for example:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">// note we switch ++i =&gt; i++, the idiom</span>
-           <span class="k">if</span> <span class="p">((</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">())</span> <span class="o">==</span> <span class="sc">'\n'</span><span class="p">)</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">// note we switch ++i =&gt; i++, the idiom
+</span>           <span class="k">if</span> <span class="p">((</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">())</span> <span class="o">==</span> <span class="sc">'\n'</span><span class="p">)</span>
               <span class="k">break</span><span class="p">;</span>
       <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>Inspecting the code above we can easily see that the previous boundary problem is solved with the new idiomatic code.
 It handles the case when the input is solely a newline beautifully.
-If we mentally compute through reading 1, 2 or 3 characters we see it also works; for example <code class="language-plaintext highlighter-rouge">a b c \n</code> works.</p>
+If we mentally compute through reading 1, 2 or 3 characters we see it also works; for example <code class="highlighter-rouge">a b c \n</code> works.</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">is</span> <span class="n">a</span>    <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">is</span> <span class="n">b</span>    <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">is</span> <span class="n">c</span>    <span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">is</span> <span class="err">\</span><span class="mi">0</span>
 </code></pre></div></div>
 
 <p>Looks good.</p>
 
-<p>But what if we get an empty line and the first character is an <code class="language-plaintext highlighter-rouge">EOF</code>?
+<p>But what if we get an empty line and the first character is an <code class="highlighter-rouge">EOF</code>?
 It breaks.
 Another pesky bug in our code.
-Someone typing control-D (<code class="language-plaintext highlighter-rouge">EOF</code>) would not be an unlikely occurrence.</p>
+Someone typing control-D (<code class="highlighter-rouge">EOF</code>) would not be an unlikely occurrence.</p>
 
 <p>OK. Let’s fix this boundary bug.</p>
 
@@ -544,20 +544,20 @@ For example, in our TSE programs, suppose the hash function always returned the 
 What would your program do?
 Would it run, perhaps more slowly, or would it crash?</p>
 
-<p>Many of you use the<code class="language-plaintext highlighter-rouge">count_malloc()</code> function to help track the balance of <code class="language-plaintext highlighter-rouge">malloc</code> and <code class="language-plaintext highlighter-rouge">free</code> calls.
+<p>Many of you use the<code class="highlighter-rouge">count_malloc()</code> function to help track the balance of <code class="highlighter-rouge">malloc</code> and <code class="highlighter-rouge">free</code> calls.
 If you use them for every memory allocation and free, they are a great place to insert debugging code and breakpoints.
 They are also a great place for testing!</p>
 
 <p>For example, you could cause it to cause an out-of-memory situation after some number of calls (as suggested by Kernighan and Pike):</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Usage example: gcc -DMEMORYTESTLIMIT=50 ...</span>
-<span class="kt">void</span> <span class="o">*</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Usage example: gcc -DMEMORYTESTLIMIT=50 ...
+</span><span class="kt">void</span> <span class="o">*</span>
 <span class="nf">count_malloc</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="cp">#ifdef MEMORYTESTLIMIT
 </span>  <span class="k">if</span> <span class="p">(</span><span class="n">nmalloc</span> <span class="o">&gt;=</span> <span class="n">MEMORYTESTLIMIT</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">// fake an out-of-memory condition</span>
-<span class="cp">#endif
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">// fake an out-of-memory condition
+</span><span class="cp">#endif
 </span>
   <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
@@ -570,8 +570,8 @@ They are also a great place for testing!</p>
 
 <p>It is always a good idea to test for pre- and post-conditions: <em>pre-conditions</em> are those you expect to be true before some block of code; <em>post-conditions</em> are those you expect to be true after some block of code executes.
 For example, we have already used defensive program to check input values are with in range - an example of pre-condition testing.
-Let’s look at another simple example out of [KP, 1999] that computes the average of n elements in an array <code class="language-plaintext highlighter-rouge">a[]</code>.
-Closer inspection of the code reveals that there is a problem if <code class="language-plaintext highlighter-rouge">n</code> is less than or equal to <code class="language-plaintext highlighter-rouge">0</code>.</p>
+Let’s look at another simple example out of [KP, 1999] that computes the average of n elements in an array <code class="highlighter-rouge">a[]</code>.
+Closer inspection of the code reveals that there is a problem if <code class="highlighter-rouge">n</code> is less than or equal to <code class="highlighter-rouge">0</code>.</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">avg</span><span class="p">(</span><span class="kt">float</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
 <span class="p">{</span>
@@ -582,11 +582,11 @@ Closer inspection of the code reveals that there is a problem if <code class="la
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>A natural question is what to do if someone calls <code class="language-plaintext highlighter-rouge">avg()</code> with <code class="language-plaintext highlighter-rouge">n=0</code>?
-An array of zero elements does not make much sense but an average of <code class="language-plaintext highlighter-rouge">0</code> does.
+<p>A natural question is what to do if someone calls <code class="highlighter-rouge">avg()</code> with <code class="highlighter-rouge">n=0</code>?
+An array of zero elements does not make much sense but an average of <code class="highlighter-rouge">0</code> does.
 Should our code catch the division by zero, perhaps with an assert or abort, or complain, or be silent?
-One reasonable approach is to just return <code class="language-plaintext highlighter-rouge">0</code> as the average if <code class="language-plaintext highlighter-rouge">n</code> is less than or equal to zero.
-While the code is idiomatic in style we need to tweak it to test pre-condition, as shown below - note: <code class="language-plaintext highlighter-rouge">return n&lt;=0 ? 0.0 : sum/n;</code></p>
+One reasonable approach is to just return <code class="highlighter-rouge">0</code> as the average if <code class="highlighter-rouge">n</code> is less than or equal to zero.
+While the code is idiomatic in style we need to tweak it to test pre-condition, as shown below - note: <code class="highlighter-rouge">return n&lt;=0 ? 0.0 : sum/n;</code></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">double</span> <span class="nf">avg</span><span class="p">(</span><span class="kt">double</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
 <span class="p">{</span>
@@ -602,9 +602,9 @@ While the code is idiomatic in style we need to tweak it to test pre-condition, 
 
 <h3 id="use-assert">Use ‘assert’</h3>
 
-<p>C provides an assertion facility in <code class="language-plaintext highlighter-rouge">assert.h</code> useful for pre- and post-condition testing.
+<p>C provides an assertion facility in <code class="highlighter-rouge">assert.h</code> useful for pre- and post-condition testing.
 Asserts are usually used for unexpected failure where there is no clean way to recover the logic control.
-For example our above <code class="language-plaintext highlighter-rouge">avg()</code> function could include a different solution using the assert function:</p>
+For example our above <code class="highlighter-rouge">avg()</code> function could include a different solution using the assert function:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">avg</span><span class="p">(</span><span class="kt">float</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
 <span class="p">{</span>
@@ -619,14 +619,14 @@ For example our above <code class="language-plaintext highlighter-rouge">avg()</
 
 <p>If the assertion is in fact violated it will cause an abort and standard message to be printed out:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Assertion failed: n &gt; 0, file avgtest.c, line 7 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Assertion failed: n &gt; 0, file avgtest.c, line 7 
 Abort(crash)
 </code></pre></div></div>
 
 <p>Assertions should be used only for testing “this should never happen” kinds of conditions…
 other errors, especially those caused by the user, should be handled more gracefully.</p>
 
-<p>We wrote an own <code class="language-plaintext highlighter-rouge">assert</code> function for use in most of my TSE code;</p>
+<p>We wrote an own <code class="highlighter-rouge">assert</code> function for use in most of my TSE code;</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span>
 <span class="nf">assertp</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span>
@@ -640,9 +640,9 @@ other errors, especially those caused by the user, should be handled more gracef
 </code></pre></div></div>
 
 <p>Notice that it acts like a pass-through function, when all is well.
-The pointer coming from <code class="language-plaintext highlighter-rouge">malloc</code> is returned by <code class="language-plaintext highlighter-rouge">assertp</code> and is saved in the variable.
+The pointer coming from <code class="highlighter-rouge">malloc</code> is returned by <code class="highlighter-rouge">assertp</code> and is saved in the variable.
 At that point it is assured to be non-NULL.
-When <code class="language-plaintext highlighter-rouge">assertp</code> receives a NULL pointer, it prints a message to <code class="language-plaintext highlighter-rouge">stderr</code> and exits.</p>
+When <code class="highlighter-rouge">assertp</code> receives a NULL pointer, it prints a message to <code class="highlighter-rouge">stderr</code> and exits.</p>
 
 <p>I use it at the top of most functions to verify that all inbound pointers are not NULL (where NULL is not valid or expected):</p>
 
@@ -656,11 +656,11 @@ When <code class="language-plaintext highlighter-rouge">assertp</code> receives 
 
 <p>Your crawler and indexer uses defensive programming for checking that the input arguments are logically correct: e.g., that a path actually existed.
 But a useful technique when coding is to “expect the unexpected”, or code for the unexpected.
-Adding checks for <code class="language-plaintext highlighter-rouge">n  &lt; 0</code> in <code class="language-plaintext highlighter-rouge">avg()</code> is an example.
+Adding checks for <code class="highlighter-rouge">n  &lt; 0</code> in <code class="highlighter-rouge">avg()</code> is an example.
 Another is below:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">if</span> <span class="p">(</span><span class="n">grade</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">grade</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)</span>  <span class="c1">// can't happen at Dartmouth</span>
-    <span class="n">letter</span> <span class="o">=</span> <span class="sc">'?'</span><span class="p">;</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">if</span> <span class="p">(</span><span class="n">grade</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">grade</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)</span>  <span class="c1">// can't happen at Dartmouth
+</span>    <span class="n">letter</span> <span class="o">=</span> <span class="sc">'?'</span><span class="p">;</span>
   <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">grade</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">)</span>
     <span class="n">letter</span> <span class="o">=</span> <span class="sc">'A'</span><span class="p">;</span>
   <span class="k">else</span>
@@ -701,17 +701,17 @@ Better to always check the error status returned by functions.</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">fp</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s">"w"</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">fp</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// file could not be opened</span>
-  <span class="p">}</span>
+    <span class="c1">// file could not be opened
+</span>  <span class="p">}</span>
   <span class="k">while</span> <span class="p">(</span><span class="n">some</span> <span class="n">expression</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="p">...);</span>  <span class="c1">// but... what if there is an error?</span>
-  <span class="p">}</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="p">...);</span>  <span class="c1">// but... what if there is an error?
+</span>  <span class="p">}</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">fclose</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span> <span class="o">==</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// some output error occurred</span>
-  <span class="p">}</span>
+    <span class="c1">// some output error occurred
+</span>  <span class="p">}</span>
 </code></pre></div></div>
 
-<p>The error status of <code class="language-plaintext highlighter-rouge">fprintf</code> is not checked; what if it fails?
+<p>The error status of <code class="highlighter-rouge">fprintf</code> is not checked; what if it fails?
 The data written  may have been lost.</p>
 
 <h3 id="summary">Summary</h3>
@@ -772,7 +772,7 @@ Design <em>and</em> test with that environment in mind.</li>
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

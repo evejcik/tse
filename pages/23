@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/modules/ 
- 2 
- 16049 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/modules/
+2
+15384
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -55,8 +55,8 @@ https://thayer.github.io/engs50/Notes/modules/
 <ul>
   <li>Understanding the importance of reusable modules.</li>
   <li>Reiterating the use of header files to enable modules.</li>
-  <li>Reiterating <code class="language-plaintext highlighter-rouge">struct</code> and introducing <code class="language-plaintext highlighter-rouge">typedef</code>.</li>
-  <li>General-purpose data structures with <code class="language-plaintext highlighter-rouge">void*</code>.</li>
+  <li>Reiterating <code class="highlighter-rouge">struct</code> and introducing <code class="highlighter-rouge">typedef</code>.</li>
+  <li>General-purpose data structures with <code class="highlighter-rouge">void*</code>.</li>
   <li>Function pointers.</li>
 </ul>
 
@@ -76,32 +76,32 @@ But we can approximate some of these concepts through good style and careful des
 <h3 id="pointers-to-anything">Pointers to anything</h3>
 
 <p>In developing a general-purpose data-structure module, we would really like the module to be able to store arbitary “things” – not just predetermined types – but anything.
-For example, instead of a linked-list of strings (as we built in the <code class="language-plaintext highlighter-rouge">names</code> program) we’d like a linked-list that could store pointers to anything.
-Today we want a list of string things; tomorrow we might want a list of <code class="language-plaintext highlighter-rouge">struct student</code> things.</p>
+For example, instead of a linked-list of strings (as we built in the <code class="highlighter-rouge">names</code> program) we’d like a linked-list that could store pointers to anything.
+Today we want a list of string things; tomorrow we might want a list of <code class="highlighter-rouge">struct student</code> things.</p>
 
 <p>The solution is for the module to store <em>pointers to things</em>, rather than the things themselves.
 The user’s contract with the module is thus “I allocate and initialize a thing, and give you a pointer to remember; later, when I need that thing, I’ll ask and you give me back that pointer.
 When I ask you to print things, or delete things, I’ll give you customized functions that know how to print and delete things of this type.”</p>
 
 <p>Java and other object-oriented languages do this with <em>templates</em>.
-C has no suport for templates, but it does have a type for “pointer to anything”:  <code class="language-plaintext highlighter-rouge">void*</code>.
+C has no suport for templates, but it does have a type for “pointer to anything”:  <code class="highlighter-rouge">void*</code>.
 Thus,</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="s">"hello"</span><span class="p">;</span>	   <span class="c1">// pointer to a char, in this case, a string</span>
-<span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="o">*</span><span class="n">xp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>  <span class="c1">// pointer to an int</span>
-<span class="k">struct</span> <span class="n">student</span> <span class="o">*</span> <span class="n">sp</span><span class="p">;</span>   <span class="c1">// pointer to a struct</span>
-<span class="n">sp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">student</span><span class="p">));</span> <span class="c1">// initialize the pointer</span>
-<span class="n">sp</span><span class="o">-&gt;</span><span class="n">name</span> <span class="o">=</span> <span class="s">"David"</span><span class="p">;</span>  <span class="c1">// initialize the struct at that pointer</span>
-<span class="n">sp</span><span class="o">-&gt;</span><span class="n">house</span> <span class="o">=</span> <span class="s">"West"</span><span class="p">;</span>  <span class="c1">// ...initialize</span>
-<span class="n">sp</span><span class="o">-&gt;</span><span class="n">class</span> <span class="o">=</span> <span class="mi">1986</span><span class="p">;</span>    <span class="c1">// ...initialize</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="s">"hello"</span><span class="p">;</span>	   <span class="c1">// pointer to a char, in this case, a string
+</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="o">*</span><span class="n">xp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>  <span class="c1">// pointer to an int
+</span><span class="k">struct</span> <span class="n">student</span> <span class="o">*</span> <span class="n">sp</span><span class="p">;</span>   <span class="c1">// pointer to a struct
+</span><span class="n">sp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">student</span><span class="p">));</span> <span class="c1">// initialize the pointer
+</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">name</span> <span class="o">=</span> <span class="s">"David"</span><span class="p">;</span>  <span class="c1">// initialize the struct at that pointer
+</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">house</span> <span class="o">=</span> <span class="s">"West"</span><span class="p">;</span>  <span class="c1">// ...initialize
+</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">class</span> <span class="o">=</span> <span class="mi">1986</span><span class="p">;</span>    <span class="c1">// ...initialize
+</span>
+<span class="kt">void</span> <span class="o">*</span><span class="n">anything</span><span class="p">;</span>       <span class="c1">// a pointer to any type
+</span><span class="n">anything</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>         <span class="c1">// here, a pointer to a char on the stack
+</span><span class="n">anything</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>        <span class="c1">// here, a pointer to an int on the stack
+</span><span class="n">anything</span> <span class="o">=</span> <span class="n">sp</span><span class="p">;</span>        <span class="c1">// here, a pointer to a struct in the heap
+</span></code></pre></div></div>
 
-<span class="kt">void</span> <span class="o">*</span><span class="n">anything</span><span class="p">;</span>       <span class="c1">// a pointer to any type</span>
-<span class="n">anything</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>         <span class="c1">// here, a pointer to a char on the stack</span>
-<span class="n">anything</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>        <span class="c1">// here, a pointer to an int on the stack</span>
-<span class="n">anything</span> <span class="o">=</span> <span class="n">sp</span><span class="p">;</span>        <span class="c1">// here, a pointer to a struct in the heap</span>
-</code></pre></div></div>
-
-<p>Thus, our modules will accept and store <code class="language-plaintext highlighter-rouge">void*</code> pointers, and return them to the caller when asked.</p>
+<p>Thus, our modules will accept and store <code class="highlighter-rouge">void*</code> pointers, and return them to the caller when asked.</p>
 
 <h3 id="pointers-to-functions">Pointers to functions</h3>
 
@@ -119,40 +119,40 @@ Recall that the compiled code of the program lives in the code segment, in memor
 A function pointer is simply that address.</p>
 
 <p>We can refer to the function’s address simply by naming the function, without the syntax of calling a function.
-That is, <code class="language-plaintext highlighter-rouge">foo</code> is a function pointer, whereas <code class="language-plaintext highlighter-rouge">foo(a, b, c)</code> calls that function and passes arguments <code class="language-plaintext highlighter-rouge">a</code>, <code class="language-plaintext highlighter-rouge">b</code>, and <code class="language-plaintext highlighter-rouge">c</code>.
-In our <a href="/engs50/Examplespointer2.c}}">pointer2.c</a> example, we passed the address of functions <code class="language-plaintext highlighter-rouge">main</code> and <code class="language-plaintext highlighter-rouge">change</code> to <code class="language-plaintext highlighter-rouge">printf</code> so it could print those addresses for us to examine.</p>
+That is, <code class="highlighter-rouge">foo</code> is a function pointer, whereas <code class="highlighter-rouge">foo(a, b, c)</code> calls that function and passes arguments <code class="highlighter-rouge">a</code>, <code class="highlighter-rouge">b</code>, and <code class="highlighter-rouge">c</code>.
+In our <a href="/engs50/Examplespointer2.c}}">pointer2.c</a> example, we passed the address of functions <code class="highlighter-rouge">main</code> and <code class="highlighter-rouge">change</code> to <code class="highlighter-rouge">printf</code> so it could print those addresses for us to examine.</p>
 
-<p>If I have a function called <code class="language-plaintext highlighter-rouge">myprint</code>, like this:</p>
+<p>If I have a function called <code class="highlighter-rouge">myprint</code>, like this:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">myprint</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="kt">int</span> <span class="o">*</span><span class="n">valuep</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span> <span class="c1">// in this case, the "things" are integers</span>
-	<span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">"(%s, %d)"</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="n">valuep</span><span class="p">);</span> <span class="c1">// note *valuep derefs pointer</span>
-<span class="p">}</span>
+	<span class="kt">int</span> <span class="o">*</span><span class="n">valuep</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span> <span class="c1">// in this case, the "things" are integers
+</span>	<span class="n">fprintf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">"(%s, %d)"</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="n">valuep</span><span class="p">);</span> <span class="c1">// note *valuep derefs pointer
+</span><span class="p">}</span>
 </code></pre></div></div>
 
-<p>If I have a function pointer <code class="language-plaintext highlighter-rouge">printfunc</code>, I can initialize the function pointer and call through that pointer as follows:</p>
+<p>If I have a function pointer <code class="highlighter-rouge">printfunc</code>, I can initialize the function pointer and call through that pointer as follows:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">printfunc</span> <span class="o">=</span> <span class="n">myprint</span><span class="p">;</span>
 <span class="p">(</span><span class="o">*</span><span class="n">printfunc</span><span class="p">)(</span><span class="n">fp</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">thing</span><span class="p">);</span>
 </code></pre></div></div>
 
 <p>In other words, I dereference the pointer to get a function, and then call that function.
-Notice the <code class="language-plaintext highlighter-rouge">*</code> and parens, <code class="language-plaintext highlighter-rouge">(*printfunc)</code>.</p>
+Notice the <code class="highlighter-rouge">*</code> and parens, <code class="highlighter-rouge">(*printfunc)</code>.</p>
 
-<p>How would I declare that variable <code class="language-plaintext highlighter-rouge">printfunc</code>?
+<p>How would I declare that variable <code class="highlighter-rouge">printfunc</code>?
 pretty gnarly syntax:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">printfunc</span><span class="p">)(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p>declares variable <code class="language-plaintext highlighter-rouge">printfunc</code> to be a pointer to a function whose prototype looks like that of <code class="language-plaintext highlighter-rouge">myprint</code> above, that is, it takes the given three arguments and returns <code class="language-plaintext highlighter-rouge">void</code>.
-Indeed, it looks almost like a common function prototype, except for that <code class="language-plaintext highlighter-rouge">(*variablename)</code> notation.
+<p>declares variable <code class="highlighter-rouge">printfunc</code> to be a pointer to a function whose prototype looks like that of <code class="highlighter-rouge">myprint</code> above, that is, it takes the given three arguments and returns <code class="highlighter-rouge">void</code>.
+Indeed, it looks almost like a common function prototype, except for that <code class="highlighter-rouge">(*variablename)</code> notation.
 For this pointer to be useful, it must be initialized to the address of a function.</p>
 
 <h2 id="example---bags">Example - bags</h2>
 
-<p>Today we live-code a <em>bag</em> data structure and use it to make a bag version of our <code class="language-plaintext highlighter-rouge">names</code> series.
+<p>Today we live-code a <em>bag</em> data structure and use it to make a bag version of our <code class="highlighter-rouge">names</code> series.
 A <em>bag</em> is an unordered collection of (items).
 The bag starts empty, grows as the caller adds one item at a time, and shrinks as the caller extracts one item at a time.
 It could be empty, or could contain hundreds of items.
@@ -163,22 +163,22 @@ Items are indistinguishable, so the <em>extract</em> function is free to return 
 <p>The first example demonstrates</p>
 
 <ul>
-  <li>structure types (like <code class="language-plaintext highlighter-rouge">struct bag_t</code> and <code class="language-plaintext highlighter-rouge">struct bagnode_t</code>).</li>
+  <li>structure types (like <code class="highlighter-rouge">struct bag_t</code> and <code class="highlighter-rouge">struct bagnode_t</code>).</li>
   <li>typedefs to create new type names.</li>
-  <li>Heap memory (created via <code class="language-plaintext highlighter-rouge">malloc</code> in <code class="language-plaintext highlighter-rouge">bag_new</code>).</li>
+  <li>Heap memory (created via <code class="highlighter-rouge">malloc</code> in <code class="highlighter-rouge">bag_new</code>).</li>
   <li>The use of pointers to build and manipulate a bag data structure.</li>
-  <li>The use of <code class="language-plaintext highlighter-rouge">void*</code> to represent “a pointer to anything” and its use to build a bag of generic things.</li>
-  <li>A reminder that strings - even constant strings, in double quotes - are stored in memory as arrays of characters and referenced by a <code class="language-plaintext highlighter-rouge">char*</code> pointer to their first character; thus even a constant string has an address and is passed as a pointer.</li>
+  <li>The use of <code class="highlighter-rouge">void*</code> to represent “a pointer to anything” and its use to build a bag of generic things.</li>
+  <li>A reminder that strings - even constant strings, in double quotes - are stored in memory as arrays of characters and referenced by a <code class="highlighter-rouge">char*</code> pointer to their first character; thus even a constant string has an address and is passed as a pointer.</li>
 </ul>
 
 <p>We extend the example to split the bag functions out as to a separate set of files, demonstrating</p>
 
 <ul>
   <li>a <em>module</em>, which is as close as we get to a <em>class</em> in C.</li>
-  <li>A set of functions exported via <code class="language-plaintext highlighter-rouge">bag.h</code> to other C files.</li>
-  <li>Public types (like <code class="language-plaintext highlighter-rouge">struct bag_t</code>) - and opaque types.</li>
-  <li>Private types (like <code class="language-plaintext highlighter-rouge">struct bagnode_t</code>).</li>
-  <li>Private functions (like <code class="language-plaintext highlighter-rouge">bagnode_new</code>).</li>
+  <li>A set of functions exported via <code class="highlighter-rouge">bag.h</code> to other C files.</li>
+  <li>Public types (like <code class="highlighter-rouge">struct bag_t</code>) - and opaque types.</li>
+  <li>Private types (like <code class="highlighter-rouge">struct bagnode_t</code>).</li>
+  <li>Private functions (like <code class="highlighter-rouge">bagnode_new</code>).</li>
   <li>No need for global variables.  (We always try to avoid them!)</li>
 </ul>
 
@@ -215,7 +215,7 @@ Items are indistinguishable, so the <em>extract</em> function is free to return 
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

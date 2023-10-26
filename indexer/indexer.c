@@ -20,17 +20,20 @@
 #include <unistd.h>
 #include <sys/stat.h>  
 #include <pageio.h>
+#include <ctype.h>
 
 //Step 2
 void NormalizeWord(char* word){
 	if (strlen(word) < 3){
     return false;
 	}
-	
-	if(!isalpha(word[i])){                                                     
-		return false;                                                            
+
+	for(int i = 0; word[i] != '\0'; i++){
+		if(!isalpha(word[i])){
+			return false;
+		}
+		word[i] = tolower(word[i]);	
 	}
-	word[i] = tolower(word[i]);	
 }
 
 
@@ -54,6 +57,11 @@ void updateWordCount(hashtable_t *htp, const char *word) {
 	}
 }
 
+//Step 3 - sum the counts
+void countSumCallback(void* ep, void *arg) {
+	int* total_count = (int*)arg;
+	*total_count += ((word_count_t*)ep)->count;
+}
 
 int main(int argc, char *argv[]){
 	//char* pages[200];
@@ -62,28 +70,28 @@ int main(int argc, char *argv[]){
 	webpage_t* page = pageload(1, "pages");
 
 	int pos = 0;
-	char *result = NULL;
+	//	char *result = NULL;
 
 	char *word = NULL;
+	//	hashtable_t *htp = hopen(1000000);
 	//	int pos = 0;
 		
 	// Loop to extract and print words
 	while (webpage_getNextWord(page, pos, &word) > 0) {
-		printf("%s\n", NormalizeWord(word));  // Print the extracted word
+		NormalizeWord(word);
+		printf("%s\n", word);  // Print the extracted word
 		free(word);  // Free the memory allocated by webpage_getNextWord
 	}
 
 	int total_count = 0;
-	happly(htp, (void (*)(void *))^(void* ep) {
-			total_count += ((word_count_t*)ep)->count;
-    });
+	/*	happly(htp, countSumCallback, &total_count);
 	
 	// Print the total count
 	printf("Total Count: %d\n", total_count);
 	
 	// Free the hashtable when you're done
 	happly(htp, free);
-	hclose(htp);
+	hclose(htp);*/
 	
 	
 	// Free the webpage when you're done

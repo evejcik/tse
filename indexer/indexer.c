@@ -21,6 +21,16 @@
 #include <sys/stat.h>  
 #include <pageio.h>
 
+
+void NormalizeWord(char* word){                                                   if (strlen(word) < 3){                                                           return false;                                                                }                                                                            
+	if(!isalpha(word[i])){                                                     
+      return false;                                                            
+	}
+	word[i] = tolower(word[i]);
+	
+}
+	 
+
 int main(int argc, char *argv[]){
 	//char* pages[200];
 
@@ -35,7 +45,7 @@ int main(int argc, char *argv[]){
 		
 	// Loop to extract and print words
 	while (webpage_getNextWord(page, pos, &word) > 0) {
-		printf("%s\n", word);  // Print the extracted word
+		printf("%s\n", NormalizeWord(word));  // Print the extracted word
 		free(word);  // Free the memory allocated by webpage_getNextWord
 	}
 	

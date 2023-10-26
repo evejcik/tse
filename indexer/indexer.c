@@ -58,7 +58,7 @@ void updateWordCount(hashtable_t *htp, const char *word) {
 }
 
 //Step 3 - sum the counts
-void countSumCallback(void* ep, void *arg) {
+void countSumCallback(void* ep) {
 	int* total_count = (int*)arg;
 	*total_count += ((word_count_t*)ep)->count;
 }

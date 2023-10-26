@@ -67,6 +67,19 @@ int main(int argc, char *argv[]){
 		printf("%s\n", NormalizeWord(word));  // Print the extracted word
 		free(word);  // Free the memory allocated by webpage_getNextWord
 	}
+
+	int total_count = 0;
+	happly(htp, (void (*)(void *))^(void* ep) {
+			total_count += ((word_count_t*)ep)->count;
+    });
+	
+	// Print the total count
+	printf("Total Count: %d\n", total_count);
+	
+	// Free the hashtable when you're done
+	happly(htp, free);
+	hclose(htp);
+	
 	
 	// Free the webpage when you're done
 	webpage_delete(page);

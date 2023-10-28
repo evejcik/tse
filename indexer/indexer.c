@@ -17,7 +17,7 @@
 #include <ctype.h>                                                                     
 #include <string.h>                                                                    
 #include <stdbool.h>                                                                   
-#include "hash.c"                                                                      
+#include "hash.h"                                                                      
                                                                                        
 typedef struct indexEntry{                                                             
   char* givenWord;                                                                     

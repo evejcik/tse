@@ -26,8 +26,8 @@ int main (void){
   // Save new page in test directory                                            
   pagesave(pg2, 3, "../test/");                                                 
                                                                                 
-  webpage_delete(pg1);                                                          
-  webpage_delete(pg2);                                                          
+	// webpage_delete(pg1);                                                          
+  //webpage_delete(pg2);                                                          
                                                                                 
   return 1;                                                                     
 }  

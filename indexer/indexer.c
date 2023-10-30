@@ -125,8 +125,7 @@ int main (void){
         return 1;                                                                      
       }                                                                                
                                                                                        
-      indexEntry_t *hfound = (indexEntry_t*) hsearch(indexHT, matchingWordsSearch, wor\
-d, strlen(word));                                                                      
+      indexEntry_t *hfound = (indexEntry_t*) hsearch(indexHT, matchingWordsSearch, word, strlen(word));                                                                      
       if (hfound == NULL) {                                                            
         hput(indexHT, newEntry, word, strlen(word));                                   
       }                                                                                

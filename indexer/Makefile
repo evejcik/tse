@@ -4,7 +4,7 @@ LIBS=-lutils -lcurl
 all: indexer
 
 indexer:
-	gcc $(CFLAGS) indexerStep3.c $(LIBS) -o $@
+	gcc $(CFLAGS) indexerStep4b.c $(LIBS) -o $@
 
 clean:
 	rm -f indexer

@@ -18,23 +18,63 @@
 #include <string.h>                                                                    
 #include <stdbool.h>                                                                   
 #include "hash.h"                                                                      
-                                                                                       
+#include "queue.h"
+
+int sum = 0;
+
 typedef struct indexEntry{                                                             
   char* givenWord;                                                                     
   int count;                                                                           
-}indexEntry_t;                                                                         
-                                                                                       
+}indexEntry_t;
+
+typedef struct hElement{
+	char *word;
+	queue_t *queue;
+}hElement_t;
+
+typedef struct qElement{
+	int id;
+	int wordCount;
+}qElement_t;
+
+qElement_t *makeqElement(int id, int wc){
+	qElement_t *result = (qElement_t *)malloc(sizeof(qElement_t));
+	result->id = id;
+	result->wordCount = wc;
+	return result;
+}
+hElement_t *makehElement(char *w, qElement_t *qp){
+	hElement_t *result = (hElement_t *)malloc(sizeof(hElement_t));
+	result->word = w;
+	result->queue = qp;
+	return result;
+}
+                                                                           
 bool matchingWordsSearch(void* elementp, const void* searchkeyp) {                     
-  indexEntry_t *givenEntry = (indexEntry_t*) elementp;                                 
+  hElement_t *givenEntry = (hElement_t*) elementp;                                 
   const char *key = (const char*) searchkeyp;                                          
   if(elementp == NULL) {                                                               
     return false;                                                                      
   }                                                                                    
-  if(strcmp((givenEntry -> givenWord), key) == 0) {                                    
+  if(strcmp((givenEntry -> word), key) == 0) {                                    
     return true;                                                                       
   }                                                                                    
   return false;                                                                        
-}                                                                                      
+}
+
+bool matchingIdSearch(void *elementp, const void *searchId){
+	qElement_t *givenEntry = (qElement_t *) elementp;
+	const int *givenId = (int *) searchId;
+	if(elementp == NULL){
+		return false;
+	}
+	if((givenEntry->id) == *givenId){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
                                                                                        
                                                                                        
 void printh(void* elementp) {                                                          
@@ -68,20 +108,24 @@ char* NormalizeWord(char* word){
   return word;                                                                         
 }                                                                                      
                                                                                        
-int total = 0;                                                                         
-void wordCounter(void* ep) {                                                           
-  indexEntry_t *element = (indexEntry_t*) ep;                                          
+void wordCounterQueue(void *ep){
+	qElement_t *element = (qElement_t *) ep;
+	sum += element->wordCount;
+}
+void wordCounterHash(void* ep) {                                                           
+  hElement_t *element = (hElement_t*) ep;                                          
   if (element == NULL) {                                                               
     return;                                                                            
   }                                                                                    
-  total = total + (element -> count);                                                  
+  qapply(element->queue, wordCounterQueue);
+	//sum++;
 }                                                                                      
                                                                                        
-void freeHashWords(void *ep) {                                                         
-  indexEntry_t* entry  = ep;                                                           
-  char* word = entry -> givenWord;                                                     
+void freeHash(void *ep) {                                                         
+  hElement_t* entry  = ep;                                                           
+  char* word = entry -> word;                                                     
   free(word);                                                                          
-  free(entry);                                                                         
+  qclose(entry->queue);                                                                         
 }                                                                                      
                                                                                        
                                                                                        
@@ -89,7 +133,9 @@ int main (void){
   char* word;                                                                          
   int pos=0;                                                                           
   hashtable_t* indexHT;                                                                
-  webpage_t* newWebPg;                                                                 
+  webpage_t* newWebPg;
+	queue_t *queue;
+	int id = 1;
                                                                                        
   //open hashtable                                                                     
   indexHT = hopen(150);                                                                
@@ -115,24 +161,38 @@ int main (void){
       pos++;                                                                           
     }                                                                                  
     else {                                                                             
-      indexEntry_t *newEntry = malloc(sizeof(indexEntry_t));                           
-      if (newEntry != NULL) {                                                          
-        newEntry -> givenWord = word;                                                  
-        newEntry -> count = 1;                                                         
-      }                                                                                
-      else {                                                                           
-        printf("memory error \n");                                                     
-        return 1;                                                                      
-      }                                                                                
+      //indexEntry_t *newEntry = malloc(sizeof(indexEntry_t));                           
+      //if (newEntry != NULL) {                                                          
+        //newEntry -> givenWord = word;                                                  
+        //newEntry -> count = 1;                                                         
+						 //}                                                                                
+						 //else {                                                                           
+						 //printf("memory error \n");                                                     
+						 //return 1;                                                                      
+						 //}                                                                                
                                                                                        
-      indexEntry_t *hfound = (indexEntry_t*) hsearch(indexHT, matchingWordsSearch, wor\
-d, strlen(word));                                                                      
-      if (hfound == NULL) {                                                            
-        hput(indexHT, newEntry, word, strlen(word));                                   
-      }                                                                                
-                                                                                       
-      else {                                                                           
-        hfound -> count = (hfound -> count) + 1;                                       
+      hElement_t *hfound = (hElement_t*) hsearch(indexHT, matchingWordsSearch, word, strlen(word));
+			
+      if (hfound == NULL) {
+				qElement_t *tempQ = makeqElement(id, 1);
+				queue = qopen();
+				qput(queue, tempQ);
+
+				hElement_t *tempH = makehElement(word, queue);
+				hput(indexHT, tempH, word, strlen(word));
+				
+						 //hput(indexHT, newEntry, word, strlen(word));                                   
+      }
+      else {
+				qElement_t *qfound = (qElement_t *) qsearch(hfound->queue, matchingIdSearch, &id);
+				if(qfound == NULL){
+					qElement_t *tempQ = makeqElement(id, 1);
+					qput(hfound->queue, tempQ);
+				}
+				else{
+					(qfound->wordCount)++;
+				}
+        //hfound -> count = (hfound -> count) + 1;                                       
                                                                                        
       }                                                                                
       pos++;                                                                           
@@ -144,9 +204,9 @@ d, strlen(word));
   free(newWebPg);                                                                      
   fclose(fp);                                                                          
   happly(indexHT, printh);                                                             
-  happly(indexHT, wordCounter);                                                        
-  printf("Total # of Words: %d\n", total);                                             
-  happly(indexHT, freeHashWords);                                                      
+  happly(indexHT, wordCounterHash);                                                        
+  printf("Total # of Words: %d\n", sum);                                             
+  happly(indexHT, freeHash);                                                      
   hclose(indexHT);                                                                     
   free(word);                                                                          
                                                                                        

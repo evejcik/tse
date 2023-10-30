@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/querier/ 
- 2 
- 32542 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/querier/
+2
+32157
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -69,10 +69,10 @@ https://thayer.github.io/engs50/Notes/querier/
 <p>The third component of the Tiny Search Engine is the <em>Querier</em>, which reads the index produced by the Indexer and the page files produced by the Crawler, to interactively answer written queries entered by the user.</p>
 
 <p>Our Querier loads the index into memory (a data structure we developed for the Indexer) and then prompts the user for queries.
-Queries are comprised of words, with optional <code class="language-plaintext highlighter-rouge">and</code>/<code class="language-plaintext highlighter-rouge">or</code> operators.
+Queries are comprised of words, with optional <code class="highlighter-rouge">and</code>/<code class="highlighter-rouge">or</code> operators.
 For example,</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>computer science
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>computer science
 computer and science
 computer or science
 baseball or basketball or ultimate frisbee
@@ -84,7 +84,7 @@ The fourth matches documents that mention baseball, or basketball, or both “ul
 
 <p>Here’s an example run, with the output truncated a bit:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$  querier/querier data/cs50-3 data/cs50-index3
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$  querier/querier data/cs50-3 data/cs50-index3
 KEY WORDs:&gt; computer and science
 Query: computer and science 
 Matches 139 documents (ranked):
@@ -170,25 +170,25 @@ Here’s the core of the fuzz tester:</p>
 <span class="k">static</span> <span class="kt">void</span>
 <span class="nf">generate_query</span><span class="p">(</span><span class="k">const</span> <span class="n">wordlist_t</span> <span class="o">*</span><span class="n">wordlist</span><span class="p">,</span> <span class="k">const</span> <span class="n">wordlist_t</span> <span class="o">*</span><span class="n">dictionary</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="c1">// some parameters that affect query generation</span>
-  <span class="k">const</span> <span class="kt">int</span> <span class="n">max_words</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>        <span class="c1">// generate 1..max_words</span>
-  <span class="k">const</span> <span class="kt">float</span> <span class="n">or_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">;</span>   <span class="c1">// P(OR between two words)</span>
-  <span class="k">const</span> <span class="kt">float</span> <span class="n">and_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">;</span>  <span class="c1">// P(AND between two words)</span>
-  <span class="k">const</span> <span class="kt">float</span> <span class="n">dict_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">;</span> <span class="c1">// P(draw from dict instead of wordlist)</span>
-
-  <span class="kt">int</span> <span class="n">qwords</span> <span class="o">=</span> <span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">max_words</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// number of words in query</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">qw</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">qw</span> <span class="o">&lt;</span> <span class="n">qwords</span><span class="p">;</span> <span class="n">qw</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// draw a word either dictionary or wordlist</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">dict_probability</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
+  <span class="c1">// some parameters that affect query generation
+</span>  <span class="k">const</span> <span class="kt">int</span> <span class="n">max_words</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>        <span class="c1">// generate 1..max_words
+</span>  <span class="k">const</span> <span class="kt">float</span> <span class="n">or_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">;</span>   <span class="c1">// P(OR between two words)
+</span>  <span class="k">const</span> <span class="kt">float</span> <span class="n">and_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">;</span>  <span class="c1">// P(AND between two words)
+</span>  <span class="k">const</span> <span class="kt">float</span> <span class="n">dict_probability</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">;</span> <span class="c1">// P(draw from dict instead of wordlist)
+</span>
+  <span class="kt">int</span> <span class="n">qwords</span> <span class="o">=</span> <span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">max_words</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// number of words in query
+</span>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">qw</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">qw</span> <span class="o">&lt;</span> <span class="n">qwords</span><span class="p">;</span> <span class="n">qw</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// draw a word either dictionary or wordlist
+</span>    <span class="k">if</span> <span class="p">((</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">dict_probability</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
       <span class="n">printf</span><span class="p">(</span><span class="s">"%s "</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">-&gt;</span><span class="n">words</span><span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">dictionary</span><span class="o">-&gt;</span><span class="n">nwords</span><span class="p">]);</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
       <span class="n">printf</span><span class="p">(</span><span class="s">"%s "</span><span class="p">,</span> <span class="n">wordlist</span><span class="o">-&gt;</span><span class="n">words</span><span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="n">wordlist</span><span class="o">-&gt;</span><span class="n">nwords</span><span class="p">]);</span>
     <span class="p">}</span>
 
-    <span class="c1">// last word?</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">qw</span> <span class="o">&lt;</span> <span class="n">qwords</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// which operator to print?</span>
-      <span class="kt">int</span> <span class="n">op</span> <span class="o">=</span> <span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="c1">// last word?
+</span>    <span class="k">if</span> <span class="p">(</span><span class="n">qw</span> <span class="o">&lt;</span> <span class="n">qwords</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// which operator to print?
+</span>      <span class="kt">int</span> <span class="n">op</span> <span class="o">=</span> <span class="n">random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">;</span>
       <span class="k">if</span> <span class="p">(</span><span class="n">op</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">and_probability</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
         <span class="n">printf</span><span class="p">(</span><span class="s">"AND "</span><span class="p">);</span>
       <span class="p">}</span>
@@ -204,7 +204,7 @@ Here’s the core of the fuzz tester:</p>
 <p>With the following setup,</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tse
-<span class="nv">$ </span><span class="nb">mkdir </span>data/cs50-3
+<span class="nv">$ </span>mkdir data/cs50-3
 <span class="nv">$ </span>crawler/crawler http://old-www.cs.dartmouth.edu/~cs50/ data/cs50-3 3
 <span class="nv">$ </span>indexer/indexer data/cs50-3 data/cs50-index3
 </code></pre></div></div>
@@ -229,7 +229,7 @@ garth OR yang OR cardiac AND ruslan AND synthetic
 
 <p>And here’s what happens when we pipe it to our querier (output abbreviated a little):</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ querier/fuzzquery data/cs50-index3 10 0 | querier/querier data/cs50-3 data/cs50-index3
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ querier/fuzzquery data/cs50-index3 10 0 | querier/querier data/cs50-3 data/cs50-index3
 querier/fuzzquery: generating 10 queries from 5586 words
 KEY WORDs:&gt; Query: captured and despite 
 No documents match.
@@ -288,7 +288,7 @@ score   1 doc   9: http://old-www.cs.dartmouth.edu/~dfk/people.html
 
 <p>We could generate a different series of random queries by changing the random seed, and we can run a lot more queries, too!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ querier/fuzzquery data/cs50-index3 10 999 | querier/querier data/cs50-3 data/cs50-index3 &gt; /dev/null
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ querier/fuzzquery data/cs50-index3 10 999 | querier/querier data/cs50-3 data/cs50-index3 &gt; /dev/null
 querier/fuzzquery: generating 10 queries from 5586 words
 $ querier/fuzzquery data/cs50-index3 10000 999 | querier/querier data/cs50-3 data/cs50-index3
 querier/fuzzquery: generating 10000 queries from 5586 words
@@ -327,7 +327,7 @@ We’ll work with an arithmetic analogy.</p>
 <span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">d</span>
 </code></pre></div></div>
 
-<p>Here, the <code class="language-plaintext highlighter-rouge">sum</code> acts as an <em>accumulator</em>.
+<p>Here, the <code class="highlighter-rouge">sum</code> acts as an <em>accumulator</em>.
 (Indeed, many early hardware architectures include an explicit register called an ‘accumulator’.)</p>
 
 <p>We often see this approach generalized in code:</p>
@@ -366,7 +366,7 @@ Thus, we implicitly rewrite the above expression as follows:</p>
 <span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">d</span>
 </code></pre></div></div>
 
-<p>Notice how we ‘step aside’ from the sum for a moment while we compute the product <code class="language-plaintext highlighter-rouge">b * c</code> … using an exactly analogous process.  <code class="language-plaintext highlighter-rouge">prod</code> is an accumulator for the product; it is initialized to the <em>multiplicative identity</em> (1) instead of the <em>additive identity</em> (0), for reasons I hope are obvious.
+<p>Notice how we ‘step aside’ from the sum for a moment while we compute the product <code class="highlighter-rouge">b * c</code> … using an exactly analogous process.  <code class="highlighter-rouge">prod</code> is an accumulator for the product; it is initialized to the <em>multiplicative identity</em> (1) instead of the <em>additive identity</em> (0), for reasons I hope are obvious.
 But then we just multiply in each of the successive items, one at a time.</p>
 
 <p>This generalizes to longer expressions like</p>
@@ -418,14 +418,14 @@ But then we just multiply in each of the successive items, one at a time.</p>
 <span class="n">sum</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">prod</span>
 </code></pre></div></div>
 
-<p>Notice what I did with <code class="language-plaintext highlighter-rouge">f</code>, and that I <em>never add anything to <code class="language-plaintext highlighter-rouge">sum</code> other than <code class="language-plaintext highlighter-rouge">prod</code></em>.</p>
+<p>Notice what I did with <code class="highlighter-rouge">f</code>, and that I <em>never add anything to <code class="highlighter-rouge">sum</code> other than <code class="highlighter-rouge">prod</code></em>.</p>
 
 <p>This structure should give you a hint about how you might write code to evaluate such expressions…
-if you have a <code class="language-plaintext highlighter-rouge">product</code> function to scan the expression left to right from a given starting point, accumulating a product of individual items until it sees a <code class="language-plaintext highlighter-rouge">+</code> or the end of the expression, you can then write a function <code class="language-plaintext highlighter-rouge">sum</code> that scans the expression left to right from the start, accumulating a sum of products by calling <code class="language-plaintext highlighter-rouge">product</code> at the start and after each <code class="language-plaintext highlighter-rouge">+</code>.</p>
+if you have a <code class="highlighter-rouge">product</code> function to scan the expression left to right from a given starting point, accumulating a product of individual items until it sees a <code class="highlighter-rouge">+</code> or the end of the expression, you can then write a function <code class="highlighter-rouge">sum</code> that scans the expression left to right from the start, accumulating a sum of products by calling <code class="highlighter-rouge">product</code> at the start and after each <code class="highlighter-rouge">+</code>.</p>
 
 <h2 id="activity">Activity</h2>
 
-<p>In today’s <a href="activity.html">activity</a> your group will discuss how the above ideas relate to <code class="language-plaintext highlighter-rouge">and</code> an <code class="language-plaintext highlighter-rouge">or</code> operators in a query expression.</p>
+<p>In today’s <a href="activity.html">activity</a> your group will discuss how the above ideas relate to <code class="highlighter-rouge">and</code> an <code class="highlighter-rouge">or</code> operators in a query expression.</p>
 
   </div>
 
@@ -447,7 +447,7 @@ if you have a <code class="language-plaintext highlighter-rouge">product</code> 
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

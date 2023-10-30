@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Resources/Homebrew.html 
- 2 
- 5107 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Resources/Homebrew.html
+2
+4917
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -50,28 +50,28 @@ https://thayer.github.io/engs50/Resources/Homebrew.html
   <div class="post-content">
     <p>MacOS users are lucky because they get all the grace of a graphical interface with a large ecosystem of applications to make their computer productive, <em>plus they have access to the full power of Unix under the hood.</em>
 Apple includes a lot of the core Unix commands and utilities, by default, but some of the commands you’ll need (or want) in this course need to be added.
-Some of these can be installed through the Apple developer’s tool (<code class="language-plaintext highlighter-rouge">Xcode</code>), but lots of great open-source software needs to be installed separately.</p>
+Some of these can be installed through the Apple developer’s tool (<code class="highlighter-rouge">Xcode</code>), but lots of great open-source software needs to be installed separately.</p>
 
 <p>The easiest way to install open-source software is through a ‘package manager’ (Linux users are likely already familiar with this concept!).
 There are several package managers for MacOS, but I like the one called <em><a href="http://brew.sh">Homebrew</a></em>.
 It’s easy to install and easy to use for installing other tools.</p>
 
-<p>To get started, open a <code class="language-plaintext highlighter-rouge">Terminal</code> window and a browser window.
+<p>To get started, open a <code class="highlighter-rouge">Terminal</code> window and a browser window.
 In your browser, visit the <em><a href="http://brew.sh">Homebrew</a></em> site; copy the one-line command near the top of the page.</p>
 
 <p><img src="/engs50/Resources/Homebrew0.png" alt="homepage" /></p>
 
 <blockquote>
-  <p>Notice that it simply asks you to copy and paste a complex command into the <code class="language-plaintext highlighter-rouge">Terminal</code>.
+  <p>Notice that it simply asks you to copy and paste a complex command into the <code class="highlighter-rouge">Terminal</code>.
 You should never blindly copy-paste shell commands without understanding what the command will do to your computer!
 In this case, the Homebrew page explains what it will do, and you’re hearing it from me - this is a safe tool to install.
 As far as I know. ;-)</p>
 </blockquote>
 
-<p>Switch to <code class="language-plaintext highlighter-rouge">Terminal</code> and paste in that command.
+<p>Switch to <code class="highlighter-rouge">Terminal</code> and paste in that command.
 The installation will download some files and start running.</p>
 
-<p>If you’ve never run any of the ‘developer’-oriented commands (like <code class="language-plaintext highlighter-rouge">gcc</code> or <code class="language-plaintext highlighter-rouge">make</code>) on your Mac before, you may see a popup like the following:</p>
+<p>If you’ve never run any of the ‘developer’-oriented commands (like <code class="highlighter-rouge">gcc</code> or <code class="highlighter-rouge">make</code>) on your Mac before, you may see a popup like the following:</p>
 
 <p><img src="/engs50/Resources/Homebrew1.png" alt="Xcode popup" /></p>
 
@@ -81,10 +81,10 @@ This installer downloads all the command-line tools from Apple and installs them
 You’ll need these tools, and so does Homebrew.</p>
 
 <p>When that completes, press Return in the Terminal window to allow the Homebrew installation to complete.
-Then you can install new packages with a command line <code class="language-plaintext highlighter-rouge">brew install</code> followed by the package name (Homebrew actually calls them “formulas”).
-You can search for package names with <code class="language-plaintext highlighter-rouge">brew search</code>.</p>
+Then you can install new packages with a command line <code class="highlighter-rouge">brew install</code> followed by the package name (Homebrew actually calls them “formulas”).
+You can search for package names with <code class="highlighter-rouge">brew search</code>.</p>
 
-<p>Later, periodically, you should <code class="language-plaintext highlighter-rouge">brew update</code> and then <code class="language-plaintext highlighter-rouge">brew upgrade</code> to keep all your software up to date.
+<p>Later, periodically, you should <code class="highlighter-rouge">brew update</code> and then <code class="highlighter-rouge">brew upgrade</code> to keep all your software up to date.
 I do this about once a month.</p>
 
 
@@ -108,7 +108,7 @@ I do this about once a month.</p>
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

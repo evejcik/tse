@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/crawler/ 
- 2 
- 21448 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/crawler/
+2
+20897
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -112,7 +112,7 @@ The querier subsystem has an internal <em>ranking</em> module, which we anticipa
 <p>Next, we describe each sub-system and its high-level design.</p>
 
 <p>The <strong>crawler</strong> crawls a website and retrieves webpages starting with a specified URL.
-It parses the initial webpage, extracts any embedded <code class="language-plaintext highlighter-rouge">href</code> URLs and retrieves those pages, and crawls the pages found at those URLs, but limiting itself to <code class="language-plaintext highlighter-rouge">maxDepth</code> hops from the seed URL.
+It parses the initial webpage, extracts any embedded <code class="highlighter-rouge">href</code> URLs and retrieves those pages, and crawls the pages found at those URLs, but limiting itself to <code class="highlighter-rouge">maxDepth</code> hops from the seed URL.
 When the crawler process is complete, the indexing of the collected documents can begin.</p>
 
 <p>The <strong>indexer</strong> extracts all the keywords for each stored webpage and creates a lookup table that maps each word found to all the documents (webpages) where the word was found.</p>
@@ -138,7 +138,7 @@ The implementation spec includes many or all of these topics:
     <ul>
       <li>Detailed pseudo code for each of the objects/components/functions,</li>
       <li>Definition of detailed APIs, interfaces, function prototypes and their parameters,</li>
-      <li>Data structures (e.g., <code class="language-plaintext highlighter-rouge">struct</code> names and members),</li>
+      <li>Data structures (e.g., <code class="highlighter-rouge">struct</code> names and members),</li>
       <li>Security and privacy properties,</li>
       <li>Error handling and recovery,</li>
       <li>Resource management,</li>
@@ -158,11 +158,11 @@ The implementation spec includes many or all of these topics:
 <p>Below is a snippet of when the program starts to crawl the CS50 website to a depth of 1.
 The crawler prints status information as it goes along.</p>
 <blockquote>
-  <p>Note, you might consider covering this debugging print-out code in an <code class="language-plaintext highlighter-rouge">#ifdef</code> block that can be triggered by a compile-time switch.
+  <p>Note, you might consider covering this debugging print-out code in an <code class="highlighter-rouge">#ifdef</code> block that can be triggered by a compile-time switch.
 See the <a href="../12/preprocessor.html">Lecture extra</a> about this trick.</p>
 </blockquote>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./crawler http://old-www.cs.dartmouth.edu/~cs50/index.html data 1
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./crawler http://old-www.cs.dartmouth.edu/~cs50/index.html data 1
  0   Fetched: http://old-www.cs.dartmouth.edu/~cs50/index.html
  0     Saved: http://old-www.cs.dartmouth.edu/~cs50/index.html
  0  Scanning: http://old-www.cs.dartmouth.edu/~cs50/index.html
@@ -201,23 +201,23 @@ See the <a href="../12/preprocessor.html">Lecture extra</a> about this trick.</p
 </code></pre></div></div>
 
 <p>Notice how I printed the depth of the current crawl at left, then indented slightly based on the current depth, then printed a single word meant to indicate what is being done, then printed the URL.
-By ensuring a consistent format, and choosing a simple/unique word for each type of line, I can post-process the output with <code class="language-plaintext highlighter-rouge">grep</code>, <code class="language-plaintext highlighter-rouge">awk</code>, and so forth, enabling me to run various checks on the output of the crawler.
+By ensuring a consistent format, and choosing a simple/unique word for each type of line, I can post-process the output with <code class="highlighter-rouge">grep</code>, <code class="highlighter-rouge">awk</code>, and so forth, enabling me to run various checks on the output of the crawler.
 Much better than a mish-mash of arbitrary output formats!</p>
 
 <p>To make this easy, I wrote a simple function to print those lines:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// log one word (1-9 chars) about a given url</span>
-<span class="kr">inline</span> <span class="k">static</span> <span class="kt">void</span> <span class="nf">logr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">word</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">depth</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">)</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// log one word (1-9 chars) about a given url
+</span><span class="kr">inline</span> <span class="k">static</span> <span class="kt">void</span> <span class="nf">logr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">word</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">depth</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">"%2d %*s%9s: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="s">""</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">url</span><span class="p">);</span>
 <span class="p">}</span>
 
 </code></pre></div></div>
 
-<p>I thus have just one <code class="language-plaintext highlighter-rouge">printf</code> call, and if I want to tweak the format, I just need to edit one place and not every log-type <code class="language-plaintext highlighter-rouge">printf</code> in the code.</p>
+<p>I thus have just one <code class="highlighter-rouge">printf</code> call, and if I want to tweak the format, I just need to edit one place and not every log-type <code class="highlighter-rouge">printf</code> in the code.</p>
 
 <blockquote>
-  <p>Notice the <code class="language-plaintext highlighter-rouge">inline</code> modifier.
+  <p>Notice the <code class="highlighter-rouge">inline</code> modifier.
 This means that C is allowed to compile this code ‘in line’ where the function call occurs, rather than compiling code that actually jumps to a function and returns.
 Syntactically, in every way, it’s just like a function - but more efficient.
 Great for tiny functions like this one, where it’s worth duplicating the code (making the executable bigger) to save time (making the program run slightly faster).</p>
@@ -235,7 +235,7 @@ But for a maxDepth = 1 as in this example there are only a few webpages crawled 
 Below is a peek at the files created during the above crawl.
 Notice how each page starts with the URL, then a number (the depth of that page during the crawl), then the contents of the page (here I printed only the first line of the content).</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
 1	2	3
 $ head -3 1
 http://old-www.cs.dartmouth.edu/~cs50/index.html
@@ -268,11 +268,11 @@ http://old-www.cs.dartmouth.edu/~cs50/
   <li><strong>data</strong> - with subdirectories where the crawler and indexer can write files, and the querier can read files.</li>
 </ul>
 
-<p>My top-level <code class="language-plaintext highlighter-rouge">.gitignore</code> file excludes <code class="language-plaintext highlighter-rouge">data</code> from the repository, because the data files are big, changing often, and don’t deserve to be saved.</p>
+<p>My top-level <code class="highlighter-rouge">.gitignore</code> file excludes <code class="highlighter-rouge">data</code> from the repository, because the data files are big, changing often, and don’t deserve to be saved.</p>
 
 <p>The full tree looks like this:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── common
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── common
 │   ├── index.c
 │   ├── index.h
 │   ├── Makefile
@@ -329,40 +329,40 @@ http://old-www.cs.dartmouth.edu/~cs50/
 
 <h4 id="source-files">Source files</h4>
 
-<p>My crawler, indexer, and querier each consist of just one <code class="language-plaintext highlighter-rouge">.c</code> file.
-They share some common code, which I keep in the <code class="language-plaintext highlighter-rouge">common</code> directory:</p>
+<p>My crawler, indexer, and querier each consist of just one <code class="highlighter-rouge">.c</code> file.
+They share some common code, which I keep in the <code class="highlighter-rouge">common</code> directory:</p>
 
 <ul>
   <li><strong>pagedir</strong> - a suite of functions to help the crawler write pages to the pageDirectory and help the indexer read them back in</li>
   <li><strong>index</strong> - a suite of functions that implement the “index” data structure; this module includes functions to write an index to a file (used by indexer) and read an index from a file (used by querier).</li>
-  <li><strong>word</strong> - a function <code class="language-plaintext highlighter-rouge">NormalizeWord</code> used by both the indexer and the querier.</li>
+  <li><strong>word</strong> - a function <code class="highlighter-rouge">NormalizeWord</code> used by both the indexer and the querier.</li>
 </ul>
 
 <p>Each of the program directories (crawler, indexer, querier) include a few files related to testing, as well.</p>
 
-<p>You’ll recognize the Lab3 data structures - they’re all in the <code class="language-plaintext highlighter-rouge">libcs50</code> library.
+<p>You’ll recognize the Lab3 data structures - they’re all in the <code class="highlighter-rouge">libcs50</code> library.
 Note the flatter organization - there’s not a separate subdirectory (with Makefile or test code) for each data structure.</p>
 
 <h4 id="makefiles">Makefiles</h4>
 
-<p>The starter kit includes a <code class="language-plaintext highlighter-rouge">Makefile</code> at the top level and another to build the <code class="language-plaintext highlighter-rouge">libcs50</code> library.</p>
+<p>The starter kit includes a <code class="highlighter-rouge">Makefile</code> at the top level and another to build the <code class="highlighter-rouge">libcs50</code> library.</p>
 
-<p>The top-level <code class="language-plaintext highlighter-rouge">Makefile</code> recursively calls Make on each of the source directories.</p>
+<p>The top-level <code class="highlighter-rouge">Makefile</code> recursively calls Make on each of the source directories.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">libcs50/Makefile</code> demonstrates how you can build a library, in this case <code class="language-plaintext highlighter-rouge">libcs50.a</code>, from a collection of object <code class="language-plaintext highlighter-rouge">.o</code> files.
-Study this Makefile, because you’ll need to write something similar for your <code class="language-plaintext highlighter-rouge">common</code> directory.</p>
+<p>The <code class="highlighter-rouge">libcs50/Makefile</code> demonstrates how you can build a library, in this case <code class="highlighter-rouge">libcs50.a</code>, from a collection of object <code class="highlighter-rouge">.o</code> files.
+Study this Makefile, because you’ll need to write something similar for your <code class="highlighter-rouge">common</code> directory.</p>
 
-<p>You can then link these libraries into your other programs without having to list all the individual <code class="language-plaintext highlighter-rouge">.o</code> files on the commandline.
+<p>You can then link these libraries into your other programs without having to list all the individual <code class="highlighter-rouge">.o</code> files on the commandline.
 For example, when I build my crawler Make runs commands as follows:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make -C crawler
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make -C crawler
 gcc -Wall -pedantic -std=c11 -ggdb -DAPPTEST  -I../libcs50 -I../common   -c -o crawler.o crawler.c
 gcc -Wall -pedantic -std=c11 -ggdb -DAPPTEST  -I../libcs50 -I../common crawler.o ../common/common.a ../libcs50/libcs50.a -lcurl -o crawler
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">crawler/Makefile</code> is written in good style, with appropriate use of variables, so the rule that causes Make to run the above commands is actually much shorter:</p>
+<p>The <code class="highlighter-rouge">crawler/Makefile</code> is written in good style, with appropriate use of variables, so the rule that causes Make to run the above commands is actually much shorter:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crawler: crawler.o $(LLIBS)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crawler: crawler.o $(LLIBS)
         $(CC) $(CFLAGS) $^ $(LIBS) -o $@
 </code></pre></div></div>
 
@@ -393,7 +393,7 @@ gcc -Wall -pedantic -std=c11 -ggdb -DAPPTEST  -I../libcs50 -I../common crawler.o
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

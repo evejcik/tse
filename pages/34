@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/cohesion/ 
- 2 
- 11317 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/cohesion/
+2
+11260
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -131,7 +131,7 @@ If you find your routine approaching 200 lines, you should break it up - or have
 <ul>
   <li><strong>Procedural cohesion</strong>: contains operations that must be performed in a sequential order, but don’t share the same data.</li>
   <li><strong>Logical cohesion</strong>: several things in a routine, only one executed, depending on a flag parameter.
-(Exception - it can be  ok if using a <code class="language-plaintext highlighter-rouge">switch</code> statement to call one of many other (cohesive) functions.)</li>
+(Exception - it can be  ok if using a <code class="highlighter-rouge">switch</code> statement to call one of many other (cohesive) functions.)</li>
   <li><strong>Coincidental cohesion</strong>: no apparent reason for things to be together in a routine!</li>
 </ul>
 
@@ -196,7 +196,7 @@ If you find your routine approaching 200 lines, you should break it up - or have
 <h4 id="macros">Macros</h4>
 
 <p>You can write <em>macros</em> in C with #define - these are handled by the C preprocessor.
-Macros can be handy, on occasion, but it is usually better to use <code class="language-plaintext highlighter-rouge">inline</code> functions or <code class="language-plaintext highlighter-rouge">const</code> variables for these purposes.
+Macros can be handy, on occasion, but it is usually better to use <code class="highlighter-rouge">inline</code> functions or <code class="highlighter-rouge">const</code> variables for these purposes.
 You get better syntax, type checking, and better debugger support.</p>
 
 <h2 id="modules">Modules</h2>
@@ -259,7 +259,7 @@ Thus, the module programmer has wide flexibility and authority on the implementa
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

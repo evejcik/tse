@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/c1/ 
- 2 
- 11877 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/c1/
+2
+11725
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -83,11 +83,11 @@ It’s not bad, and there are lots of others, including some that you can get el
 
 <p>C programming depends on a suite of standard libraries for input/output, strings, math, memory allocation, and so forth.
 Most or all of these functions are documented in man pages, just like shell commands.
-Try <code class="language-plaintext highlighter-rouge">man strcpy</code>, for example.</p>
+Try <code class="highlighter-rouge">man strcpy</code>, for example.</p>
 
 <blockquote>
-  <p>For some C functions there are shell commands with identical names; if you type <code class="language-plaintext highlighter-rouge">man printf</code>, for example, you’ll see the man page for the bash <code class="language-plaintext highlighter-rouge">printf</code> command and not the C function <code class="language-plaintext highlighter-rouge">printf()</code>.
-You can ask <code class="language-plaintext highlighter-rouge">man</code> to look only for library functions (section 3 of the manual) with <code class="language-plaintext highlighter-rouge">man 3 printf</code>.</p>
+  <p>For some C functions there are shell commands with identical names; if you type <code class="highlighter-rouge">man printf</code>, for example, you’ll see the man page for the bash <code class="highlighter-rouge">printf</code> command and not the C function <code class="highlighter-rouge">printf()</code>.
+You can ask <code class="highlighter-rouge">man</code> to look only for library functions (section 3 of the manual) with <code class="highlighter-rouge">man 3 printf</code>.</p>
 </blockquote>
 
 <h2 id="c">C</h2>
@@ -139,7 +139,7 @@ See the latest results <a href="http://www.tiobe.com/index.php/content/paperinfo
 
 <p><strong><em>I encourage you to read it on your own.</em></strong></p>
 
-<p>You can compare one version with another using <code class="language-plaintext highlighter-rouge">diff</code> (here, I also use the <code class="language-plaintext highlighter-rouge">[]</code> filename expansion in bash):</p>
+<p>You can compare one version with another using <code class="highlighter-rouge">diff</code> (here, I also use the <code class="highlighter-rouge">[]</code> filename expansion in bash):</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>cs50@flume ~]<span class="nv">$ </span>diff guessprime[45].c 
 2,4c2,4
@@ -190,7 +190,7 @@ See the latest results <a href="http://www.tiobe.com/index.php/content/paperinfo
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

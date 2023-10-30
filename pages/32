@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/indexer/ 
- 2 
- 9111 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/indexer/
+2
+8883
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -87,7 +87,7 @@ You have a plan that everyone agrees on, you begin to execute on that plan, and 
 You have to handle them and and still get to the goal.</p>
 
 <p>Finally, many of you have found that <strong><em>shell scripts can automate testing.</em></strong> It’s far easier to test your crawler by writing a bash script to drive various test cases, or to examine the output for correctness, than to manually run a variety of tests for each new version of the code.
-Even better, now’s the time to use your <code class="language-plaintext highlighter-rouge">regress.sh</code> script from <a href="/engs50/Labs/Lab2">Lab2</a>.</p>
+Even better, now’s the time to use your <code class="highlighter-rouge">regress.sh</code> script from <a href="/engs50/Labs/Lab2">Lab2</a>.</p>
 
 <blockquote>
   <p><strong>“Use the Shell, Luke”</strong>.
@@ -96,13 +96,13 @@ Even better, now’s the time to use your <code class="language-plaintext highli
 
 <h2 id="on-to-the-indexer">On to the Indexer!</h2>
 
-<p>The job of the <code class="language-plaintext highlighter-rouge">indexer</code> is to read the documents in the <code class="language-plaintext highlighter-rouge">pageDirectory</code> output by the <code class="language-plaintext highlighter-rouge">crawler</code>, build an inverted index mapping from words to documents, and write that index to a file.
-(Later, the <code class="language-plaintext highlighter-rouge">querier</code> will read the index and use it to answer queries.)</p>
+<p>The job of the <code class="highlighter-rouge">indexer</code> is to read the documents in the <code class="highlighter-rouge">pageDirectory</code> output by the <code class="highlighter-rouge">crawler</code>, build an inverted index mapping from words to documents, and write that index to a file.
+(Later, the <code class="highlighter-rouge">querier</code> will read the index and use it to answer queries.)</p>
 
 <p>Now is a good time to read Section 4 in <em><a href="/engs50/Reading/searchingtheweb.pdf">Searching the Web</a></em>, the paper about search engines.</p>
 
 <p>Today’s Terminal <a href="/engs50/Notes/indexer/script1.txt">script</a> shows some of my classroom demos; it lists the files and structure of a complete and clean TSE directory.
-Another Terminal <a href="/engs50/Notes/indexer/script2.txt">script</a> is a recreation of an <code class="language-plaintext highlighter-rouge">indexer</code> demo I ran in class; it shows how an <code class="language-plaintext highlighter-rouge">indextest.sh</code> might look.</p>
+Another Terminal <a href="/engs50/Notes/indexer/script2.txt">script</a> is a recreation of an <code class="highlighter-rouge">indexer</code> demo I ran in class; it shows how an <code class="highlighter-rouge">indextest.sh</code> might look.</p>
 
 <h3 id="indexer-requirements">Indexer requirements</h3>
 
@@ -137,15 +137,15 @@ See the diagram below:</p>
 
 <p>We get to use three out of our four data structures: hashtable, set, and counters!</p>
 
-<p>When processing a given document (identified by docID), consider each word; look up that word in the hashtable and retrieve a pointer to a <code class="language-plaintext highlighter-rouge">counters_t*</code> item; then use <code class="language-plaintext highlighter-rouge">counters_add()</code> on that item, using the docID as a key.</p>
+<p>When processing a given document (identified by docID), consider each word; look up that word in the hashtable and retrieve a pointer to a <code class="highlighter-rouge">counters_t*</code> item; then use <code class="highlighter-rouge">counters_add()</code> on that item, using the docID as a key.</p>
 
-<p>Your data-set iterators (like <code class="language-plaintext highlighter-rouge">hashtable_iterate()</code>) should be very useful for saving an index to a file, or for later loading an index from a file.</p>
+<p>Your data-set iterators (like <code class="highlighter-rouge">hashtable_iterate()</code>) should be very useful for saving an index to a file, or for later loading an index from a file.</p>
 
 <h4 id="indexer-pseudocode">Indexer pseudocode</h4>
 
 <p>Very high-level description of the indexer and indextest.</p>
 
-<p><code class="language-plaintext highlighter-rouge">indexer</code>:</p>
+<p><code class="highlighter-rouge">indexer</code>:</p>
 
 <ol>
   <li>Process and validate command-line parameters</li>
@@ -155,7 +155,7 @@ See the diagram below:</p>
   <li>clean up data structures</li>
 </ol>
 
-<p><code class="language-plaintext highlighter-rouge">indextest</code>:</p>
+<p><code class="highlighter-rouge">indextest</code>:</p>
 
 <ol>
   <li>Process and validate command-line parameters</li>
@@ -186,7 +186,7 @@ See the diagram below:</p>
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

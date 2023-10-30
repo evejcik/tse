@@ -1,7 +1,7 @@
-https://thayer.github.io/engs50/Notes/unittest/ 
- 2 
- 23701 
- <!DOCTYPE html>
+https://thayer.github.io/engs50/Notes/unittest/
+2
+22745
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -76,51 +76,51 @@ Although he is talking mostly about Java, his insights on unit testing are super
 <p>Today’s Terminal <a href="/engs50/Notes/unittest/script.txt">script</a> is available.</p>
 
 <p>Unzip the <a href="/engs50/Examples/trees.zip">tree examples file</a>. The tree9 example
-demonstrated a binary-tree data structure. Here we enhance it to become treeA (to a computer scientist, <code class="language-plaintext highlighter-rouge">A</code> comes next after <code class="language-plaintext highlighter-rouge">9</code>).</p>
+demonstrated a binary-tree data structure. Here we enhance it to become treeA (to a computer scientist, <code class="highlighter-rouge">A</code> comes next after <code class="highlighter-rouge">9</code>).</p>
 
 <p>Look at treeA/tree.c and its Makefile and you’ll notice three things:</p>
 
 <ul>
-  <li>The code now has a <code class="language-plaintext highlighter-rouge">main()</code> function at the bottom of the file.
-It is protected inside <code class="language-plaintext highlighter-rouge">#ifdef UNIT_TEST ... #endif</code> so it is only compiled-in when we want to compile a unit test.</li>
-  <li>Preceding <code class="language-plaintext highlighter-rouge">main()</code> is an <code class="language-plaintext highlighter-rouge">#include "unittest.h"</code> to pick up several <em>preprocessor macros</em>, which we explain below.</li>
-  <li>The <code class="language-plaintext highlighter-rouge">Makefile</code> now has a <code class="language-plaintext highlighter-rouge">unittest</code> target, which builds a distinct executable, and a <code class="language-plaintext highlighter-rouge">unit</code> target, which runs it.</li>
+  <li>The code now has a <code class="highlighter-rouge">main()</code> function at the bottom of the file.
+It is protected inside <code class="highlighter-rouge">#ifdef UNIT_TEST ... #endif</code> so it is only compiled-in when we want to compile a unit test.</li>
+  <li>Preceding <code class="highlighter-rouge">main()</code> is an <code class="highlighter-rouge">#include "unittest.h"</code> to pick up several <em>preprocessor macros</em>, which we explain below.</li>
+  <li>The <code class="highlighter-rouge">Makefile</code> now has a <code class="highlighter-rouge">unittest</code> target, which builds a distinct executable, and a <code class="highlighter-rouge">unit</code> target, which runs it.</li>
 </ul>
 
 <blockquote>
-  <p>The <code class="language-plaintext highlighter-rouge">unittest</code> target is unusual in that it explicitly mentions dependency on <code class="language-plaintext highlighter-rouge">test.c</code>.
-Normally Make automatically recognizes the dependency between <code class="language-plaintext highlighter-rouge">.o</code> files and <code class="language-plaintext highlighter-rouge">.c</code> files, so we rarely see rules with dependency on <code class="language-plaintext highlighter-rouge">.c</code> files.
-Here, because there is no <code class="language-plaintext highlighter-rouge">unittest.c</code>, we always build <code class="language-plaintext highlighter-rouge">unittest</code> from <code class="language-plaintext highlighter-rouge">tree.c</code> with a special <code class="language-plaintext highlighter-rouge">-D</code> flag and do not use <code class="language-plaintext highlighter-rouge">tree.o</code>; we must explicitly list all the pieces that go into building <code class="language-plaintext highlighter-rouge">unitest</code>.</p>
+  <p>The <code class="highlighter-rouge">unittest</code> target is unusual in that it explicitly mentions dependency on <code class="highlighter-rouge">test.c</code>.
+Normally Make automatically recognizes the dependency between <code class="highlighter-rouge">.o</code> files and <code class="highlighter-rouge">.c</code> files, so we rarely see rules with dependency on <code class="highlighter-rouge">.c</code> files.
+Here, because there is no <code class="highlighter-rouge">unittest.c</code>, we always build <code class="highlighter-rouge">unittest</code> from <code class="highlighter-rouge">tree.c</code> with a special <code class="highlighter-rouge">-D</code> flag and do not use <code class="highlighter-rouge">tree.o</code>; we must explicitly list all the pieces that go into building <code class="highlighter-rouge">unitest</code>.</p>
 </blockquote>
 
 <p><strong><em>Preprocessor macros.</em></strong></p>
 
 <p>The unit test makes heavy use of some <em>macros</em>, which are recognized and textually replaced by the C preprocessor before the C compiler even runs.
-They are so useful I’ve put them in a separate <code class="language-plaintext highlighter-rouge">unittest.h</code> file, and textually include them in <code class="language-plaintext highlighter-rouge">test.c</code> when <code class="language-plaintext highlighter-rouge">UNIT_TEST</code> has been defined.
-I show the core of <code class="language-plaintext highlighter-rouge">unittest.h</code> below.</p>
+They are so useful I’ve put them in a separate <code class="highlighter-rouge">unittest.h</code> file, and textually include them in <code class="highlighter-rouge">test.c</code> when <code class="highlighter-rouge">UNIT_TEST</code> has been defined.
+I show the core of <code class="highlighter-rouge">unittest.h</code> below.</p>
 
 <p>These are <em>macros.</em>
-Note how I define fragments of code with each <code class="language-plaintext highlighter-rouge">#define</code>; the first two even take parameters.
+Note how I define fragments of code with each <code class="highlighter-rouge">#define</code>; the first two even take parameters.
 When scanning C code, the preprocessor does <em>textual substitution</em> for each defined symbol - it does not evaluate the code at all, it just substitutes the remainder of the line (after the symbol and after a space) into the C program wherever it sees that symbol, optionally inserting the parameter wherever it appears in the macro body.
 Because each definition must appear on one “line”, I had to use a <em>line continuation</em> character (backslash in the last character of the line) to let me format the definitions in a human-readable way.
 I lined up the backslashes so they all look neat.</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// each test should start by setting the result count to zero</span>
-<span class="cp">#define START_TEST_CASE(name) int _failures=0; char *_testname = (name);
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// each test should start by setting the result count to zero
+</span><span class="cp">#define START_TEST_CASE(name) int _failures=0; char *_testname = (name);
 </span>
-<span class="c1">// Check a condition; if false, print warning message.</span>
-<span class="c1">// e.g., EXPECT(dict-&gt;start == NULL).</span>
-<span class="c1">// note: the preprocessor </span>
-<span class="c1">//   converts __LINE__ into line number where this macro was used, and</span>
-<span class="c1">//   converts "#x" into a string constant for arg x.</span>
-<span class="cp">#define EXPECT(x)                                               \
+<span class="c1">// Check a condition; if false, print warning message.
+// e.g., EXPECT(dict-&gt;start == NULL).
+// note: the preprocessor 
+//   converts __LINE__ into line number where this macro was used, and
+//   converts "#x" into a string constant for arg x.
+</span><span class="cp">#define EXPECT(x)                                               \
   if (!(x)) {                                                   \
     _failures++;                                                \
     printf("Fail %s Line %d: [%s]\n", _testname, __LINE__, #x); \
   }
 </span>
-<span class="c1">// return the result count at the end of a test</span>
-<span class="cp">#define END_TEST_CASE                                                   \
+<span class="c1">// return the result count at the end of a test
+</span><span class="cp">#define END_TEST_CASE                                                   \
   if (_failures == 0) {                                                 \
     printf("PASS test %s\n\n", _testname);                              \
   } else {                                                              \
@@ -130,11 +130,11 @@ I lined up the backslashes so they all look neat.</p>
 <span class="cp">#define TEST_RESULT (_failures)
 </span></code></pre></div></div>
 
-<p>The preprocessor defines a special macro <code class="language-plaintext highlighter-rouge">__LINE__</code> that is set to the line number of the original source file, as each source line is processed; this is great for printing out the line number where our test case failed.</p>
+<p>The preprocessor defines a special macro <code class="highlighter-rouge">__LINE__</code> that is set to the line number of the original source file, as each source line is processed; this is great for printing out the line number where our test case failed.</p>
 
-<p>The preprocessor also has special syntax <code class="language-plaintext highlighter-rouge">#parameter</code> that substitutes a C string constant for the text of the parameter.
-You can see it right at the end of the <code class="language-plaintext highlighter-rouge">EXPECT</code> macro.
-Thus, <code class="language-plaintext highlighter-rouge">EXPECT(tree != NULL)</code> will produce code that ends with <code class="language-plaintext highlighter-rouge">"tree != NULL");</code> enabling us to print the line number <em>and</em> the condition that failed.
+<p>The preprocessor also has special syntax <code class="highlighter-rouge">#parameter</code> that substitutes a C string constant for the text of the parameter.
+You can see it right at the end of the <code class="highlighter-rouge">EXPECT</code> macro.
+Thus, <code class="highlighter-rouge">EXPECT(tree != NULL)</code> will produce code that ends with <code class="highlighter-rouge">"tree != NULL");</code> enabling us to print the line number <em>and</em> the condition that failed.
 You can’t do that with C, only with the preprocessor!</p>
 
 <p><em>Warning: I strongly discourage the use of preprocessor macros.</em>
@@ -142,9 +142,9 @@ There are times, however, where they are the right tool for the job, and this is
 
 <p>The macros are meant to be used for constructing small unit tests like this one:</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/////////////////////////////////////</span>
-<span class="c1">// create and validate an empty tree</span>
-<span class="kt">int</span> <span class="nf">test_newtree0</span><span class="p">()</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/////////////////////////////////////
+// create and validate an empty tree
+</span><span class="kt">int</span> <span class="nf">test_newtree0</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="n">START_TEST_CASE</span><span class="p">(</span><span class="s">"newtree0"</span><span class="p">);</span>
   <span class="n">tree_t</span> <span class="o">*</span><span class="n">tree</span> <span class="o">=</span> <span class="n">tree_new</span><span class="p">();</span>
@@ -162,10 +162,10 @@ There are times, however, where they are the right tool for the job, and this is
 </code></pre></div></div>
 
 <p>In the above test, I create a new (empty) tree, try to find something in it, and delete the tree.
-Notice, though, that I actually peek <em>inside</em> the <code class="language-plaintext highlighter-rouge">struct tree</code> to verify that all its members are set correctly.</p>
+Notice, though, that I actually peek <em>inside</em> the <code class="highlighter-rouge">struct tree</code> to verify that all its members are set correctly.</p>
 
-<p>Note, too, how I used those new macros - using <code class="language-plaintext highlighter-rouge">START_TEST_CASE()</code> to give the test a name and initialize everything, <code class="language-plaintext highlighter-rouge">EXPECT()</code> to indicate the conditions I expect to be true, <code class="language-plaintext highlighter-rouge">END_TEST_CASE</code> to print the summary and clean up, and <code class="language-plaintext highlighter-rouge">return TEST_RESULT</code> to provide a return value for this function.
-Here’s how that code looks after running it through the preprocessor with <code class="language-plaintext highlighter-rouge">gcc -DUNIT_TEST -E tree.c</code>:</p>
+<p>Note, too, how I used those new macros - using <code class="highlighter-rouge">START_TEST_CASE()</code> to give the test a name and initialize everything, <code class="highlighter-rouge">EXPECT()</code> to indicate the conditions I expect to be true, <code class="highlighter-rouge">END_TEST_CASE</code> to print the summary and clean up, and <code class="highlighter-rouge">return TEST_RESULT</code> to provide a return value for this function.
+Here’s how that code looks after running it through the preprocessor with <code class="highlighter-rouge">gcc -DUNIT_TEST -E tree.c</code>:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">test_newtree0</span><span class="p">()</span>
 <span class="p">{</span>
@@ -184,9 +184,9 @@ Here’s how that code looks after running it through the preprocessor with <cod
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>If you look closely, you can see the original bits of code (like <code class="language-plaintext highlighter-rouge">tree_delete(tree, NULL)</code> (with <code class="language-plaintext highlighter-rouge">NULL</code> expanded!) as well as the expanded <code class="language-plaintext highlighter-rouge">EXPECT</code> and other macros.</p>
+<p>If you look closely, you can see the original bits of code (like <code class="highlighter-rouge">tree_delete(tree, NULL)</code> (with <code class="highlighter-rouge">NULL</code> expanded!) as well as the expanded <code class="highlighter-rouge">EXPECT</code> and other macros.</p>
 
-<p>Then the <code class="language-plaintext highlighter-rouge">main()</code> program runs a series of unit tests, and prints an error if any of them failed:</p>
+<p>Then the <code class="highlighter-rouge">main()</code> program runs a series of unit tests, and prints an error if any of them failed:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
@@ -210,7 +210,7 @@ Here’s how that code looks after running it through the preprocessor with <cod
 
 <p>Here’s what the output looks like when everything passes:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make unit
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make unit
 gcc -Wall -pedantic -std=c11 -ggdb    -c -o memory.o memory.c
 gcc -Wall -pedantic -std=c11 -ggdb  -DUNIT_TEST tree.c memory.o -o unittest
 ./unittest
@@ -241,7 +241,7 @@ PASS all test cases
 
 <p>and run the test again:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make -k unit
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make -k unit
 gcc -Wall -pedantic -std=c11 -ggdb  -DUNIT_TEST tree.c memory.o -o unittest
 ./unittest
 PASS test newtree0
@@ -261,7 +261,7 @@ FAIL 1 test cases
 make: *** [unit] Error 1
 </code></pre></div></div>
 
-<p>Notice how Make exited with error; that’s because <code class="language-plaintext highlighter-rouge">unittest</code> exited with non-zero status: note the code at end of <code class="language-plaintext highlighter-rouge">main()</code>.</p>
+<p>Notice how Make exited with error; that’s because <code class="highlighter-rouge">unittest</code> exited with non-zero status: note the code at end of <code class="highlighter-rouge">main()</code>.</p>
 
 <h2 id="cunit-test-framework">CUnit test framework</h2>
 
@@ -293,7 +293,7 @@ Here’s an <a href="http://cunit.sourceforge.net/example.html">example</a> usin
     -- <a href="https://engineering.dartmouth.edu/people/faculty/stephen-taylor/">Stephen Taylor</a>
        </font>
     </p>
-    <p><small>This page was last updated on <strong>2023-01-05</strong> at <strong>11:31</strong>.</small></p>
+    <p><small>This page was last updated on <strong>2018-10-10</strong> at <strong>18:07</strong>.</small></p>
   </div>
 
 </footer>

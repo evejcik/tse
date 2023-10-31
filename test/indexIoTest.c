@@ -22,7 +22,7 @@
 #include "indexio.h"
 
 int sum = 0;
-/*
+
 typedef struct indexEntry{                                                            
   char* givenWord;                                                                    
   int count;                                                                          
@@ -37,7 +37,6 @@ typedef struct qElement{
 	int id;
 	int wordCount;
 }qElement_t;
-*/
 
 qElement_t *makeqElement(int id, int wc){
 	qElement_t *result = (qElement_t *)malloc(sizeof(qElement_t));
@@ -51,17 +50,17 @@ hElement_t *makehElement(char *w, qElement_t *qp){
 	result->queue = qp;
 	return result;
 }
-                                                                         
-bool matchingWordsSearch(void* elementp, const void* searchkeyp) {                   
+                                                                           
+bool matchingWordsSearch(void* elementp, const void* searchkeyp) {                    
   hElement_t *givenEntry = (hElement_t*) elementp;                                 
-  const char *key = (const char*) searchkeyp;                                        
-  if(elementp == NULL) {                                                             
-    return false;                                                                    
-  }                                                                                  
+  const char *key = (const char*) searchkeyp;                                         
+  if(elementp == NULL) {                                                              
+    return false;                                                                     
+  }                                                                                   
   if(strcmp((givenEntry -> word), key) == 0) {                                    
-    return true;                                                                     
-  }                                                                                  
-  return false;                                                                      
+    return true;                                                                      
+  }                                                                                   
+  return false;                                                                       
 }
 
 bool matchingIdSearch(void *elementp, const void *searchId){
@@ -77,7 +76,6 @@ bool matchingIdSearch(void *elementp, const void *searchId){
 		return false;
 	}
 }
-
 /*                                               
                                                                                      
 void printh(void* elementp) {                                                         
@@ -242,16 +240,12 @@ int main (int argc, char * argv[]){
   printf("Total # of Words: %d\n", sum);
 	//free(tempQ);
 	//free(tempH);
-	indexsave(indexHT, "indexSaveTest");
+printf("Count: %d\n",count);
 
-	hashtable_t * testH = indexload("indexSaveTest");
-	happly(testH, printh);
-	happly(testH, wordCounterHash);
-	printf("Total # of Words: %d\n", sum);
-	printf("Count: %d\n",count);
-happly(indexHT, freeHash);                                                      
-//happly(testH, freeHash);
-//hclose(testH);
+// indexsave(indexHT, "indexSaveTest");
+
+ happly(indexHT, freeHash);                                                      
+  
 	hclose(indexHT);                                                                     
   free(word);                                                                          
                                                                                        
@@ -280,4 +274,4 @@ happly(indexHT, freeHash);
                                                                                        
                                                                                        
                                                                                        
-                    
+                   

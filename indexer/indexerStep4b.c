@@ -125,7 +125,7 @@ int main (void){
   int pos=0;                                                                     
   hashtable_t* indexHT;                                                          
   webpage_t* current;                                                            
-  queue_t* webPgQueue;                                                           
+	//  queue_t* webPgQueue;                                                           
   int documentID = 1;                                                            
   queue_t* newQueue;                                                             
                                                                                  
@@ -134,7 +134,7 @@ int main (void){
   indexHT = hopen(150);                                                          
                                                                                  
   //open queue                                                                   
-  webPgQueue = qopen();                                                          
+  //webPgQueue = qopen();                                                          
                                                                                  
   // Load webpage                                                                
   current = pageload(1,"../test");                                               
@@ -152,8 +152,8 @@ int main (void){
      if(pos != -1) {                                                             
        word = NormalizeWord(word);                                               
        if(word != NULL){                                                         
-                                                                                 
-         // Allocate space for new entry                                        \
+
+         // Allocate space for new entry				
                                                                                  
          indexEntry_t *newEntry = malloc(sizeof(indexEntry_t));                 \
                                                                                  

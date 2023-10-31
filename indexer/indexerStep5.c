@@ -75,7 +75,7 @@ bool matchingIdSearch(void *elementp, const void *searchId){
 		return false;
 	}
 }
-                                                                                      
+/*                                               
                                                                                      
 void printh(void* elementp) {                                                         
   indexEntry_t *entry = (indexEntry_t*) elementp;                                     
@@ -83,7 +83,7 @@ void printh(void* elementp) {
   int printCount = entry -> count;                                                    
   printf("%s , %d \n ", printWord, printCount);                                       
 }                                                                                     
-                                                                                      
+                                     */                                                 
 char* NormalizeWord(char* word){                                                      
   int cCounter;                                                                       
   char c;                                                                             
@@ -111,6 +111,7 @@ char* NormalizeWord(char* word){
 void wordCounterQueue(void *ep){
 	qElement_t *element = (qElement_t *) ep;
 	sum += element->wordCount;
+	//printf("%d\n", element->wordCount);
 }
 void wordCounterHash(void* ep) {                                                      
   hElement_t *element = (hElement_t*) ep;                                          
@@ -127,27 +128,55 @@ void freeHash(void *ep) {
   free(word);                                                                         
   qclose(entry->queue);                                                          
 }                                                                                     
+void printq(void* elementp){                                                     
+                                                                                 
+  qElement_t * document = (qElement_t*) elementp;                                
+                                                                                 
+  if (document != NULL) {                                                        
+    printf(", %d, %d\n", document->id, document -> wordCount);                       
+  }                                                                              
+}                                                                                
+                                                                                 
+void printh(void* elementp) {                                                    
+                                                                                 
+    hElement_t *entry = (hElement_t*)elementp;                               
+                                                                                 
+    if (entry == NULL) {                                                         
+        return;                                                                  
+    }                                                                            
+    char* printWord = entry->word;                                          
+    if (printWord == NULL) {                                                     
+        return;                                                                  
+    }                                                                            
+    queue_t* printDocuments = entry->queue;                                  
+    printf("%s", printWord);                                                     
+                                                                                 
+    if (printDocuments != NULL) {                                                
+        qapply(printDocuments, printq);                                          
+    }                                                                            
+}                                                 
                                                                                       
-                                                                                      
-int main (void){                                                                      
+int main (int argc, char * argv[]){                                                                      
   char* word;                                                                         
   int pos=0;                                                                          
   hashtable_t* indexHT;                                                               
   webpage_t* newWebPg;
 	queue_t *queue;
-	int id = 1;
-                                                                                      
+	int idMax = atoi(argv[1]);
+	//int idMax = 3;
+	int count =0;
+	
   //open hashtable                                                                    
   indexHT = hopen(150);                                                               
-                                                                                      
+	for(int id = 1; id <= idMax; id++){                                                                              
   // Load webpage                                                                     
-  newWebPg = pageload(1,"../test");                                                   
-                                                                                      
+  newWebPg = pageload(id,"../test");                                                   
+  /*                                                                                    
   FILE *fp = fopen("../test/1","r");                                                  
   if (fp == NULL){                                                                    
     printf("Error opening the file \n");                                              
     return 0;                                                                         
-  }                                                                                   
+		} */                                                                                  
   // Get next word in HTML                                                            
 
 	//qElement_t *tempQ;
@@ -161,9 +190,11 @@ int main (void){
     word = NormalizeWord(word);                                                       
 		printf("Added: %s \n", word);
 		if (word != NULL){                                                                
-      hElement_t *hfound = (hElement_t*) hsearch(indexHT, matchingWordsSearch, word, strlen(word));
+			count++;
+			hElement_t *hfound = (hElement_t*) hsearch(indexHT, matchingWordsSearch, word, strlen(word));
 			
       if (hfound == NULL) {
+				//printf("Element not found in hash\n");
 				qElement_t *tempQ = makeqElement(id, 1);
 				//tempQ = makeqElement(id, 1);
 				queue = qopen();
@@ -175,11 +206,13 @@ int main (void){
       else {
 				qElement_t *qfound = (qElement_t *) qsearch(hfound->queue, matchingIdSearch, &id);
 				if(qfound == NULL){
+					//printf("Element not found in queue\n");
 					qElement_t *tempQ = makeqElement(id, 1);
 					//tempQ = makeqElement(id, 1);
 					qput(hfound->queue, tempQ);
 				}
 				else{
+					//			printf("Element already in queue\n");
 					(qfound->wordCount)++;
 				}
       }
@@ -190,21 +223,24 @@ int main (void){
 	//webpage_delete(newWebPg);
 	//free(word);
 	}while(pos != -1);
-
+	//fclose(fp);
+	printf("Finished document %d\n", id);
+	webpage_delete(newWebPg);
+	}
+	
 	//indexEntry_t *newEntry = malloc(sizeof(indexEntry_t));
   //free(newWebPg->url);                                                               
   //free(newWebPg->html);                                                              
 	//webpage_delete(newWebPg);
-	free(newWebPg);                                                                      
-  fclose(fp);
+	//free(newWebPg);                                                                      
+  //fclose(fp);
 	happly(indexHT, printh);                                                             
   happly(indexHT, wordCounterHash);                                                        
   printf("Total # of Words: %d\n", sum);
 	//free(tempQ);
 	//free(tempH);
-
-	happly(indexHT, freeHash);                                                      
-printf("test\n");
+printf("Count: %d\n",count);
+happly(indexHT, freeHash);                                                      
   
 	hclose(indexHT);                                                                     
   free(word);                                                                          

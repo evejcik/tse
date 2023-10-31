@@ -1,10 +1,13 @@
 CFLAGS= -Wall -pedantic -std=c11 -I../utils -L../lib -g
 LIBS=-lutils -lcurl
 
-all: indexer
+all: indexer indexerE
 
 indexer:
-	gcc $(CFLAGS) indexerStep4b.c $(LIBS) -o $@
+	gcc $(CFLAGS) indexerStep5.c $(LIBS) -o $@
+
+indexerE:
+	gcc $(CFLAGS) indexerStep6.c $(LIBS) -o $@
 
 clean:
-	rm -f indexer
+	rm -f indexer indexerE

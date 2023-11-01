@@ -7,7 +7,7 @@ indexer:
 	gcc $(CFLAGS) indexerStep5.c $(LIBS) -o $@
 
 indexerE:
-	gcc $(CFLAGS) indexerStep6.c $(LIBS) -o $@
+	gcc $(CFLAGS) indexerStep7.c $(LIBS) -o $@
 
 clean:
 	rm -f indexer indexerE

@@ -245,6 +245,7 @@ int main (int argc, char * argv[]){
 	indexsave(indexHT, "indexSaveTest");
 
 	hashtable_t * testH = indexload("indexSaveTest");
+	indexsave(testH, "indexSaveTest1");
 	happly(testH, printh);
 	happly(testH, wordCounterHash);
 	printf("Total # of Words: %d\n", sum);

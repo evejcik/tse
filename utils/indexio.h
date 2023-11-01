@@ -50,7 +50,7 @@ bool matchingWordsSearch(void* elementp, const void* searchkeyp) {
 } 
                                                                                
  */                                                                            
-void indexsave(hashtable_t *htp, char* indexnm);                                 
+void indexsave(hashtable_t *htp,char *pagedir, char* indexnm);                                 
                                                                                  
 /* hclose -- closes a hash table */                                              
 hashtable_t *indexload(char* indexnm);                          

@@ -99,9 +99,9 @@ void hPrint(void *htp)
   return;
 }
 
-void indexsave(hashtable_t *htp, char *indexnm){
+void indexsave(hashtable_t *htp,char *pagedir, char *indexnm){
   char filename[100];
-  sprintf(filename, "../test/%s", indexnm);
+  sprintf(filename, "../%s/%s",pagedir, indexnm);
   file = fopen(filename, "w");
   if(file == NULL)
   {

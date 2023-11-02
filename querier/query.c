@@ -89,7 +89,7 @@ int main(void){
 			//printf("entered printing loop\n");
 			printf("%s ", inputList[i]);
 		}
-		printf("%s", inputList[numWords -1]);
+		printf("%s \n", inputList[numWords -1]);
 	}
 	
 	

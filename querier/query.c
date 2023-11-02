@@ -52,6 +52,16 @@ int main(void){
 			printf("Querier terminated\n");
 			break;
 		}
+		
+		if (strlen(rawInput) <= 1) {
+			continue; // Skip further processing
+		}
+		
+		size_t len = strlen(rawInput);
+		if (len > 0 && rawInput[len - 1] == '\n') {
+			rawInput[len - 1] = '\0';
+		}
+
 		if(cleanWord(rawInput)){
 				printf("Invalid query\n");
 				//	invalidQuery = true;

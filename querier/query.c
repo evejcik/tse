@@ -43,6 +43,7 @@ int main(void){
 	//inputWord = (char *)malloc(sizeof(char));
 	while(true){
 		//invalidQuery = false;
+		//if -q is (not) present...then do....
 		printf(">");
 		numWords = 0;
 
@@ -74,10 +75,11 @@ int main(void){
 			//break;
 			//}
 		//Prints out the cleaned user input
-		for(int i = 0; i < numWords-1; i++){
+		for(int i = 0; i < numWords - 1; i++){
 			//printf("entered printing loop\n");
-			printf("%s \n", inputList[i]);
+			printf("%s ", inputList[i]);
 		}
+		printf("%s", inputList[numWords -1]);
 	}
 	
 	

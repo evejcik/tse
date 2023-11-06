@@ -165,11 +165,11 @@ int main (int argc, char * argv[]){
   hashtable_t* indexHT;                                                               
   webpage_t* newWebPg;
 	queue_t *queue;
-	//int idMax = atoi(argv[1]);
-	int idMax = 82;
+	int idMax = atoi(argv[1]);
+	//	int idMax = 82;
 	int count =0;
-	char *pagedir = argv[1];
-	char * indexnm = argv[2];
+	char *pagedir = argv[2];
+	char * indexnm = argv[3];
 	//char filename[100];                                                                
   
   //open hashtable                                                                    

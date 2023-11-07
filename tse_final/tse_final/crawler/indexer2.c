@@ -2,7 +2,6 @@
 * indexer.c - Reads document files produced by
 * TSE crawler, builds an index, and writes that index to a file
 * 
-* Jake Lotreck, Dartmouth CS 50, October 2021
 */
 
 #include <stdio.h>

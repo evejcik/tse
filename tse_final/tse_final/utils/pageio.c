@@ -1,14 +1,10 @@
 /* 
  * pageio.c --- saving and loading crawler webpage files
  * 
- * Author: Bill Zheng, Walker Ball, Daniel Jeon, Dhruv Chandra
+ * Author: Emma Vejcik
  * Created: 
  * Version: 1.0
  * 
- * Description: pagesave saves an existing webpage to a file with a
- * numbered name (e.g. 1,2,3 etc); pageload creates a new page by
- * loading a numbered file. For pagesave, the directory must exist and
- * be writable; for loadpage it must be readable.
  */
 
 #include <stdio.h>

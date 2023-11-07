@@ -237,7 +237,7 @@ int main(int argc, char *argv[]){
 
     int id = 1;
     webpage_t *page;
-    printf("numDocs: %d.\n", numDocs);
+		//    printf("numDocs: %d.\n", numDocs);
     while ((page = pageload(id, pagedir)) != NULL)
     {// null check
         //page = pageload(id, pageDirectory); // Loads a webpage from the document file 'pageDirectory/id'

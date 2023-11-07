@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "hash.h": "c",
+        "pageio.h": "c",
+        "webpage.h": "c",
+        "unistd.h": "c",
+        "string.h": "c",
+        "random": "c",
+        "queue": "c",
+        "stack": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "ctype.h": "c",
+        "inttypes.h": "c",
+        "indexio.h": "c",
+        "index.h": "c",
+        "queue.h": "c",
+        "stdbool.h": "c"
+    }
+}

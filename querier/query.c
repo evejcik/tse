@@ -19,6 +19,7 @@
 #include "queue.h"
 #include "hash.h"
 
+
 //Checks the validity of the input word and makes it lowercase
 bool cleanWord(char* w){
 	char c;

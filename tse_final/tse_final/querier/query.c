@@ -40,7 +40,7 @@ static bool isValid(char* str) {
     
     // If input is less than 1 char, it's empty 
     if (strlen(str) < 1) {
-        printf("[Invalid Query]: Empty input.\n");
+        printf("Invalid Query \n");
         return false;
     } else {
         bool isSpace = true;
@@ -61,7 +61,7 @@ static bool isValid(char* str) {
             
             // Non-alphabetical input
             if (!isAlpha) {
-                printf("[Invalid Query]: Input is non-alphabetical.\n");
+                printf("Invalid Query \n");
                 return false;
             }
         }
@@ -69,7 +69,7 @@ static bool isValid(char* str) {
         if (!isSpace) {
             return true;
         } else {
-            printf("[Invalid Query]: Empty input.\n");
+            printf("Invalid Query \n");
             return false;
         }
     }
@@ -279,7 +279,7 @@ int main(int argc, char *argv[]){
                 //printf("%s\n",input);
                 processInput(index, input, pagedir);
             } else {
-                printf("[Invalid Query]: Misplaced 'and's and 'or's.\n");
+                printf("Invalid Query \n");
             }
             free(q);
         }

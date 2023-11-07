@@ -1,7 +1,7 @@
 /*
  * indexer.c ---
  *
- * Author: Bill Zheng, Daniel Jeon, Walker Ball, Dhruv Chandra
+ * Author: Emma Vejcik
  * Created: 10-24-2023
  * Version: 1.0
  *

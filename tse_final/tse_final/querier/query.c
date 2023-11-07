@@ -1,7 +1,7 @@
 /*
  * query.c --- "querier" module
  *
- * Author: Bill Zheng, Daniel Jeon, Walker Ball, Dhruv Chandra
+ * Author: Emma Vejcik
  * Created: 10-24-2023
  * Version: 1.0
  *
@@ -250,7 +250,7 @@ int main(int argc, char *argv[]){
     }
     webpage_delete(page);
 
-    printf("numDocs: %d.\n", numDocs);
+		//    printf("numDocs: %d.\n", numDocs);
 
     char input[5000]; // Define a character array to store the line
 

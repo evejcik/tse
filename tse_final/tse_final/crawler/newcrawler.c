@@ -1,7 +1,7 @@
 /* 
  * crawler.c --- 
  * 
- * Author: Bill Zheng, Walker Ball, Dhruv Chandra, Daniel Jeon
+ * Author: Emma Vejcik
  * Created: 10-15-2023
  * Version: 1.0
  * 

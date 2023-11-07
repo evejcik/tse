@@ -1,7 +1,7 @@
 /*
  * indexio.c ---
  *
- * Author: Bill Zheng, Walker Ball, Daniel Jeon, Dhruv Chandra
+ * Author: Emma Vejcik
  * Created:
  * Version: 1.0
  *

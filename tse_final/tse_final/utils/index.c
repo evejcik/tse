@@ -2,7 +2,6 @@
 * index.c: module providing the data structure to represent the 
 * in-memory index, and functions to read and write index files 
 *
-* Author: Bill Zheng
 * Date: 10/29/2023
 */
 
